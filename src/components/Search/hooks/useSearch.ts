@@ -110,7 +110,7 @@ export const useSearch = (): UseSearchReturn => {
         
         console.log('[useSearch] Searching via proxy with silo:', siloName, 'fileTypes:', fileTypesParam);
         
-        const data = await fetchSearch(searchQuery, 50, siloName, fileTypesParam, confidence);
+        const data = await fetchSearch(searchQuery, 50, siloName, fileTypesParam, confidence, 0);
         console.log('[useSearch] Raw data from backend:', data);
         
         let searchResults: SearchResult[] = Array.isArray(data) 
@@ -178,7 +178,7 @@ export const useSearch = (): UseSearchReturn => {
         setLoading(false);
       }
     },
-    [confidence]
+    [confidence, fileTypeFilter, activeSilo?.name]
   );
 
   const loadMore = useCallback(async () => {
@@ -198,9 +198,9 @@ export const useSearch = (): UseSearchReturn => {
         ? Array.from(fileTypeFilter).join(',')
         : undefined;
       
-      console.log('[useSearch] Loading more results with silo:', siloName, 'relaxedConfidence:', relaxedConfidence);
+      console.log('[useSearch] Loading more results with silo:', siloName, 'relaxedConfidence:', relaxedConfidence, 'offset:', offset);
       
-      const data = await fetchSearch(currentQuery, 50, siloName, fileTypesParam, relaxedConfidence);
+      const data = await fetchSearch(currentQuery, 50, siloName, fileTypesParam, relaxedConfidence, offset);
       let newResults: SearchResult[] = Array.isArray(data) ? data : (data.results || []);
       
       newResults = newResults.map((r) => ({
@@ -221,7 +221,7 @@ export const useSearch = (): UseSearchReturn => {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [currentQuery, offset, hasMore, isLoadingMore, confidence]);
+  }, [currentQuery, offset, hasMore, isLoadingMore, confidence, fileTypeFilter, activeSilo?.name]);
 
   const handleConfirm = useCallback(
     (imageId: number, imagePath: string) => {
