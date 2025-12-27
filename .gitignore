@@ -1,0 +1,155 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/backend/backend/cache
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# log files
+*.log
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+# ===== PRODUCTION DEPLOYMENT - USER DATA & CACHES =====
+
+# User data and caches (generated at runtime, not for production)
+/cache/
+/backend/cache/
+*.db
+*.sqlite
+*.sqlite3
+personalai.db
+
+# Silo data (user-specific)
+/backend/cache/silos/
+
+# Thumbnails and generated images
+/backend/cache/thumbnails/
+
+# User configuration (should be regenerated per installation)
+/backend/cache/user_config.json
+/backend/cache/people.json
+/backend/cache/animals.json
+
+# Search indices (should be rebuilt)
+/backend/cache/faiss.index
+/backend/cache/faiss_ids.npy
+
+# ===== DEVELOPMENT & TESTING FILES =====
+
+# Test and development Python scripts
+process_all_faces.py
+process_all_faces_resilient.py
+test_*.py
+*_test.py
+face_test*.py
+cleanup_*.py
+inspect_*.py
+reset_*.py
+validate_*.py
+monitor_*.sh
+build_*.py
+
+# Test result files
+face_clustering_results.json
+face_test_results.json
+
+# SQL query files
+*.sql
+
+# ===== DOCUMENTATION FOR DEVELOPMENT ONLY =====
+
+# Internal documentation and debugging notes (not for end users)
+*_ANALYSIS.md
+*_CHANGES.md
+*_COMPLETE.md
+*_SUMMARY.md
+*_FIX*.md
+*_AUDIT*.md
+*_PROGRESS.md
+*_CHECKLIST.md
+*_VERIFICATION*.md
+FIXES_APPLIED.md
+WORKFLOW_*.md
+IMPLEMENTATION_*.md
+
+# Search/test pages
+search.html
+DRAG_DROP_QUICK_START.md
+
+# Installation/testing docs for development
+INSTALL_REAL.md
+
+# ===== RUNTIME FILES =====
+
+# PID files
+.*.pid
+*.pid
+
+# Shell scripts for development/testing
+backend-daemon.sh
+face_detection_service.sh
+reindex.sh
+RESET_SILO.sh
+START_BACKEND.sh
+START_FRONTEND.sh
+
+# Backup and temporary files
+*.tar.gz
+*.backup
+*.tmp
