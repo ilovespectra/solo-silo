@@ -1,203 +1,231 @@
-# Local File Browser - Private AI-Powered Search
+# dudlefotos
 
-A sophisticated, open-source desktop application that brings AI-powered file search and management to your local machine—**without sending any data to the internet**.
+ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
 
-## 🎯 Features
+## features
 
-### Core Capabilities
-- **Local AI-Powered Search**: Semantic search using open-source transformers models (no cloud required)
-- **File Browser**: Modern, intuitive file management interface similar to Google Photos
-- **Advanced Permissions**: Granular control over what the app can do
-- **Zero Internet**: All processing happens locally on your device
-- **Privacy-First**: No user data tracking or external API calls
+- **local ai search**: semantic search across photos, videos, and audio using open-source models
+- **face detection & clustering**: automatically detect and organize faces in your photos
+- **animal detection**: identify and catalog pets and animals in your media
+- **multi-silo support**: organize separate photo collections with isolated data
+- **audio transcription & search**: search spoken content in audio/video files
+- **favorites & virtual folders**: organize media without moving files
+- **ocr text extraction**: search text found in images
+- **privacy-first**: all processing happens locally, no data leaves your device
 
-### File Management
-- 📁 **Browse & Navigate**: Intuitive directory exploration
-- 📝 **File Operations**: Move, copy, rename, delete, create folders
-- 🏷️ **Tagging & Organization**: Custom metadata and file organization
-- 🔍 **Content Search**: Full-text semantic search across documents
-- 📊 **File Statistics**: Sort by size, date modified, type, and relevance
+## quick start
 
-### AI Features
-- **Semantic Search**: Understand meaning behind queries (e.g., "photos of my daughter" finds matching images)
-- **Image Analysis**: Detect objects and concepts in photos ("birthday party", "dogs", "beach")
-- **Face Recognition & Clustering**: Identify and organize faces by person
-- **Customizable Names**: Label detected faces with custom names
-- **Text Analysis**: Extract and understand content from documents
+### prerequisites
 
-## 🚀 Getting Started
+- node.js 18+
+- python 3.10+
+- ~4gb free disk space (for ai models)
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- ~2GB free disk space (for models)
+### installation
 
-### Installation & Running
+1. **clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd dudlefotos
+   ```
 
+2. **install dependencies**
+   ```bash
+   ./install_dependencies.sh
+   ```
+   
+   this installs both frontend (npm) and backend (python) dependencies.
+
+3. **start the application**
+   ```bash
+   ./start-all.sh
+   ```
+   
+   this starts both the backend (port 8000) and frontend (port 3000).
+
+4. **open in browser**
+   ```
+   http://localhost:3000
+   ```
+
+### manual setup (alternative)
+
+if you prefer to start services separately:
+
+**backend**
 ```bash
-# Development server
+cd backend
+python -m uvicorn app.main:app --reload --port 8000
+```
 
-### Backend (FastAPI) — Local Indexer
+**frontend**
+```bash
+npm run dev
+```
 
-1. Install Python dependencies (Python 3.10+):
-     ```bash
-     cd backend
-     pip install -r requirements.txt
-     ```
+## configuration
 
-2. Run the API server:
-     ```bash
-     uvicorn app.main:app --reload --port 8000
-     ```
+create `backend/config.yaml` to customize settings:
 
-3. Rebuild the media index:
-     ```bash
-     curl -X POST http://localhost:8000/api/index/rebuild
-     ```
-
-Configuration lives in `config.yaml` (optional). Example:
 ```yaml
 storage:
   media_paths:
-      - /path/to/photos
+    - /path/to/your/photos
   thumbnail_path: ./cache/thumbnails
+
 processing:
   batch_size: 32
   workers: 4
   skip_videos: false
+  
+ai:
+  face_detection: true
+  animal_detection: true
+  ocr_enabled: true
 ```
-npm run dev
 
-# Production build
-npm run build
-npm run start
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🛠️ Technology Stack
-
-### Frontend
-- **Next.js 14**: React framework with App Router
-- **TypeScript**: Type-safe development
-- **Zustand**: Lightweight state management
-- **Tailwind CSS**: Responsive UI styling
-
-### Backend
-- **Next.js API Routes**: Server-side file operations
-- **Node.js fs/path**: Safe file system access
-
-### AI/ML
-- **@xenova/transformers**: Open-source ONNX models
-  - Text embedding: all-MiniLM-L6-v2
-  - Image captioning: vit-gpt2-image-captioning
-  - Zero-shot classification: mobilebert-uncased-mnli
-
-## 📁 Project Structure
+## project structure
 
 ```
 dudlefotos/
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── files/           # File operations endpoints
-│   │   │   ├── search/          # Search endpoint
-│   │   │   └── indexing/        # Indexing endpoint
-│   │   ├── page.tsx             # Main page
-│   │   └── layout.tsx           # App layout
-│   ├── components/
-│   │   ├── FileBrowser/         # File browser UI
-│   │   ├── SearchChat/          # Chat-like search interface
-│   │   └── SetupWizard/         # Configuration wizard
-│   ├── lib/
-│   │   ├── ai/                  # AI model utilities
-│   │   ├── file-system/         # File operations
-│   │   ├── indexing/            # File indexing system
-│   │   └── utils/               # Helper functions
-│   ├── store/                   # Zustand state management
-│   └── types/                   # TypeScript types
-├── .local/
-│   ├── models/                  # Cached AI models
-│   └── index/                   # File index cache
-└── public/                      # Static assets
+├── src/                    # next.js frontend
+│   ├── app/               # app router pages
+│   ├── components/        # react components
+│   ├── lib/              # utilities and helpers
+│   ├── store/            # zustand state management
+│   └── types/            # typescript definitions
+├── backend/               # fastapi backend
+│   ├── app/              # api endpoints and services
+│   ├── cache/            # runtime cache and indices
+│   └── requirements.txt  # python dependencies
+└── public/               # static assets
 ```
 
-## 💾 Local Data Storage
+## tech stack
 
-- **Models**: `.local/models/` - AI models are cached after first download
-- **Index**: `.local/index/file-index.json` - Your file index
-- **Config**: Stored in browser localStorage (no sensitive data)
+**frontend**
+- next.js 16 with app router
+- react 19
+- typescript
+- zustand for state management
+- tailwind css
 
-All data stays on your device.
+**backend**
+- fastapi
+- pytorch & transformers
+- faiss for vector search
+- opencv & pillow for image processing
+- deepface for face recognition
+- ultralytics yolo for object detection
+- easyocr for text extraction
 
-## 🎨 UI Features
+**ai models (all open-source)**
+- sentence-transformers for embeddings
+- clip for image understanding
+- yolov8 for object/animal detection
+- deepface for face detection
+- easyocr for text recognition
 
-### File Browser
-- Directory navigation with breadcrumbs
-- Multi-select file operations
-- File metadata (size, modification date)
-- Real-time permission checks
+## features in detail
 
-### Search Chat
-- Natural language query interface
-- Real-time search results
-- Relevance scoring
-- Result filtering and sorting
+### search
+- semantic search using natural language
+- search by faces, animals, objects, text
+- filter by file type, date, confidence
+- search within specific virtual folders
 
-### Setup Wizard
-- Step-by-step configuration
-- Permission management with descriptions
-- Path selection with validation
-- Settings review before completion
+### face management
+- automatic face detection and clustering
+- name faces to create searchable people
+- review uncertain detections
+- exclude/hide unwanted faces
 
-## 🚦 Development Scripts
+### animal detection
+- automatic pet and animal identification
+- species classification
+- name individual animals
+- search by animal type or name
+
+### silos
+- separate photo collections (work, personal, etc)
+- isolated indices and configurations
+- switch between silos seamlessly
+- per-silo favorites and folders
+
+### virtual folders
+- organize media without moving files
+- create nested folder structures
+- add same photo to multiple folders
+- maintain original file locations
+
+## development
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
+# start development servers
+npm run dev              # frontend on :3000
+cd backend && uvicorn app.main:app --reload  # backend on :8000
+
+# build for production
+npm run build
+npm run start
+
+# lint
+npm run lint
 ```
 
-## 🔄 API Endpoints
+## stopping services
 
-### File Operations
-```
-GET  /api/files/browse?path=<path>&recursive=false
-POST /api/files/operations
-     body: { action: 'move'|'delete'|'rename'|'createFolder', ... }
+```bash
+./stop-all.sh
 ```
 
-### Search
+kills all backend and frontend processes.
+
+## cache and data
+
+all data stays on your machine:
+
+- **ai models**: `backend/cache/` (downloaded on first use)
+- **search indices**: `backend/cache/faiss.index`
+- **face clusters**: `backend/cache/people.json`
+- **thumbnails**: `backend/cache/thumbnails/`
+- **silo data**: `backend/cache/silos/<silo-name>/`
+
+to clear cache:
+```bash
+rm -rf backend/cache/*
 ```
-POST /api/search
-     body: { query: string, method: 'semantic'|'keyword', topK: 20 }
+
+## troubleshooting
+
+**port already in use**
+```bash
+./stop-all.sh  # stop all services
+./start-all.sh # restart
 ```
 
-### Indexing
-```
-POST /api/indexing
-     body: { path: string, recursive: true, includeContent: true }
-GET  /api/indexing (stats)
-```
+**models not downloading**
+- check internet connection (needed for first download only)
+- ensure ~4gb free disk space
+- models cache in `backend/cache/models/`
 
-## 🎯 Roadmap
+**search not finding results**
+- wait for initial indexing to complete
+- check media paths in silo settings
+- rebuild index: settings → database → rebuild index
 
-### Phase 1 ✅ (Current)
-- ✅ Basic file browsing
-- ✅ Semantic search foundation
-- ✅ Setup wizard
-- ✅ Type definitions
-- ✅ File operations API
+**face detection not working**
+- ensure face detection is enabled in settings
+- run face clustering: settings → retraining → cluster faces
+- check backend logs: `backend/backend.log`
 
-### Phase 2 (Coming Soon)
-- Face recognition & clustering
-- Image batch operations
-- Advanced search filters
-- Export/backup features
+## license
 
-### Phase 3 (Future)
-- Video analysis
+[add your license here]
+
+## contributing
+
+[add contribution guidelines here]
 - Audio transcription
 - Full-text document indexing
 - Performance optimizations
