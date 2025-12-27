@@ -1,4 +1,4 @@
-# dudlefotos
+# solo: silo
 
 ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
 
@@ -26,7 +26,7 @@ ai-powered photo management and search for your local files. everything runs on 
 1. **clone the repository**
    ```bash
    git clone <repository-url>
-   cd dudlefotos
+   cd solo-silo
    ```
 
 2. **install dependencies**
@@ -87,7 +87,7 @@ ai:
 ## project structure
 
 ```
-dudlefotos/
+solo-silo/
 ├── src/                    # next.js frontend
 │   ├── app/               # app router pages
 │   ├── components/        # react components
