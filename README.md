@@ -25,7 +25,7 @@ ai-powered photo management and search for your local files. everything runs on 
 
 1. **clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ilovespectra/solo-silo/tree/main
    cd solo-silo
    ```
 
