@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useAppStore } from '../../store/appStore';
-import { useDemoMode } from '@/hooks/useDemoMode';
 
 interface TourStep {
   id: string;
@@ -119,19 +118,42 @@ export const GettingStartedTour: React.FC = () => {
     showSetupWizard,
   } = useAppStore();
 
-  const { demoMode, isLoading: demoModeLoading } = useDemoMode();
+  const [demoMode, setDemoMode] = useState<boolean | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   
+  useEffect(() => {
+    async function detectMode() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/system/health', {
+          signal: AbortSignal.timeout(1000),
+        });
+        setDemoMode(!response.ok ? true : false);
+        console.log('[GettingStartedTour] Backend available, local mode');
+      } catch (error) {
+        setDemoMode(true);
+        console.log('[GettingStartedTour] No backend, demo mode');
+      }
+    }
+    detectMode();
+  }, []);
+  
   const TOUR_STEPS = useMemo(() => {
-    const isDemo = demoMode === true;
-    console.log('[GettingStartedTour] Demo mode:', demoMode, 'Using tour:', isDemo ? 'DEMO' : 'LOCAL');
+    const isDemo = demoMode !== false;
+    console.log('[GettingStartedTour] demo mode:', demoMode, 'using tour:', isDemo ? 'DEMO' : 'LOCAL');
     return isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
   }, [demoMode]);
 
   useEffect(() => {
     if (demoMode !== null) {
-      console.log('[GettingStartedTour] Mode determined, resetting to step 0');
+      console.log('[GettingStartedTour] mode determined, resetting to step 0');
+      setGettingStartedStep(0);
+    }
+  }, [demoMode, setGettingStartedStep]);
+
+  useEffect(() => {
+    if (demoMode !== null) {
+      console.log('[GettingStartedTour] mode determined, resetting to step 0');
       setGettingStartedStep(0);
     }
   }, [demoMode, setGettingStartedStep]);
@@ -268,10 +290,6 @@ export const GettingStartedTour: React.FC = () => {
               <h2 className="text-xl font-bold text-white">
                 {currentStep.title}
               </h2>
-              {/* Debug indicator */}
-              <span className="text-xs text-white opacity-70">
-                {demoMode === true ? '[DEMO MODE]' : demoMode === false ? '[LOCAL MODE]' : '[DETECTING...]'}
-              </span>
             </div>
             <button
               onClick={handleSkip}
