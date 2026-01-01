@@ -238,7 +238,7 @@ export const GettingStartedTour: React.FC = () => {
       <button
         onClick={() => setIsMinimized(false)}
         className={`fixed bottom-6 right-6 z-50 p-3 rounded-full shadow-lg border-2 border-orange-500 ${bgClass} hover:scale-110 transition-transform`}
-        title="Show tour guide"
+        title="show tour guide"
       >
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
@@ -264,9 +264,15 @@ export const GettingStartedTour: React.FC = () => {
         {/* Header */}
         <div className="p-4 border-b border-gray-700 bg-gradient-to-r from-orange-600 to-orange-500">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-bold text-white">
-              {currentStep.title}
-            </h2>
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold text-white">
+                {currentStep.title}
+              </h2>
+              {/* Debug indicator */}
+              <span className="text-xs text-white opacity-70">
+                {demoMode === true ? '[DEMO MODE]' : demoMode === false ? '[LOCAL MODE]' : '[DETECTING...]'}
+              </span>
+            </div>
             <button
               onClick={handleSkip}
               className="text-sm text-white hover:text-gray-200 transition-colors"
