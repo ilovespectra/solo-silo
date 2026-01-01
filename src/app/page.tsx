@@ -19,7 +19,7 @@ import { useDemoMode } from '@/hooks/useDemoMode';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard, setShowGettingStartedTour, setGettingStartedStep } = useAppStore();
+  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard, setShowGettingStartedTour, setGettingStartedStep, updatePermissions } = useAppStore();
   const [mounted, setMounted] = useState(false);
   const [hasIndexedFiles, setHasIndexedFiles] = useState(false);
   const [showSiloManager, setShowSiloManager] = useState(false);
@@ -27,6 +27,25 @@ export default function Home() {
   const { demoMode } = useDemoMode();
 
   useIndexingStatus();
+
+  useEffect(() => {
+    if (demoMode) {
+      console.log('[demo] Enabling all permissions for demo mode');
+      updatePermissions({
+        readFiles: true,
+        listDirectories: true,
+        indexContent: true,
+        recognizeFaces: true,
+        analyzeImages: true,
+        searchText: true,
+        moveFiles: false,
+        deleteFiles: false,
+        renameFiles: false,
+        createFolders: false,
+        modifyMetadata: false,
+      });
+    }
+  }, [demoMode, updatePermissions]);
 
   const handleRestartTour = () => {
     localStorage.removeItem('tour-dismissed');
@@ -70,7 +89,6 @@ export default function Home() {
   useEffect(() => {
     if (mounted) {
       console.log('Wizard logic - hasIndexedFiles:', hasIndexedFiles, 'demoMode:', demoMode);
-      // Never show wizard in demo mode
       const shouldShowWizard = !demoMode && !hasIndexedFiles;
       console.log('Setting showSetupWizard to:', shouldShowWizard);
       setShowSetupWizard(shouldShowWizard);
