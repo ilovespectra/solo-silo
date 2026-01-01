@@ -88,14 +88,12 @@ export default function Settings() {
             setIndexingLogs(data.indexingLogs || []);
             setFaceDetectionLogs(data.faceDetectionLogs || []);
             setClusteringLogs(data.clusteringLogs || []);
+            setShowDebugLogs(true);
             console.log('[demo mode] loaded demo processing logs', {
               indexing: data.indexingLogs?.length || 0,
               faceDetection: data.faceDetectionLogs?.length || 0,
               clustering: data.clusteringLogs?.length || 0
             });
-            if (showDebugLogs || tourAutoOpenDebugLog) {
-              setShowDebugLogs(true);
-            }
           }
         } catch (error) {
           console.error('[demo mode] failed to load demo logs:', error);
@@ -261,7 +259,7 @@ export default function Settings() {
   }, [activeSilo?.name]);
 
   useEffect(() => {
-    if (isIndexing && !showDebugLogs) {
+    if (isIndexing && !showDebugLogs && !demoMode) {
       setShowDebugLogs(true);
       if (indexingLogs.length === 0) {
         setIndexingLogs([{
@@ -271,7 +269,7 @@ export default function Settings() {
         }]);
       }
     }
-  }, [isIndexing, showDebugLogs, indexingLogs.length]);
+  }, [isIndexing, showDebugLogs, indexingLogs.length, demoMode]);
 
   useEffect(() => {
     if (tourAutoOpenDebugLog) {
@@ -290,7 +288,7 @@ export default function Settings() {
 
   useEffect(() => {
     const shouldPoll = shouldPollIndexing || isIndexing;
-    if (!shouldPoll) return;
+    if (!shouldPoll || demoMode) return;
 
     const fetchProgress = async () => {
       try {

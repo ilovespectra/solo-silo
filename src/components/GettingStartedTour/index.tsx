@@ -197,13 +197,10 @@ export const GettingStartedTour: React.FC = () => {
   }, [showGettingStartedTour, gettingStartedStep, currentView, setCurrentView, dismissed, TOUR_STEPS]);
 
   useEffect(() => {
-    if (showGettingStartedTour && gettingStartedStep === 2 && currentView === 'settings' && demoMode === true) {
-      const timer = setTimeout(() => {
+    if (showGettingStartedTour && gettingStartedStep === 2 && currentView === 'settings') {
+      if (demoMode !== true) {
         setTourAutoOpenDebugLog(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else if (showGettingStartedTour && gettingStartedStep === 2 && currentView === 'settings') {
-      setTourAutoOpenDebugLog(true);
+      }
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog, demoMode]);
 
