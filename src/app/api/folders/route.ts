@@ -4,11 +4,8 @@ export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   if (isDemoMode) {
-    // In demo mode, return empty folders structure
-    return NextResponse.json({
-      folders: {},
-      rootFolderIds: []
-    });
+    // In demo mode, return empty folders array
+    return NextResponse.json([]);
   }
   
   // In local mode, proxy to backend
