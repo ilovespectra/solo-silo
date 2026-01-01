@@ -60,7 +60,7 @@ export async function GET(
   
   try {
     const url = new URL(req.url);
-    const backendUrl = `http://127.0.0.1:8000/api/media/thumbnail/${params.id}${url.search}`;
+    const backendUrl = `http://127.0.0.1:8000/api/media/thumbnail/${id}${url.search}`;
     
     const backendResponse = await fetch(backendUrl, {
       method: 'GET',
