@@ -56,7 +56,7 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
   const toastClass = theme === 'dark' ? 'bg-gray-800/90 text-white' : 'bg-gray-900/90 text-white';
   const devModeBgClass = theme === 'dark' ? 'bg-gray-900/80' : 'bg-gray-900/80';
 
-  const BACKEND_URL = 'http://localhost:8000';
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
   const imgSrc = `${BACKEND_URL}/api/media/file/${result.id}`;
   
   const formattedDate = result.date_taken

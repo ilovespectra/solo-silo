@@ -33,7 +33,7 @@ export const useIndexingStatus = () => {
   useEffect(() => {
     const checkIndexingStatus = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/indexing', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'}/api/indexing`, {
           signal: AbortSignal.timeout(5000),
         });
 

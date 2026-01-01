@@ -61,7 +61,7 @@ export const Search: React.FC<SearchComponentProps> = ({
   const [fileTypeCategories, setFileTypeCategories] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/search/file-types', { mode: 'cors' })
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'}/api/search/file-types`, { mode: 'cors' })
       .then(r => r.json())
       .then(data => {
         if (data.categories) {

@@ -176,7 +176,7 @@ export class FeedbackQueueManager {
 
   private async sendToBackend(item: FeedbackItem): Promise<void> {
     const action = item.action === 'confirm' ? 'approve' : 'reject';
-    const BACKEND_URL = 'http://localhost:8000';
+    const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
     const endpoint = `${BACKEND_URL}/api/search/${encodeURIComponent(item.query)}/${action}?file_id=${item.imageId}`;
 
     console.log(`[FEEDBACK_QUEUE] Sending to backend: ${endpoint}`);

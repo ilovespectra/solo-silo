@@ -105,7 +105,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <SiloSelector onSiloSwitch={async () => {
               try {
-                const response = await fetch('http://localhost:8000/api/status/has-indexed-files', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'}/api/status/has-indexed-files`, {
                   signal: AbortSignal.timeout(5000),
                 });
                 if (response.ok) {
