@@ -1,39 +1,10 @@
 import { MediaFile } from '@/types/backend';
-import { isDemoMode } from './demoApi';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
-
-// Demo mode mock data - matches FaceCluster interface
-const DEMO_PEOPLE = [
-  { 
-    id: 'person_1', 
-    name: 'Luka', 
-    primary_thumbnail: '/demo-silo/thumbnails/person_1_1.jpg',
-    photo_count: 12, 
-    confidence_score: 0.95,
-    is_hidden: false,
-    last_updated: Date.now()
-  },
-  { 
-    id: 'person_2', 
-    name: '', 
-    primary_thumbnail: '/demo-silo/thumbnails/person_2_1.jpg',
-    photo_count: 8,
-    confidence_score: 0.89,
-    is_hidden: false,
-    last_updated: Date.now()
-  }
-];
 
 let backendReady: Promise<void> | null = null;
 
 async function ensureBackendRunning(): Promise<void> {
-  // Skip backend check in demo mode
-  if (isDemoMode()) {
-    console.log('[Demo Mode] Using static demo data');
-    return Promise.resolve();
-  }
-  
   if (backendReady) return backendReady;
   backendReady = (async () => {
     for (let i = 0; i < 10; i++) {
@@ -51,11 +22,6 @@ async function ensureBackendRunning(): Promise<void> {
 async function request(path: string, init?: RequestInit, siloName?: string) {
   await ensureBackendRunning();
   
-  // In demo mode, return mock data based on endpoint
-  if (isDemoMode()) {
-    return handleDemoEndpoint(path);
-  }
-  
   const separator = path.includes('?') ? '&' : '?';
   const finalPath = siloName ? `${path}${separator}silo_name=${encodeURIComponent(siloName)}` : path;
   const fullUrl = `${API_BASE}${finalPath}`;
@@ -66,52 +32,6 @@ async function request(path: string, init?: RequestInit, siloName?: string) {
     throw new Error(text || 'Request failed');
   }
   return res.json();
-}
-
-function handleDemoEndpoint(path: string): any {
-  // Health
-  if (path.includes('/health')) {
-    return { status: 'ok', demo: true, time: new Date().toISOString() };
-  }
-  
-  // Silos
-  if (path.includes('/silos/list')) {
-    return [{ name: 'demo', created_at: '2025-01-01T00:00:00', authenticated: true, read_only: true }];
-  }
-  
-  // Face clusters
-  if (path.includes('/faces/clusters')) {
-    return DEMO_PEOPLE;
-  }
-  
-  // Media by date
-  if (path.includes('/media/by-date')) {
-    return {};
-  }
-  
-  // Search
-  if (path.includes('/search')) {
-    return { results: [], total: 0 };
-  }
-  
-  // Animals
-  if (path.includes('/animals')) {
-    return [];
-  }
-  
-  // Photos
-  if (path.includes('/photos')) {
-    return [];
-  }
-  
-  // Indexing status
-  if (path.includes('/indexing/status')) {
-    return { indexing: false, progress: 0 };
-  }
-  
-  // Default empty response
-  console.warn('[Demo Mode] Unhandled endpoint:', path);
-  return {};
 }
 
 export async function fetchMediaByDate(siloName?: string) {
