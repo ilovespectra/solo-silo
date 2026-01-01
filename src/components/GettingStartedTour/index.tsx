@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useAppStore } from '../../store/appStore';
 import { useDemoMode } from '@/hooks/useDemoMode';
 
@@ -122,8 +122,13 @@ export const GettingStartedTour: React.FC = () => {
   const { demoMode, isLoading: demoModeLoading } = useDemoMode();
   const [dismissed, setDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const isDemo = demoMode ?? (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_VERCEL === '1');
-  const TOUR_STEPS = isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
+  
+  // Determine which tour to use based on demo mode - must use useMemo to react to demoMode changes
+  const TOUR_STEPS = useMemo(() => {
+    const isDemo = demoMode === true;
+    console.log('[GettingStartedTour] Demo mode:', demoMode, 'Using tour:', isDemo ? 'DEMO' : 'LOCAL');
+    return isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
+  }, [demoMode]);
 
   useEffect(() => {
     const currentStep = TOUR_STEPS[gettingStartedStep];
