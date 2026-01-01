@@ -1,29 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
+  // Check if demo mode is explicitly enabled
+  const forceDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  
+  // Check if running on Vercel
   const isVercel = !!(
     process.env.VERCEL || 
     process.env.VERCEL_ENV ||
     process.env.VERCEL_URL ||
     req.headers.get('x-vercel-deployment-url')
   );
-  const forceDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   console.log('[mode api] environment:', {
+    NEXT_PUBLIC_DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE,
     VERCEL: process.env.VERCEL,
     VERCEL_ENV: process.env.VERCEL_ENV,
-    VERCEL_URL: process.env.VERCEL_URL,
-    'x-vercel-deployment-url': req.headers.get('x-vercel-deployment-url'),
-    isVercel,
-    forceDemoMode
+    forceDemoMode,
+    isVercel
   });
   
-  if (isVercel || forceDemoMode) {
-    console.log('[mode api] returning demo mode (vercel deployment)');
+  // Enable demo mode if explicitly set OR if on Vercel
+  if (forceDemoMode || isVercel) {
+    console.log('[mode api] returning demo mode');
     return NextResponse.json({
       demo_mode: true,
       read_only: true,
-      message: 'running in demo mode on vercel'
+      message: forceDemoMode ? 'demo mode (NEXT_PUBLIC_DEMO_MODE=true)' : 'demo mode (vercel deployment)'
     });
   }
   

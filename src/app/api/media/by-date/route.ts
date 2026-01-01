@@ -4,15 +4,9 @@ export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   if (isDemoMode) {
-    // In demo mode, return demo files from public/test-files
-    // This is a simplified structure - ideally we'd query the demo SQLite db
-    // but for now we'll return demo file references
-    const demoFiles = {
-      '2024-01': [],
-      '2024-02': [],
-      '2024-03': []
-    };
-    return NextResponse.json(demoFiles);
+    // In demo mode, return proper structure with empty date groups
+    // FileBrowser expects an object with date keys containing arrays
+    return NextResponse.json({});
   }
   
   // In local mode, proxy to backend
