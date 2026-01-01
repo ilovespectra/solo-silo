@@ -4,6 +4,7 @@ import { apiUrl } from '@/lib/api';
 import { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useSilos } from '@/hooks/useSilos';
+import { useDemoMode } from '@/hooks/useDemoMode';
 import { DatabaseManager } from '@/components/DatabaseManager';
 
 interface MediaStats {
@@ -51,6 +52,7 @@ interface RetrainingLog {
 export default function Settings() {
   const { theme, tourAutoOpenDebugLog, setTourAutoOpenDebugLog } = useAppStore();
   const { activeSilo } = useSilos();
+  const { demoMode } = useDemoMode();
   const [stats, setStats] = useState<MediaStats | null>(null);
   const [indexingProgress, setIndexingProgress] = useState<IndexingProgress | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +77,27 @@ export default function Settings() {
   const isAtBottomRef = useRef(true);
 
   const isIndexing = indexingProgress?.is_indexing || false;
+
+  useEffect(() => {
+    if (demoMode) {
+      const loadDemoLogs = async () => {
+        try {
+          const response = await fetch('/api/logs/demo');
+          if (response.ok) {
+            const data = await response.json();
+            setIndexingLogs(data.indexingLogs || []);
+            setFaceDetectionLogs(data.faceDetectionLogs || []);
+            setClusteringLogs(data.clusteringLogs || []);
+            setShowDebugLogs(true);
+            console.log('[demo mode] loaded demo processing logs');
+          }
+        } catch (error) {
+          console.error('[demo mode] failed to load demo logs:', error);
+        }
+      };
+      loadDemoLogs();
+    }
+  }, [demoMode]);
 
   useEffect(() => {
     const checkFaceDetectionStatus = async () => {

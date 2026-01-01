@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppStore } from '../../store/appStore';
+import { useDemoMode } from '@/hooks/useDemoMode';
 
 interface TourStep {
   id: string;
@@ -10,54 +11,98 @@ interface TourStep {
   action?: () => void;
   targetView?: 'browser' | 'search' | 'people' | 'animals' | 'audio' | 'settings' | 'retraining';
   condition?: () => boolean;
+  hideWizard?: boolean;
 }
 
-const TOUR_STEPS: TourStep[] = [
+const DEMO_TOUR_STEPS: TourStep[] = [
   {
     id: 'welcome',
-    title: 'welcome to silo',
-    description: 'let\'s get you started by adding your first media source.',
+    title: 'welcome to silo demo',
+    description: 'this is a read-only demo using celebrity photos. explore the features to see what silo can do with your own photo collection!',
   },
   {
-    id: 'add-source',
-    title: 'add a media source',
-    description: 'click the "add source" button to add a folder path where your photos are stored. this will start indexing your media.',
+    id: 'browse-demo',
+    title: 'browse demo photos',
+    description: 'demo files are already indexed. browse through celebrity photos (david bowie, christopher walken, paula abdul, luka dončić, and tito) in the browser.',
     targetView: 'browser',
   },
   {
-    id: 'indexing',
-    title: 'indexing in progress',
-    description: 'your media is being indexed. check the database manager in settings to see progress. this may take a few minutes depending on your collection size.',
+    id: 'view-processing',
+    title: 'view processing logs',
+    description: 'check the statistics tab to see how the demo files were indexed. the debug log shows the actual processing that happened.',
     targetView: 'settings',
   },
   {
-    id: 'face-clustering',
-    title: 'face detection complete',
-    description: 'faces have been detected! now let\'s cluster them. go to retraining tab and click "cluster faces" to group similar faces together.',
-    targetView: 'retraining',
-  },
-  {
     id: 'view-people',
-    title: 'view your face clusters',
-    description: 'clustering is done! check out the people tab to see all detected face clusters.',
-    targetView: 'people',
-  },
-  {
-    id: 'manage-cluster',
-    title: 'manage face clusters',
-    description: 'click on a person card to:\n• confirm or remove photos\n• add a name to the person\n• move photos to other clusters\n• when all photos are confirmed, hit the retrain button to improve face search',
+    title: 'explore face clusters',
+    description: 'the people tab shows automatically detected and clustered faces. click on any person to see all their photos.',
     targetView: 'people',
   },
   {
     id: 'semantic-search',
     title: 'try semantic search',
-    description: 'silo uses AI to understand your searches. try searching for:\n• objects: "cars", "flowers", "sunset"\n• colors: "blue sky", "red dress"\n• people: "david bowie", "christopher walken"\n• concepts: "happy moments", "outdoor scenes"\n\nno tags needed—just describe what you\'re looking for!',
+    description: 'silo uses AI to search by content. try searching for:\n• "bible" or "declaration" (finds text in images via OCR)\n• "david bowie" or "christopher walken" (finds faces)\n• "sunset" or "flowers" (finds scenes and objects)\n\nno tags needed—just describe what you\'re looking for!',
+    targetView: 'search',
+  },
+  {
+    id: 'demo-limitations',
+    title: 'demo mode limitations',
+    description: 'this demo is read-only:\n• can\'t add new sources\n• can\'t rename or organize clusters\n• can\'t retrain models\n\nrun silo locally with ./start-all.sh for full features with your own photos!',
+  },
+  {
+    id: 'complete',
+    title: 'explore at your own pace!',
+    description: 'you can now explore all the demo features. when you\'re ready to use silo with your own photos, check out the github repo for setup instructions.',
+  },
+];
+
+const LOCAL_TOUR_STEPS: TourStep[] = [
+  {
+    id: 'welcome',
+    title: 'welcome to silo',
+    description: 'let\'s get you started by adding your first media source. silo will index your photos and videos using AI—all processing happens locally on your machine.',
+  },
+  {
+    id: 'add-source',
+    title: 'add a media source',
+    description: 'click the "add source" button to select a folder containing your photos. this will start indexing your media with face detection, object recognition, and text extraction.',
+    targetView: 'browser',
+    hideWizard: true,
+  },
+  {
+    id: 'indexing',
+    title: 'indexing in progress',
+    description: 'your media is being indexed by the local backend. check the statistics tab to monitor progress. indexing time depends on your collection size and hardware.',
+    targetView: 'settings',
+  },
+  {
+    id: 'face-clustering',
+    title: 'face detection complete',
+    description: 'faces have been detected! now cluster them by going to the retraining tab and clicking "cluster faces" to group similar faces together.',
+    targetView: 'retraining',
+  },
+  {
+    id: 'view-people',
+    title: 'view your face clusters',
+    description: 'clustering is done! check out the people tab to see all detected face clusters from your photos.',
+    targetView: 'people',
+  },
+  {
+    id: 'manage-cluster',
+    title: 'manage face clusters',
+    description: 'click on a person card to:\n• confirm or remove photos\n• add a name to the person\n• move photos between clusters\n• when all photos are confirmed, hit the retrain button to improve accuracy',
+    targetView: 'people',
+  },
+  {
+    id: 'semantic-search',
+    title: 'try semantic search',
+    description: 'silo uses AI to understand your searches. try searching your collection for:\n• objects and scenes in your photos\n• colors and visual elements\n• people you\'ve named\n• concepts and moments\n\nno tags needed—just describe what you\'re looking for!',
     targetView: 'search',
   },
   {
     id: 'complete',
     title: 'you\'re all set!',
-    description: 'you can now search for faces, objects, and media using natural language. explore the features and organize your collection.',
+    description: 'you can now search faces, objects, and media using natural language. explore multi-silo support, favorites, and audio transcription in the settings.',
   },
 ];
 
@@ -71,9 +116,25 @@ export const GettingStartedTour: React.FC = () => {
     gettingStartedStep,
     setGettingStartedStep,
     setTourAutoOpenDebugLog,
+    showSetupWizard,
   } = useAppStore();
 
+  const { demoMode } = useDemoMode();
   const [dismissed, setDismissed] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const TOUR_STEPS = demoMode ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
+
+  useEffect(() => {
+    const currentStep = TOUR_STEPS[gettingStartedStep];
+    setTimeout(() => {
+      if (showSetupWizard && currentStep?.hideWizard) {
+        setIsMinimized(true);
+      } else {
+        setIsMinimized(false);
+      }
+    }, 0);
+  }, [showSetupWizard, gettingStartedStep, TOUR_STEPS]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -100,7 +161,7 @@ export const GettingStartedTour: React.FC = () => {
         setCurrentView(currentStep.targetView);
       }
     }
-  }, [showGettingStartedTour, gettingStartedStep, currentView, setCurrentView, dismissed]);
+  }, [showGettingStartedTour, gettingStartedStep, currentView, setCurrentView, dismissed, TOUR_STEPS]);
 
   useEffect(() => {
     if (showGettingStartedTour && gettingStartedStep === 1 && currentView === 'settings') {
@@ -155,6 +216,31 @@ export const GettingStartedTour: React.FC = () => {
 
   const bgClass = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
   const secondaryTextClass = theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
+
+  if (isMinimized) {
+    return (
+      <button
+        onClick={() => setIsMinimized(false)}
+        className={`fixed bottom-6 right-6 z-50 p-3 rounded-full shadow-lg border-2 border-orange-500 ${bgClass} hover:scale-110 transition-transform`}
+        title="Show tour guide"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          className="w-6 h-6 text-orange-500"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-50 max-w-md animate-in slide-in-from-bottom-8">
