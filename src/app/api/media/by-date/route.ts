@@ -4,9 +4,9 @@ export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   if (isDemoMode) {
-    // In demo mode, return proper structure with empty date groups
-    // FileBrowser expects an object with date keys containing arrays
-    return NextResponse.json({});
+    // In demo mode, return empty array (expected by MediaGallery)
+    // MediaGallery expects: [{ date_taken: string, items: string }]
+    return NextResponse.json([]);
   }
   
   // In local mode, proxy to backend
