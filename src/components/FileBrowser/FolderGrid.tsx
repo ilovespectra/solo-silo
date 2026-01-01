@@ -71,7 +71,7 @@ export default function FolderGrid({ onMediaDropped }: FolderGridProps) {
     if (!folder) return;
 
     try {
-      const response = await fetch(apiUrl('/api/folders/download-zip', {
+      const response = await fetch(apiUrl('/api/folders/download-zip'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

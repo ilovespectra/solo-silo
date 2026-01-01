@@ -28,7 +28,7 @@ export default function FolderPicker({ onPathSelected, onCancel, theme = 'light'
 
   const loadCommonPaths = async () => {
     try {
-      const response = await fetch(apiUrl('/api/system/paths');
+      const response = await fetch(apiUrl('/api/system/paths'));
       const data = await response.json();
 
       if (!data.commonPaths || typeof data.commonPaths !== 'object') {
@@ -79,7 +79,7 @@ export default function FolderPicker({ onPathSelected, onCancel, theme = 'light'
       console.log('[FolderPicker] Sample files:', fileNames);
 
       console.log('[FolderPicker] Sending to /api/system/resolve-directory');
-      const res = await fetch(apiUrl('/api/system/resolve-directory', {
+      const res = await fetch(apiUrl('/api/system/resolve-directory'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

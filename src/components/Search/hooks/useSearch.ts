@@ -48,7 +48,7 @@ export const useSearch = (): UseSearchReturn => {
   useEffect(() => {
     feedbackQueue.init().catch(console.error);
 
-    fetch(apiUrl('/api/health', { method: 'GET', mode: 'cors' })
+    fetch(apiUrl('/api/health'), { method: 'GET', mode: 'cors' })
       .then(r => {
         if (r.ok) {
           console.log('[useSearch] Backend is healthy');

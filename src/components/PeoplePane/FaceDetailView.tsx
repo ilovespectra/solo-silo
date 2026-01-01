@@ -225,7 +225,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
   const handleAddToMultipleClusters = async (mediaId: string, targetClusters: string[]) => {
     try {
       console.log(`adding photo ${mediaId} to multiple clusters:`, targetClusters);
-      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -255,7 +255,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
         if (unknownCluster) {
           try {
             console.log(`[FaceDetailView] Moving photo ${mediaId} to unknown cluster: ${unknownClusterId}`);
-            const moveResponse = await fetch(apiUrl('/api/faces/move-photo', {
+            const moveResponse = await fetch(apiUrl('/api/faces/move-photo'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -610,7 +610,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         const formData = new FormData();
                         formData.append('file', file);
                         
-                        const uploadResponse = await fetch(apiUrl('/api/files/upload', {
+                        const uploadResponse = await fetch(apiUrl('/api/files/upload'), {
                           method: 'POST',
                           body: formData
                         });

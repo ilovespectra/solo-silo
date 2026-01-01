@@ -189,7 +189,7 @@ export default function SetupWizard() {
           setBackendStartTime(startTime);
         }
 
-        const res = await fetch(apiUrl('/api/system/backend/start', { method: 'POST' });
+        const res = await fetch(apiUrl('/api/system/backend/start'), { method: 'POST' });
         
 
         if (res.status === 404) {

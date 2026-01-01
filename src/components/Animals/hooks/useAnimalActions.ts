@@ -96,7 +96,7 @@ export const useAnimalActions = (): UseAnimalActionsReturn => {
       setErrorAction(null);
 
       try {
-        const response = await fetch(apiUrl('/api/animals/merge', {
+        const response = await fetch(apiUrl('/api/animals/merge'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -127,7 +127,7 @@ export const useAnimalActions = (): UseAnimalActionsReturn => {
       setErrorAction(null);
 
       try {
-        const response = await fetch(apiUrl('/api/animals/suggestions');
+        const response = await fetch(apiUrl('/api/animals/suggestions'));
         if (!response.ok) throw new Error('Failed to get suggestions');
 
         const data = await response.json();

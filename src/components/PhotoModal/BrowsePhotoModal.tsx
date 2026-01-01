@@ -42,7 +42,7 @@ export default function BrowsePhotoModal({
       const loadClusters = async () => {
         setIsLoadingClusters(true);
         try {
-          const response = await fetch(apiUrl('/api/faces/clusters');
+          const response = await fetch(apiUrl('/api/faces/clusters'));
           if (response.ok) {
             const data = await response.json();
             console.log('[BrowsePhotoModal] Loaded clusters:', data);
@@ -111,7 +111,7 @@ export default function BrowsePhotoModal({
       try {
         const createdClusterIds: string[] = [];
         for (const name of newPersonNames) {
-          const checkResponse = await fetch(apiUrl('/api/faces/check-duplicate-name', {
+          const checkResponse = await fetch(apiUrl('/api/faces/check-duplicate-name'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name.trim() }),
@@ -130,7 +130,7 @@ export default function BrowsePhotoModal({
             return;
           }
 
-          const response = await fetch(apiUrl('/api/faces/create-cluster', {
+          const response = await fetch(apiUrl('/api/faces/create-cluster'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name }),
@@ -147,7 +147,7 @@ export default function BrowsePhotoModal({
     }
 
     try {
-      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -174,7 +174,7 @@ export default function BrowsePhotoModal({
     if (!media) return;
 
     try {
-      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -200,7 +200,7 @@ export default function BrowsePhotoModal({
     if (!media || selectedClustersForMerge.size === 0) return;
 
     try {
-      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -72,7 +72,7 @@ export default function RetrainingPanel() {
 
   const loadRetrainingStatus = async () => {
     try {
-      const response = await fetch(apiUrl('/api/retraining/status');
+      const response = await fetch(apiUrl('/api/retraining/status'));
       const data = await response.json();
       if (data.versions) {
         setModelVersions(data.versions);
@@ -97,7 +97,7 @@ export default function RetrainingPanel() {
 
   const loadTrainingDataPreview = async () => {
     try {
-      const response = await fetch(apiUrl('/api/retraining/faces-for-training');
+      const response = await fetch(apiUrl('/api/retraining/faces-for-training'));
       const data = await response.json();
       setTrainingData(data);
     } catch (err) {
@@ -107,7 +107,7 @@ export default function RetrainingPanel() {
 
   const loadQualityMetrics = async () => {
     try {
-      const response = await fetch(apiUrl('/api/retraining/quality-metrics');
+      const response = await fetch(apiUrl('/api/retraining/quality-metrics'));
       const data = await response.json();
       if (data.status === 'success') {
         setQualityMetrics(data);
@@ -129,7 +129,7 @@ export default function RetrainingPanel() {
     setRetrainingMessage('Initializing retraining pipeline...');
 
     try {
-      const response = await fetch(apiUrl('/api/retraining/full', {
+      const response = await fetch(apiUrl('/api/retraining/full'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });

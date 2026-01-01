@@ -71,7 +71,7 @@ export default function FaceSelectionModal({
 
     const refreshClusters = async () => {
       try {
-        const response = await fetch(apiUrl('/api/faces/clusters?min_photos=0&_t=' + Date.now(), {
+        const response = await fetch(apiUrl('/api/faces/clusters?min_photos=0&_t=' + Date.now()), {
           cache: 'no-store',
         });
         if (response.ok) {
@@ -483,7 +483,7 @@ export default function FaceSelectionModal({
     if (selectedFaceIndex === null || !newPersonName.trim()) return;
 
     try {
-      const checkResponse = await fetch(apiUrl('/api/faces/check-duplicate-name', {
+      const checkResponse = await fetch(apiUrl('/api/faces/check-duplicate-name'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newPersonName.trim() }),
@@ -503,7 +503,7 @@ export default function FaceSelectionModal({
       }
 
       console.log('[FaceSelectionModal] Creating new cluster for:', newPersonName.trim());
-      const createResponse = await fetch(apiUrl('/api/faces/create-cluster', {
+      const createResponse = await fetch(apiUrl('/api/faces/create-cluster'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newPersonName.trim() }),
