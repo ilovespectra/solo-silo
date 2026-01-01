@@ -17,42 +17,42 @@ interface TourStep {
 const DEMO_TOUR_STEPS: TourStep[] = [
   {
     id: 'welcome',
-    title: 'welcome to silo demo',
-    description: 'this is a read-only demo using celebrity photos. explore the features to see what silo can do with your own photo collection!',
+    title: '🎬 welcome to silo demo',
+    description: 'you\'re viewing a read-only demo with pre-loaded celebrity photos. all the features work—you just can\'t modify data. this shows what silo can do with your own photo collection!',
   },
   {
-    id: 'browse-demo',
-    title: 'browse demo photos',
-    description: 'demo files are already indexed. browse through celebrity photos (david bowie, christopher walken, paula abdul, luka dončić, and tito) in the browser.',
+    id: 'demo-files',
+    title: '📁 demo files already indexed',
+    description: 'we\'ve already indexed celebrity photos for you:\n• david bowie\n• christopher walken\n• paula abdul\n• luka dončić\n• tito\n\nno setup needed—just explore!',
     targetView: 'browser',
   },
   {
     id: 'view-processing',
-    title: 'view processing logs',
-    description: 'check the statistics tab to see how the demo files were indexed. the debug log shows the actual processing that happened.',
+    title: '📊 view processing logs',
+    description: 'check the statistics tab to see how these demo files were processed. the debug log shows the actual AI indexing, face detection, and clustering that happened.',
     targetView: 'settings',
   },
   {
     id: 'view-people',
-    title: 'explore face clusters',
-    description: 'the people tab shows automatically detected and clustered faces. click on any person to see all their photos.',
+    title: '👥 explore face clusters',
+    description: 'the people tab shows automatically detected and clustered faces. click on any celebrity to see all their photos. this is what silo does with your photos automatically!',
     targetView: 'people',
   },
   {
     id: 'semantic-search',
-    title: 'try semantic search',
-    description: 'silo uses AI to search by content. try searching for:\n• "bible" or "declaration" (finds text in images via OCR)\n• "david bowie" or "christopher walken" (finds faces)\n• "sunset" or "flowers" (finds scenes and objects)\n\nno tags needed—just describe what you\'re looking for!',
+    title: '🔍 try AI-powered search',
+    description: 'silo uses AI to understand your searches. try these:\n• "bible" or "declaration" (finds text via OCR)\n• "david bowie" or "christopher walken" (finds faces)\n• "sunset" or "flowers" (finds objects/scenes)\n\nno tags, no manual organization—just describe what you want!',
     targetView: 'search',
   },
   {
     id: 'demo-limitations',
-    title: 'demo mode limitations',
-    description: 'this demo is read-only:\n• can\'t add new sources\n• can\'t rename or organize clusters\n• can\'t retrain models\n\nrun silo locally with ./start-all.sh for full features with your own photos!',
+    title: '⚠️ demo mode limitations',
+    description: 'this demo is read-only, so you can\'t:\n• add new photo sources\n• rename or organize clusters\n• retrain models\n• modify any data\n\nto use silo with your own photos, clone the repo and run ./start-all.sh locally!',
   },
   {
     id: 'complete',
-    title: 'explore at your own pace!',
-    description: 'you can now explore all the demo features. when you\'re ready to use silo with your own photos, check out the github repo for setup instructions.',
+    title: '✅ explore at your own pace!',
+    description: 'feel free to explore all the demo features. when ready to use silo with your own photos, visit the github repo for setup instructions.\n\nhttps://github.com/[your-repo]',
   },
 ];
 
@@ -119,11 +119,11 @@ export const GettingStartedTour: React.FC = () => {
     showSetupWizard,
   } = useAppStore();
 
-  const { demoMode } = useDemoMode();
+  const { demoMode, isLoading: demoModeLoading } = useDemoMode();
   const [dismissed, setDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-
-  const TOUR_STEPS = demoMode ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
+  const isDemo = demoMode ?? (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_VERCEL === '1');
+  const TOUR_STEPS = isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
 
   useEffect(() => {
     const currentStep = TOUR_STEPS[gettingStartedStep];
@@ -168,6 +168,10 @@ export const GettingStartedTour: React.FC = () => {
       setTourAutoOpenDebugLog(true);
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog]);
+
+  if (demoModeLoading) {
+    return null;
+  }
 
   if (!showGettingStartedTour || dismissed) {
     return null;
