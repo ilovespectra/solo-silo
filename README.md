@@ -32,10 +32,10 @@ this application supports two deployment modes:
 ```
 
 ### 🎯 demo mode (static frontend only)
-**automatically activates on vercel deployments.** read-only demonstration using pre-built data.
+**read-only demonstration using pre-built data.** designed for public deployments like vercel.
 
 **how it works:**
-- detects vercel environment via `process.env.VERCEL === '1'`
+- controlled by `NEXT_PUBLIC_DEMO_MODE` environment variable
 - frontend api routes return mock data instead of proxying to backend
 - uses celebrity face clusters (david bowie, paula abdul, luka dončić, etc.)
 - media files served from `public/test-files/images/`
@@ -44,17 +44,18 @@ this application supports two deployment modes:
 - ✅ browse sample celebrity photos
 - ✅ view face clusters and photos
 - ✅ ui fully functional for demonstration
-- ❌ no real search (browse/search use existing indexed files)
+- ✅ search functionality (browse/search use existing indexed files)
 - ❌ no data modification (read-only)
 - ❌ no ai processing (uses pre-computed results)
 
-**to disable demo mode on vercel:**
-set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable to point to it.
+**to enable demo mode on vercel:**
+1. go to your vercel project → settings → environment variables
+2. add: `NEXT_PUBLIC_DEMO_MODE=true`
+3. redeploy your application
 
-**demo mode is NOT active when:**
-- running `./start-all.sh` locally (uses real backend)
-- `process.env.VERCEL` is not set (local development)
-- backend is running on port 8000 (local mode takes priority)
+**to run in local mode:**
+- `.env.local` is automatically created by `./start-all.sh` with `NEXT_PUBLIC_DEMO_MODE=false`
+- or manually create `.env.local` from `.env.example` template
 
 ---
 

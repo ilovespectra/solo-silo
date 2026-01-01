@@ -52,17 +52,14 @@ fi
 echo -e "${ORANGE}using python: $PYTHON_CMD${NC}"
 
 if [ ! -f "$SCRIPT_DIR/.env.local" ]; then
-  echo -e "${ORANGE}creating .env.local for local development...${NC}"
-  cat > "$SCRIPT_DIR/.env.local" << 'EOF'
-# Local development environment variables
-NEXT_PUBLIC_DEMO_MODE=false
-NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
-
-# Prevent Vercel-specific errors in local dev
-VERCEL=0
-NEXT_PUBLIC_VERCEL_ENV=development
-EOF
-  echo -e "${GREEN}✓ .env.local created${NC}"
+  echo -e "${ORANGE}creating .env.local from template...${NC}"
+  if [ -f "$SCRIPT_DIR/.env.example" ]; then
+    cp "$SCRIPT_DIR/.env.example" "$SCRIPT_DIR/.env.local"
+    echo -e "${GREEN}✓ .env.local created from .env.example${NC}"
+  else
+    echo -e "${RED}❌ .env.example not found${NC}"
+    exit 1
+  fi
 fi
 
 if [ ! -d ".venv" ]; then

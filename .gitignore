@@ -56,8 +56,9 @@ yarn-error.log*
 # log files
 *.log
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files - keep .env.local gitignored so Vercel environment variables work
+.env.local
+.env*.local
 
 # vercel
 .vercel
