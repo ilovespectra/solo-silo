@@ -38,7 +38,7 @@ export function useSilos(): UseSilosReturn {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(apiUrl('/api/silos/list');
+      const response = await fetch(apiUrl('/api/silos/list'));
       if (!response.ok) throw new Error('Failed to load silos');
 
       const siloList: Silo[] = await response.json();
