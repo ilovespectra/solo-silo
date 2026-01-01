@@ -1,5 +1,5 @@
-import { apiUrl } from '@/lib/api';
 'use client';
+import { apiUrl } from '@/lib/api';
 
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';

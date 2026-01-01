@@ -1,5 +1,5 @@
-import { apiUrl } from '@/lib/api';
 'use client';
+import { apiUrl } from '@/lib/api';
 
 import { useState, useEffect } from 'react';
 import BasePhotoModal, { PhotoModalProps } from './BasePhotoModal';
