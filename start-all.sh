@@ -87,6 +87,17 @@ else
   pip install -q -r backend/requirements.txt
 fi
 
+# Install frontend dependencies if node_modules doesn't exist
+if [ ! -d "node_modules" ]; then
+  echo -e "${ORANGE}installing frontend dependencies...${NC}"
+  npm install
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}❌ failed to install frontend dependencies${NC}"
+    exit 1
+  fi
+  echo -e "${GREEN}✓ frontend dependencies installed${NC}"
+fi
+
 (
   source .venv/bin/activate 
   cd backend 
