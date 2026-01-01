@@ -18,43 +18,43 @@ ai-powered photo management and search for your local files. everything runs on 
 this application supports two deployment modes:
 
 ### 🔒 local mode (full features)
-**Default when running locally.** Full read/write access to your photo collections.
+**default when running locally.** full read/write access to your photo collections.
 
-**How it works:**
-- Frontend Next.js API routes proxy requests to local backend at `http://127.0.0.1:8000`
-- Backend processes all AI operations (face detection, search, clustering)
-- All data stays on your machine
+**how it works:**
+- frontend next.js api routes proxy requests to local backend at `http://127.0.0.1:8000`
+- backend processes all ai operations (face detection, search, clustering)
+- all data stays on your machine
 
-**To run locally:**
+**to run locally:**
 ```bash
 ./start-all.sh
-# Opens http://localhost:3000 with full backend features
+# opens http://localhost:3000 with full backend features
 ```
 
 ### 🎯 demo mode (static frontend only)
-**Automatically activates on Vercel deployments.** Read-only demonstration using pre-built data.
+**automatically activates on vercel deployments.** read-only demonstration using pre-built data.
 
-**How it works:**
-- Detects Vercel environment via `process.env.VERCEL === '1'`
-- Frontend API routes return mock data instead of proxying to backend
-- Uses celebrity face clusters (David Bowie, Paula Abdul, Luka Dončić, etc.)
-- Media files served from `public/test-files/images/`
+**how it works:**
+- detects vercel environment via `process.env.VERCEL === '1'`
+- frontend api routes return mock data instead of proxying to backend
+- uses celebrity face clusters (david bowie, paula abdul, luka dončić, etc.)
+- media files served from `public/test-files/images/`
 
-**Demo mode features:**
-- ✅ Browse sample celebrity photos
-- ✅ View face clusters and photos
-- ✅ UI fully functional for demonstration
-- ❌ No real search (browse/search use existing indexed files)
-- ❌ No data modification (read-only)
-- ❌ No AI processing (uses pre-computed results)
+**demo mode features:**
+- ✅ browse sample celebrity photos
+- ✅ view face clusters and photos
+- ✅ ui fully functional for demonstration
+- ❌ no real search (browse/search use existing indexed files)
+- ❌ no data modification (read-only)
+- ❌ no ai processing (uses pre-computed results)
 
-**To disable demo mode on Vercel:**
-Set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable to point to it.
+**to disable demo mode on vercel:**
+set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable to point to it.
 
-**Demo mode is NOT active when:**
-- Running `./start-all.sh` locally (uses real backend)
+**demo mode is NOT active when:**
+- running `./start-all.sh` locally (uses real backend)
 - `process.env.VERCEL` is not set (local development)
-- Backend is running on port 8000 (local mode takes priority)
+- backend is running on port 8000 (local mode takes priority)
 
 ---
 
@@ -71,27 +71,35 @@ Set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable 
 1. **clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd solo-silo
+   cd silo
    ```
 
-2. **install dependencies**
-   ```bash
-   ./install_dependencies.sh
-   ```
-   
-   this installs both frontend (npm) and backend (python) dependencies.
-
-3. **start the application**
+2. **start the application**
    ```bash
    ./start-all.sh
    ```
    
-   this starts both the backend (port 8000) and frontend (port 3000).
+   this script automatically:
+   - detects your python installation (python3/python)
+   - creates a virtual environment if needed
+   - installs all dependencies (first run takes 10-15 minutes)
+   - starts both backend (port 8000) and frontend (port 3000)
 
-4. **open in browser**
+3. **open in browser**
+   
+   the script will display:
    ```
-   http://localhost:3000
+   🌐 Frontend: http://localhost:3000
+   🔧 Backend:  http://localhost:8000
    ```
+   
+   click the frontend url to get started!
+
+### stopping services
+
+```bash
+./stop-all.sh
+```
 
 ### manual setup (alternative)
 
@@ -152,7 +160,7 @@ solo-silo/
 └── backend/silos.json     # silo configuration (gitignored)
 ```
 
-## tech stack
+**tech stack**
 
 **frontend**
 - next.js 16 with app router

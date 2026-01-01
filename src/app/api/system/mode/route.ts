@@ -39,13 +39,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(data);
     }
   } catch (error) {
-    console.log('[mode api] backend not available, defaulting to demo mode');
+    console.log('[mode api] backend not available yet');
   }
   
-  console.log('[mode api] fallback to demo mode');
+  console.log('[mode api] local mode - backend will initialize');
   return NextResponse.json({
-    demo_mode: true,
-    read_only: true,
-    message: 'backend unavailable - running in demo mode'
+    demo_mode: false,
+    read_only: false,
+    message: 'local mode - backend initializing'
   });
 }

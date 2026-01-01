@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactCompiler: true,
+  reactCompiler: false,
   webpack: (config, { isServer }) => {
     config.watchOptions = {
       ...config.watchOptions,
@@ -11,9 +11,8 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ['backend'],
   turbopack: {},
-  env: {
-    NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV || 'development',
-  },
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;

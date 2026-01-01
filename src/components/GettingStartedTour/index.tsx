@@ -128,18 +128,19 @@ export const GettingStartedTour: React.FC = () => {
         const response = await fetch('http://127.0.0.1:8000/api/system/health', {
           signal: AbortSignal.timeout(1000),
         });
-        setDemoMode(!response.ok ? true : false);
+        setDemoMode(false);
         console.log('[GettingStartedTour] Backend available, local mode');
       } catch (error) {
-        setDemoMode(true);
-        console.log('[GettingStartedTour] No backend, demo mode');
+        const isVercel = window.location.hostname.includes('vercel.app');
+        setDemoMode(isVercel);
+        console.log('[GettingStartedTour] No backend,', isVercel ? 'demo mode (vercel)' : 'local mode (backend starting)');
       }
     }
     detectMode();
   }, []);
   
   const TOUR_STEPS = useMemo(() => {
-    const isDemo = demoMode !== false;
+    const isDemo = demoMode === true;
     console.log('[GettingStartedTour] demo mode:', demoMode, 'using tour:', isDemo ? 'DEMO' : 'LOCAL');
     return isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
   }, [demoMode]);
