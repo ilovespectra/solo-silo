@@ -80,26 +80,35 @@ export default function Settings() {
 
   useEffect(() => {
     if (demoMode) {
+      console.log('[Settings] Demo mode detected, loading demo logs...');
       const loadDemoLogs = async () => {
         try {
+          console.log('[Settings] Fetching /api/logs/demo...');
           const response = await fetch('/api/logs/demo');
+          console.log('[Settings] Response status:', response.status, response.ok);
           if (response.ok) {
             const data = await response.json();
+            console.log('[Settings] Demo logs data received:', data);
             setIndexingLogs(data.indexingLogs || []);
             setFaceDetectionLogs(data.faceDetectionLogs || []);
             setClusteringLogs(data.clusteringLogs || []);
             setShowDebugLogs(true);
-            console.log('[demo mode] loaded demo processing logs', {
+            console.log('[Settings] Demo logs loaded successfully', {
               indexing: data.indexingLogs?.length || 0,
               faceDetection: data.faceDetectionLogs?.length || 0,
-              clustering: data.clusteringLogs?.length || 0
+              clustering: data.clusteringLogs?.length || 0,
+              showDebugLogs: true
             });
+          } else {
+            console.error('[Settings] Failed to load demo logs, response not ok');
           }
         } catch (error) {
-          console.error('[demo mode] failed to load demo logs:', error);
+          console.error('[Settings] Exception loading demo logs:', error);
         }
       };
       loadDemoLogs();
+    } else {
+      console.log('[Settings] Not in demo mode, demoMode =', demoMode);
     }
   }, [demoMode]);
 
@@ -1219,7 +1228,7 @@ export default function Settings() {
             )}
           </div>
         )}
-        {showDebugLogs && (retrainingLogs.length > 0 || faceDetectionLogs.length > 0 || indexingLogs.length > 0 || clusteringLogs.length > 0) && (
+        {showDebugLogs && (demoMode || retrainingLogs.length > 0 || faceDetectionLogs.length > 0 || indexingLogs.length > 0 || clusteringLogs.length > 0) && (
           <div
             className={`mb-8 p-6 rounded-lg border ${
               theme === 'dark'
