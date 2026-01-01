@@ -38,7 +38,7 @@ const DEMO_CLUSTERS = [
   },
   {
     id: 'person_3',
-    name: 'unknown',
+    name: 'luka dončić',
     primary_thumbnail: '/test-files/images/luka/download (5).jpeg',
     photo_count: 14,
     confidence_score: 0.99,
