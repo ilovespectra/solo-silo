@@ -76,11 +76,16 @@ export const GettingStartedTour: React.FC = () => {
       const tourCompleted = localStorage.getItem('tour-completed');
       
       if (dismissed === 'true') {
-        setDismissed(true);
-        setShowGettingStartedTour(false);
+        // Use setTimeout to avoid setState during render
+        setTimeout(() => {
+          setDismissed(true);
+          setShowGettingStartedTour(false);
+        }, 0);
       } else if (tourCompleted !== 'true') {
         // Show tour on first visit
-        setShowGettingStartedTour(true);
+        setTimeout(() => {
+          setShowGettingStartedTour(true);
+        }, 0);
       }
     }
   }, [setShowGettingStartedTour]); // Only run once on mount
@@ -155,9 +160,7 @@ export const GettingStartedTour: React.FC = () => {
   };
 
   const bgClass = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
-  const textClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
   const secondaryTextClass = theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
-  const borderClass = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
 
   return (
     <div className="fixed bottom-6 right-6 z-50 max-w-md animate-in slide-in-from-bottom-8">
@@ -209,11 +212,10 @@ export const GettingStartedTour: React.FC = () => {
             onClick={handleDontShowAgain}
             className={`text-xs ${secondaryTextClass} hover:text-orange-500 transition-colors`}
           >
-            don't show again
+            don&apos;t show again
           </button>
           
-          <div className="flex gap-2">
-            {gettingStartedStep > 0 && (
+          <div className="flex gap-2">{gettingStartedStep > 0 && (
               <button
                 onClick={() => setGettingStartedStep(gettingStartedStep - 1)}
                 className={`px-3 py-1.5 text-sm rounded font-medium transition-colors ${

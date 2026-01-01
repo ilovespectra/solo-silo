@@ -25,9 +25,6 @@ export default function SetupWizard() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [showFolderPicker, setShowFolderPicker] = useState(false);
-  const [tempPermissions, setTempPermissions] = useState<Permissions>(
-    config.permissions
-  );
   const [trainingStatus, setTrainingStatus] = useState<'idle' | 'running' | 'complete' | 'error'>('idle');
   const [progress, setProgress] = useState<{ percentage: number; processed: number; total: number; currentFile?: string; status?: string; error?: string } | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -43,67 +40,36 @@ export default function SetupWizard() {
   const steps = [
     { title: 'source', id: 'source' },
     { title: 'select paths', id: 'paths' },
-    { title: 'grant permissions', id: 'permissions' },
+    { title: 'permissions', id: 'permissions' },
     { title: 'index', id: 'train' },
     { title: 'review', id: 'review' },
   ];
 
-  const permissionDescriptions: Record<keyof Permissions, { label: string; description: string }> = {
-    readFiles: {
-      label: 'read files',
-      description: 'access file contents for indexing and searching',
-    },
-    listDirectories: {
-      label: 'list directories',
-      description: 'browse and view folder contents',
-    },
-    indexContent: {
-      label: 'index content',
-      description: 'create searchable index of files (required for search)',
-    },
-    recognizeFaces: {
-      label: 'recognize faces',
-      description: 'detect and cluster faces in photos',
-    },
-    analyzeImages: {
-      label: 'analyze images',
-      description: 'extract descriptions from images',
-    },
-    searchText: {
-      label: 'search text',
-      description: 'perform semantic search across files',
-    },
-    moveFiles: {
-      label: 'move files',
-      description: 'move files between folders',
-    },
-    deleteFiles: {
-      label: 'delete files',
-      description: 'permanently delete files',
-    },
-    renameFiles: {
-      label: 'rename files',
-      description: 'change file and folder names',
-    },
-    createFolders: {
-      label: 'create folders',
-      description: 'create new directories',
-    },
-    modifyMetadata: {
-      label: 'modify metadata',
-      description: 'change file tags and metadata',
-    },
-  };
-
-  const handlePermissionToggle = (key: keyof Permissions) => {
-    setTempPermissions({
-      ...tempPermissions,
-      [key]: !tempPermissions[key],
-    });
-  };
+  const requiredPermissions = [
+    { label: 'read files', description: 'access file contents for indexing and searching' },
+    { label: 'list directories', description: 'browse and view folder contents' },
+    { label: 'index content', description: 'create searchable index of files' },
+    { label: 'recognize faces', description: 'detect and cluster faces in photos' },
+    { label: 'analyze images', description: 'extract descriptions and metadata from images' },
+    { label: 'search text', description: 'perform semantic search across files' },
+  ];
 
   const handleComplete = () => {
-    updatePermissions(tempPermissions);
+    // Grant all permissions by default since they're required for operation
+    const allPermissions: Permissions = {
+      readFiles: true,
+      listDirectories: true,
+      indexContent: true,
+      recognizeFaces: true,
+      analyzeImages: true,
+      searchText: true,
+      moveFiles: false,
+      deleteFiles: false,
+      renameFiles: false,
+      createFolders: false,
+      modifyMetadata: false,
+    };
+    updatePermissions(allPermissions);
     setShowSetupWizard(false);
   };
 
@@ -315,8 +281,21 @@ export default function SetupWizard() {
     setProgress({ percentage: 0, processed: 0, total: 0, status: 'scanning' });
 
     try {
-
-      updatePermissions(tempPermissions);
+      // Grant all required permissions
+      const allPermissions: Permissions = {
+        readFiles: true,
+        listDirectories: true,
+        indexContent: true,
+        recognizeFaces: true,
+        analyzeImages: true,
+        searchText: true,
+        moveFiles: false,
+        deleteFiles: false,
+        renameFiles: false,
+        createFolders: false,
+        modifyMetadata: false,
+      };
+      updatePermissions(allPermissions);
 
       console.log('Starting training with paths:', config.selectedPaths);
       if (config.selectedPaths.length === 0) {
@@ -346,7 +325,7 @@ export default function SetupWizard() {
             body: JSON.stringify({ 
               path: fullPath, 
               recursive: true, 
-              includeContent: tempPermissions.indexContent,
+              includeContent: true,
               silo_name: activeSilo?.name
             }),
           });
@@ -773,11 +752,15 @@ export default function SetupWizard() {
                 </>
               ) : (
                 <FolderPicker
-                  onPathSelected={(path) => {
-                    addSelectedPath(path);
-                    setShowFolderPicker(false);
+                  initialPath="/"
+                  onSelect={(path) => {
+                    if (path) {
+                      addSelectedPath(path);
+                      setShowFolderPicker(false);
+                    }
                   }}
                   onCancel={() => setShowFolderPicker(false)}
+                  theme={theme}
                 />
               )}
             </div>
@@ -785,63 +768,36 @@ export default function SetupWizard() {
 
           {currentStep === 2 && (
             <div className="space-y-4">
-              <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>grant permissions</h2>
-              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'}`}>
-                permissions control what the application can do with your files. only grant what you need.
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    const allPermissions: Permissions = Object.fromEntries(
-                      Object.keys(permissionDescriptions).map((key) => [key, true])
-                    ) as unknown as Permissions;
-                    setTempPermissions(allPermissions);
-                  }}
-                  className="px-3 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 transition"
-                >
-                  select all
-                </button>
-                <button
-                  onClick={() => {
-                    const noPermissions: Permissions = Object.fromEntries(
-                      Object.keys(permissionDescriptions).map((key) => [key, false])
-                    ) as unknown as Permissions;
-                    setTempPermissions(noPermissions);
-                  }}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition ${
-                    theme === 'dark'
-                      ? 'bg-gray-700 text-white hover:bg-gray-600'
-                      : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
-                  }`}
-                >
-                  clear all
-                </button>
+              <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>required permissions</h2>
+              <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-blue-900 bg-opacity-20 border border-blue-700' : 'bg-blue-50 border border-blue-200'}`}>
+                <p className={`text-sm ${theme === 'dark' ? 'text-blue-300' : 'text-blue-800'}`}>
+                  🔒 silo runs completely offline. no data leaves your machine.
+                </p>
               </div>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'}`}>
+                to index and search your media, silo requires the following permissions:
+              </p>
               <div className={`space-y-2 max-h-96 overflow-y-auto rounded-lg border ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} p-2`}>
-                {Object.entries(permissionDescriptions).map(([key, { label, description }]) => (
-                  <label
-                    key={key}
-                    className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition ${
+                {requiredPermissions.map((perm, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-start gap-3 p-3 border rounded-lg ${
                       theme === 'dark'
-                        ? 'border-gray-700 hover:bg-gray-700'
-                        : 'border-gray-200 hover:bg-gray-50'
+                        ? 'border-gray-700 bg-gray-800'
+                        : 'border-gray-200 bg-gray-50'
                     }`}
                   >
-                    <input
-                      type="checkbox"
-                      checked={tempPermissions[key as keyof Permissions]}
-                      onChange={() =>
-                        handlePermissionToggle(key as keyof Permissions)
-                      }
-                      className="mt-1 w-4 h-4 text-orange-600"
-                    />
+                    <div className="mt-1 text-green-500">✓</div>
                     <div className="flex-1">
-                      <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{label}</p>
-                      <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mt-1`}>{description}</p>
+                      <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{perm.label}</p>
+                      <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mt-1`}>{perm.description}</p>
                     </div>
-                  </label>
+                  </div>
                 ))}
               </div>
+              <p className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'} italic`}>
+                by continuing, you grant these permissions for the selected paths
+              </p>
             </div>
           )}
 
@@ -952,17 +908,12 @@ export default function SetupWizard() {
                     ? 'bg-gray-700 border-gray-600'
                     : 'bg-gray-50 border-gray-200'
                 }`}>
-                  <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2`}>granted permissions:</h3>
+                  <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2`}>required permissions:</h3>
                   <ul className={`space-y-1 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                    {Object.entries(permissionDescriptions).map(([key, { label }]) => (
-                      tempPermissions[key as keyof Permissions] && (
-                        <li key={key}>✓ {label}</li>
-                      )
+                    {requiredPermissions.map((perm, index) => (
+                      <li key={index}>✓ {perm.label}</li>
                     ))}
                   </ul>
-                  {Object.values(tempPermissions).filter(Boolean).length === 0 && (
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>no permissions granted</p>
-                  )}
                 </div>
               </div>
             </div>

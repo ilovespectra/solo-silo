@@ -31,6 +31,10 @@ export default function FaceClusterCard({ cluster, onClick, onContextMenu, onRot
     if (cluster.primary_thumbnail.startsWith('http')) {
       return cluster.primary_thumbnail;
     }
+    // If path starts with /, it's a public static file (demo mode)
+    if (cluster.primary_thumbnail.startsWith('/')) {
+      return cluster.primary_thumbnail;
+    }
     return `http://127.0.0.1:8000${cluster.primary_thumbnail}`;
   };
 
