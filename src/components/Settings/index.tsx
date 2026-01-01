@@ -79,38 +79,43 @@ export default function Settings() {
   const isIndexing = indexingProgress?.is_indexing || false;
 
   useEffect(() => {
-    if (demoMode) {
-      console.log('[Settings] Demo mode detected, loading demo logs...');
-      const loadDemoLogs = async () => {
-        try {
-          console.log('[Settings] Fetching /api/logs/demo...');
-          const response = await fetch('/api/logs/demo');
-          console.log('[Settings] Response status:', response.status, response.ok);
-          if (response.ok) {
-            const data = await response.json();
-            console.log('[Settings] Demo logs data received:', data);
+    const loadDemoLogs = async () => {
+      try {
+        console.log('[Settings] Loading demo logs on mount...');
+        const response = await fetch('/api/logs/demo');
+        console.log('[Settings] Demo logs response:', response.status, response.ok);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('[Settings] Demo logs received:', {
+            hasIndexingLogs: !!data.indexingLogs,
+            indexingCount: data.indexingLogs?.length || 0,
+            hasFaceDetectionLogs: !!data.faceDetectionLogs,
+            faceDetectionCount: data.faceDetectionLogs?.length || 0,
+            hasClusteringLogs: !!data.clusteringLogs,
+            clusteringCount: data.clusteringLogs?.length || 0
+          });
+          
+          if (data.indexingLogs?.length > 0 || data.faceDetectionLogs?.length > 0 || data.clusteringLogs?.length > 0) {
+            console.log('[Settings] Setting demo logs and opening debug terminal...');
             setIndexingLogs(data.indexingLogs || []);
             setFaceDetectionLogs(data.faceDetectionLogs || []);
             setClusteringLogs(data.clusteringLogs || []);
             setShowDebugLogs(true);
-            console.log('[Settings] Demo logs loaded successfully', {
-              indexing: data.indexingLogs?.length || 0,
-              faceDetection: data.faceDetectionLogs?.length || 0,
-              clustering: data.clusteringLogs?.length || 0,
-              showDebugLogs: true
-            });
+            console.log('[Settings] ✅ Demo logs loaded and debug terminal should be visible');
           } else {
-            console.error('[Settings] Failed to load demo logs, response not ok');
+            console.log('[Settings] No demo logs found in response');
           }
-        } catch (error) {
-          console.error('[Settings] Exception loading demo logs:', error);
+        } else {
+          console.error('[Settings] Failed to load demo logs, status:', response.status);
         }
-      };
-      loadDemoLogs();
-    } else {
-      console.log('[Settings] Not in demo mode, demoMode =', demoMode);
-    }
-  }, [demoMode]);
+      } catch (error) {
+        console.error('[Settings] Error loading demo logs:', error);
+      }
+    };
+    
+    loadDemoLogs();
+  }, []);
 
   useEffect(() => {
     const checkFaceDetectionStatus = async () => {
@@ -1228,7 +1233,7 @@ export default function Settings() {
             )}
           </div>
         )}
-        {showDebugLogs && (demoMode || retrainingLogs.length > 0 || faceDetectionLogs.length > 0 || indexingLogs.length > 0 || clusteringLogs.length > 0) && (
+        {(showDebugLogs && (retrainingLogs.length > 0 || faceDetectionLogs.length > 0 || indexingLogs.length > 0 || clusteringLogs.length > 0)) && (
           <div
             className={`mb-8 p-6 rounded-lg border ${
               theme === 'dark'
