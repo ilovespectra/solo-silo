@@ -69,12 +69,13 @@ export default function Home() {
 
   useEffect(() => {
     if (mounted) {
-      console.log('Wizard logic - hasIndexedFiles:', hasIndexedFiles);
-      const shouldShowWizard = !hasIndexedFiles;
+      console.log('Wizard logic - hasIndexedFiles:', hasIndexedFiles, 'demoMode:', demoMode);
+      // Never show wizard in demo mode
+      const shouldShowWizard = !demoMode && !hasIndexedFiles;
       console.log('Setting showSetupWizard to:', shouldShowWizard);
       setShowSetupWizard(shouldShowWizard);
     }
-  }, [mounted, hasIndexedFiles, setShowSetupWizard]);
+  }, [mounted, hasIndexedFiles, demoMode, setShowSetupWizard]);
 
   if (!mounted) {
     return (
@@ -94,8 +95,8 @@ export default function Home() {
       {/* Demo Mode Banner */}
       {demoMode && <DemoBanner />}
       
-      {/* Backend Status Bar */}
-      <BackendStatus />
+      {/* Backend Status Bar - hide in demo mode */}
+      {!demoMode && <BackendStatus />}
 
       {/* Header */}
       <header className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm`}>
