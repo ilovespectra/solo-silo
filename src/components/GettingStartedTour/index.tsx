@@ -202,11 +202,6 @@ export const GettingStartedTour: React.FC = () => {
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog]);
 
-  if (demoModeLoading || demoMode === null) {
-    console.log('[GettingStartedTour] Waiting for mode detection...', { demoModeLoading, demoMode });
-    return null;
-  }
-
   if (!showGettingStartedTour || dismissed) {
     return null;
   }
