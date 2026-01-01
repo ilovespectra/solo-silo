@@ -56,8 +56,17 @@ const DEMO_CLUSTERS = [
   }
 ];
 
+interface DemoPhoto {
+  id: string;
+  image_path: string;
+  thumbnail: string;
+  date_taken: number;
+  similarity_score: number;
+  is_confirmed: boolean;
+}
+
 // Demo photos for each cluster using real test-files images
-const DEMO_PHOTOS: Record<string, any[]> = {
+const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
   person_9: [ // walken
     { id: '440', image_path: '/test-files/images/walken/download.jpeg', thumbnail: '/test-files/images/walken/download.jpeg', date_taken: 1522262442, similarity_score: 0.95, is_confirmed: true },
     { id: '441', image_path: '/test-files/images/walken/download (1).jpeg', thumbnail: '/test-files/images/walken/download (1).jpeg', date_taken: 1522262442, similarity_score: 0.94, is_confirmed: true },

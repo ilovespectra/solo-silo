@@ -49,9 +49,15 @@ const TOUR_STEPS: TourStep[] = [
     targetView: 'people',
   },
   {
+    id: 'semantic-search',
+    title: 'try semantic search',
+    description: 'silo uses AI to understand your searches. try searching for:\n• objects: "cars", "flowers", "sunset"\n• colors: "blue sky", "red dress"\n• people: "david bowie", "christopher walken"\n• concepts: "happy moments", "outdoor scenes"\n\nno tags needed—just describe what you\'re looking for!',
+    targetView: 'search',
+  },
+  {
     id: 'complete',
     title: 'you\'re all set!',
-    description: 'you can now search for faces, objects, and media using the search tab. explore the features and organize your collection.',
+    description: 'you can now search for faces, objects, and media using natural language. explore the features and organize your collection.',
   },
 ];
 
