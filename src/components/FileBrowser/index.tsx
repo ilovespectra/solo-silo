@@ -385,7 +385,7 @@ export default function FileBrowser({ initialPath = '/' }: FileBrowserProps) {
             type: 'file' as const,
             path: item.path,
             size: item.size,
-            thumbnailUrl: `http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=300`,
+            thumbnailUrl: `/api/media/thumbnail/${item.id}?size=300`,
           });
         }
       }
@@ -854,7 +854,7 @@ export default function FileBrowser({ initialPath = '/' }: FileBrowserProps) {
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
-                                src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=80`}
+                                src={`/api/media/thumbnail/${item.id}?size=80`}
                                 alt={item.name || item.path?.split('/').pop() || 'media'}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
@@ -950,7 +950,7 @@ export default function FileBrowser({ initialPath = '/' }: FileBrowserProps) {
                               <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-200">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                  src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=150`}
+                                  src={`/api/media/thumbnail/${item.id}?size=150`}
                                   alt={item.name}
                                   className="w-full h-full object-cover"
                                   style={{ transform: `rotate(${item.rotation || 0}deg)` }}
@@ -971,7 +971,7 @@ export default function FileBrowser({ initialPath = '/' }: FileBrowserProps) {
                           <>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=500`}
+                              src={`/api/media/thumbnail/${item.id}?size=500`}
                               alt={item.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition"
                               style={{ transform: `rotate(${item.rotation || 0}deg)` }}

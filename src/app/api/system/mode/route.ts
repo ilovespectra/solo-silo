@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   }
   
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
+    const backendUrl = 'http://127.0.0.1:8000';
     const response = await fetch(`${backendUrl}/api/system/mode`, {
       signal: AbortSignal.timeout(2000),
     });

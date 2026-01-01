@@ -110,13 +110,13 @@ export default function FaceSelectionModal({
       try {
         const numMediaId = parseInt(mediaId);
         
-        const metadataRes = await fetch(`http://127.0.0.1:8000/api/media/${numMediaId}/metadata`);
+        const metadataRes = await fetch(`/api/media/${numMediaId}/metadata`);
         if (!metadataRes.ok) {
           throw new Error('failed to fetch image metadata');
         }
         const metadata = await metadataRes.json();
         
-        const facesRes = await fetch(`http://127.0.0.1:8000/api/media/${numMediaId}/faces`);
+        const facesRes = await fetch(`/api/media/${numMediaId}/faces`);
         let faces: DetectedFace[] = [];
         
         if (facesRes.ok) {
@@ -198,7 +198,7 @@ export default function FaceSelectionModal({
       const errorMsg = `failed to load image from ${img.src}`;
       console.error('[FaceSelectionModal]', errorMsg, 'Error:', e);
       
-      if (img.src.includes('127.0.0.1:8000')) {
+      if (img.src.includes('/api/media/')) {
         console.log('[FaceSelectionModal] trying fallback to next.js proxy:', imagePath);
         img.src = imagePath;
       } else {

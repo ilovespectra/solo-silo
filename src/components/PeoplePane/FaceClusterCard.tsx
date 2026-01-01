@@ -34,7 +34,7 @@ export default function FaceClusterCard({ cluster, onClick, onContextMenu, onRot
     if (cluster.primary_thumbnail.startsWith('/')) {
       return cluster.primary_thumbnail;
     }
-    return `http://127.0.0.1:8000${cluster.primary_thumbnail}`;
+    return cluster.primary_thumbnail;
   };
 
   const getRotationClass = () => {

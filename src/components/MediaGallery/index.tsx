@@ -731,7 +731,7 @@ export default function MediaGallery() {
                             {/* Thumbnail */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
+                              src={`/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover group-hover:scale-105 transition"
                               loading="lazy"
@@ -909,7 +909,7 @@ export default function MediaGallery() {
                           <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-300">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=60&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
+                              src={`/api/media/thumbnail/${item.id}?size=60&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover"
                               style={{ transform: `rotate(${item.rotation || 0}deg)` }}

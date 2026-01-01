@@ -94,7 +94,7 @@ export default function BasePhotoModal({
     }
   }, [media?.id, isText]);
   
-  const displayUrl = media ? `http://127.0.0.1:8000/api/media/file/${media.id}` : null;
+  const displayUrl = media ? `/api/media/file/${media.id}` : null;
 
   if (!isOpen || !media) return null;
 

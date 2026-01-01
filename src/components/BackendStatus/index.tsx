@@ -10,7 +10,7 @@ export default function BackendStatus() {
 
   const checkBackendHealth = async (): Promise<boolean> => {
     try {
-      const healthRes = await fetch('http://127.0.0.1:8000/health', {
+      const healthRes = await fetch('/api/health', {
         signal: AbortSignal.timeout(2000),
       });
       return healthRes.ok;

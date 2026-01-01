@@ -125,7 +125,7 @@ export const GettingStartedTour: React.FC = () => {
   useEffect(() => {
     async function detectMode() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/system/health', {
+        const response = await fetch('/api/health', {
           signal: AbortSignal.timeout(1000),
         });
         setDemoMode(false);

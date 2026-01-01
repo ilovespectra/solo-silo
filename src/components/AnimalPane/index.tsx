@@ -128,7 +128,7 @@ export default function AnimalPane() {
                 <div className={`w-full aspect-square rounded-lg overflow-hidden border ${borderClass} shadow-sm`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`http://127.0.0.1:8000/api/media/file/${photo.media_id}`}
+                    src={`/api/media/file/${photo.media_id}`}
                     alt="Animal photo"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -182,7 +182,7 @@ export default function AnimalPane() {
             <div className={`w-full h-40 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'} overflow-hidden`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`http://127.0.0.1:8000/api/media/file/${a.sample_media_id}`}
+                src={`/api/media/file/${a.sample_media_id}`}
                 alt={a.label}
                 className="w-full h-full object-cover"
                 onError={(e) => {

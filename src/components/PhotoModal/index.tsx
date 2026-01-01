@@ -42,7 +42,7 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
 
     const fetchPhoto = async () => {
       try {
-        const photoRes = await fetch(`http://127.0.0.1:8000/api/media/${selectedMediaId}`);
+        const photoRes = await fetch(`/api/media/${selectedMediaId}`);
         if (!photoRes.ok) {
           throw new Error(`Failed to fetch photo: ${photoRes.statusText}`);
         }
@@ -62,7 +62,7 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
         }
         
         try {
-          const metadataRes = await fetch(`http://127.0.0.1:8000/api/media/${selectedMediaId}/metadata`);
+          const metadataRes = await fetch(`/api/media/${selectedMediaId}/metadata`);
           if (metadataRes.ok) {
             const metadata = await metadataRes.json();
             setRotation(metadata.rotation || 0);
@@ -193,7 +193,7 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
             <div className="relative" style={{ transform: `rotate(${rotation}deg)` }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`http://127.0.0.1:8000/api/media/file/${photoData.id}`}
+                src={`/api/media/file/${photoData.id}`}
                 alt="Photo"
                 className="max-w-full max-h-[70vh] object-contain transition-transform"
                 onError={(e) => {

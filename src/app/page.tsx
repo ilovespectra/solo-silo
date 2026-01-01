@@ -39,7 +39,7 @@ export default function Home() {
     const initializeApp = async () => {
       try {
         console.log('🔍 checking for indexed files...');
-        const response = await fetch('http://localhost:8000/api/status/has-indexed-files', {
+        const response = await fetch('/api/status/has-indexed-files', {
           signal: AbortSignal.timeout(5000),
         });
         if (response.ok) {
