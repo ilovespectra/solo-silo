@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const isVercel = !!(process.env.VERCEL || process.env.VERCEL_ENV);
+  const isVercel = !!(
+    process.env.VERCEL || 
+    process.env.VERCEL_ENV ||
+    process.env.VERCEL_URL ||
+    req.headers.get('x-vercel-deployment-url')
+  );
   const forceDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   console.log('[mode api] environment:', {
     VERCEL: process.env.VERCEL,
     VERCEL_ENV: process.env.VERCEL_ENV,
+    VERCEL_URL: process.env.VERCEL_URL,
+    'x-vercel-deployment-url': req.headers.get('x-vercel-deployment-url'),
     isVercel,
     forceDemoMode
   });
