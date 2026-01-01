@@ -14,9 +14,9 @@ export function DemoBanner() {
       }}
     >
       <span style={{ marginRight: '0.5rem' }}>🎯</span>
-      Demo Mode - Read Only
+      demo mode
       <span style={{ marginLeft: '0.5rem', opacity: 0.8 }}>
-        (This is a public demonstration. Some features are disabled.)
+        (this is a public demonstration. some features are disabled.)
       </span>
     </div>
   );
