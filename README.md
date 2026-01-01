@@ -70,7 +70,7 @@ set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable 
 
 1. **clone the repository**
    ```bash
-   git clone https://github.com/ilovespectra/solo-silo
+   git clone <your-repo-url>
    cd silo
    ```
 
