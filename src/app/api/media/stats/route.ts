@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
-import { isDemoMode } from '@/lib/demoApi';
 
 export async function GET(request: Request) {
-  if (isDemoMode()) {
+  const forceDemoMode = !!(
+    process.env.VERCEL || 
+    process.env.VERCEL_ENV ||
+    process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+  );
+
+  if (forceDemoMode) {
+    console.log('[Stats API] Returning demo stats (forced demo mode)');
     return NextResponse.json({
       total_files: 93,
       by_type: {
@@ -33,13 +39,15 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('[Stats] Failed to fetch from backend:', error);
+    console.error('[Stats] Backend unavailable, returning demo stats:', error);
     return NextResponse.json({
-      total_files: 0,
-      by_type: {},
-      total_size_bytes: 0,
-      with_people: 0,
-      with_animals: 0
-    }, { status: 503 });
+      total_files: 93,
+      by_type: {
+        image: 93
+      },
+      total_size_bytes: 12500000,
+      with_people: 45,
+      with_animals: 8
+    });
   }
 }

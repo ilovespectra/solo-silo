@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
-import { isDemoMode } from '@/lib/demoApi';
 import fs from 'fs';
 import path from 'path';
 
 export async function GET() {
-  if (isDemoMode()) {
+  const forceDemoMode = !!(
+    process.env.VERCEL || 
+    process.env.VERCEL_ENV ||
+    process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+  );
+
+  if (forceDemoMode) {
     try {
       const logsPath = path.join(process.cwd(), 'public', 'demo-logs.json');
+      console.log('[Logs API] Reading demo logs from:', logsPath);
       const logs = JSON.parse(fs.readFileSync(logsPath, 'utf-8'));
+      console.log('[Logs API] Loaded demo logs:', {
+        indexingLogs: logs.indexingLogs?.length || 0,
+        faceDetectionLogs: logs.faceDetectionLogs?.length || 0,
+        clusteringLogs: logs.clusteringLogs?.length || 0
+      });
       return NextResponse.json(logs);
     } catch (error) {
       console.error('[Demo Mode] Failed to read demo logs:', error);
@@ -34,12 +45,20 @@ export async function GET() {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('[Settings] Failed to fetch logs from backend:', error);
-    return NextResponse.json({
-      indexingLogs: [],
-      faceDetectionLogs: [],
-      clusteringLogs: [],
-      error: 'Backend unavailable'
-    }, { status: 503 });
+    console.error('[Logs] Backend unavailable, returning demo logs:', error);
+    try {
+      const logsPath = path.join(process.cwd(), 'public', 'demo-logs.json');
+      const logs = JSON.parse(fs.readFileSync(logsPath, 'utf-8'));
+      console.log('[Logs API] Fallback: Loaded demo logs');
+      return NextResponse.json(logs);
+    } catch (readError) {
+      console.error('[Logs] Failed to read demo logs file:', readError);
+      return NextResponse.json({
+        indexingLogs: [],
+        faceDetectionLogs: [],
+        clusteringLogs: [],
+        error: 'Failed to load logs'
+      });
+    }
   }
 }
