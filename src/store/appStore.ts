@@ -75,6 +75,12 @@ interface AppStore {
 
   showSetupWizard: boolean;
   setShowSetupWizard: (show: boolean) => void;
+  showGettingStartedTour: boolean;
+  setShowGettingStartedTour: (show: boolean) => void;
+  gettingStartedStep: number;
+  setGettingStartedStep: (step: number) => void;
+  tourAutoOpenDebugLog: boolean;
+  setTourAutoOpenDebugLog: (open: boolean) => void;
   currentView: 'browser' | 'search' | 'people' | 'animals' | 'audio' | 'settings' | 'retraining';
   setCurrentView: (view: 'browser' | 'search' | 'people' | 'animals' | 'audio' | 'settings' | 'retraining') => void;
   indexingComplete: boolean;
@@ -314,6 +320,27 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
   setShowSetupWizard: (show) =>
     set({
       showSetupWizard: show,
+    }),
+
+  showGettingStartedTour: false,
+
+  setShowGettingStartedTour: (show) =>
+    set({
+      showGettingStartedTour: show,
+    }),
+
+  gettingStartedStep: 0,
+
+  setGettingStartedStep: (step) =>
+    set({
+      gettingStartedStep: step,
+    }),
+
+  tourAutoOpenDebugLog: false,
+
+  setTourAutoOpenDebugLog: (open) =>
+    set({
+      tourAutoOpenDebugLog: open,
     }),
 
   currentView: 'browser',

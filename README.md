@@ -13,7 +13,29 @@ ai-powered photo management and search for your local files. everything runs on 
 - **ocr text extraction**: search text found in images
 - **privacy-first**: all processing happens locally, no data leaves your device
 
-## quick start
+## deployment modes
+
+this application supports two deployment modes:
+
+### 🔒 local mode (full features)
+for personal use with full read/write access to your photo collections. requires local setup with `backend/silos.json` configuration file.
+
+### 🎯 demo mode (read-only)
+for public deployments and demonstrations. automatically activates when `backend/silos.json` is not present. uses read-only demo data from `public/demo-silo/`.
+
+**demo mode features:**
+- ✅ browse sample photos and documents
+- ✅ test semantic search and ai features
+- ✅ explore face/animal detection
+- ❌ no data modification (read-only)
+- ❌ no silo creation or management
+- ❌ no file uploads or deletions
+
+see [demo mode deployment](#demo-mode-deployment) for public deployment instructions.
+
+---
+
+## quick start (local mode)
 
 ### prerequisites
 
@@ -25,7 +47,7 @@ ai-powered photo management and search for your local files. everything runs on 
 
 1. **clone the repository**
    ```bash
-   git clone https://github.com/ilovespectra/solo-silo/tree/main
+   git clone <your-repo-url>
    cd solo-silo
    ```
 
@@ -65,14 +87,16 @@ npm run dev
 
 ## configuration
 
-create `backend/config.yaml` to customize settings:
+silo-specific configuration is managed through the ui settings panel. each silo has isolated:
+
+- media paths (directories to index)
+- database (personalai.db)
+- cache files (faiss indices, thumbnails, clusters)
+- user preferences (sort, display, confidence thresholds)
+
+global backend settings in `backend/config.yaml`:
 
 ```yaml
-storage:
-  media_paths:
-    - /path/to/your/photos
-  thumbnail_path: ./cache/thumbnails
-
 processing:
   batch_size: 32
   workers: 4
@@ -97,8 +121,12 @@ solo-silo/
 ├── backend/               # fastapi backend
 │   ├── app/              # api endpoints and services
 │   ├── cache/            # runtime cache and indices
+│   │   └── silos/        # per-silo data (gitignored)
 │   └── requirements.txt  # python dependencies
-└── public/               # static assets
+├── public/                # static assets
+│   ├── demo-silo/        # demo mode database (committed)
+│   └── test-files/       # demo media files (committed)
+└── backend/silos.json     # silo configuration (gitignored)
 ```
 
 ## tech stack
@@ -181,21 +209,6 @@ npm run lint
 
 kills all backend and frontend processes.
 
-## cache and data
-
-all data stays on your machine:
-
-- **ai models**: `backend/cache/` (downloaded on first use)
-- **search indices**: `backend/cache/faiss.index`
-- **face clusters**: `backend/cache/people.json`
-- **thumbnails**: `backend/cache/thumbnails/`
-- **silo data**: `backend/cache/silos/<silo-name>/`
-
-to clear cache:
-```bash
-rm -rf backend/cache/*
-```
-
 ## troubleshooting
 
 **port already in use**
@@ -219,130 +232,234 @@ rm -rf backend/cache/*
 - run face clustering: settings → retraining → cluster faces
 - check backend logs: `backend/backend.log`
 
-## license
+---
 
-[add your license here]
+## demo mode deployment
 
-## contributing
+### overview
 
-[add contribution guidelines here]
-- Audio transcription
-- Full-text document indexing
-- Performance optimizations
+demo mode allows you to deploy a public, read-only version of the application with sample data, while keeping your personal collections private.
 
-## 🐛 Known Limitations
+**demo mode auto-activates when:**
+- `backend/silos.json` file is not present
+- uses demo database from `public/demo-silo/`
+- displays "demo mode - read only" banner
+- all write operations return `403 forbidden`
 
-1. **Model Initialization**: First-time loading may take 2-3 minutes
-2. **Large Files**: Files > 1MB skipped for text content
-3. **Face Recognition**: Requires high-quality, well-lit photos
-4. **Indexing Performance**: Large directories may use significant CPU/RAM
+### creating a demo database
 
-## 💡 Tips & Tricks
+1. **prepare sample media**
+   ```bash
+   # add sample files to public/test-files/
+   mkdir -p public/test-files/images
+   # copy some demo photos/videos/documents
+   ```
 
-### Optimizing Search
-- Be specific: "beach vacation photos" vs "photos"
-- Use natural language: "documents with API keys"
-- Combine terms: "birthday party photos 2024"
+2. **build demo database**
+   ```bash
+   # ensure backend is running on port 8000
+   ./build-demo-database.sh
+   ```
+   
+   this script will:
+   - create a temporary silo
+   - index your sample files from `public/test-files/`
+   - copy the database to `public/demo-silo/`
+   - clean up the temporary silo
 
-### Improving Performance
-- Limit indexed directories to what you need
-- Close other applications during indexing
-- Use search filters to narrow results
+3. **test demo mode locally**
+   ```bash
+   # temporarily hide silos.json to activate demo mode
+   mv backend/silos.json backend/silos.json.backup
+   
+   # restart backend - should show demo mode
+   ./start-all.sh
+   
+   # verify demo mode at http://localhost:3000
+   # check api: curl http://localhost:8000/api/system/mode
+   
+   # restore normal mode
+   mv backend/silos.json.backup backend/silos.json
+   ```
 
-### Privacy Best Practices
-- Review permissions before granting
-- Don't grant unnecessary capabilities
-- Regularly review indexed directories
+4. **commit demo files**
+   ```bash
+   git add public/demo-silo/
+   git add public/test-files/
+   git commit -m "add demo database"
+   git push
+   ```
 
-## ❓ FAQ
+### deployment checklist
 
-**Q: Is my data safe?**
-A: Completely. Everything stays on your computer. No internet connection needed.
+for public demo deployment:
 
-**Q: How much disk space?**
-A: ~2GB for models, plus <100MB per 100k indexed files.
+- ✅ `backend/silos.json` is in `.gitignore`
+- ✅ `backend/cache/silos/` is in `.gitignore`
+- ✅ `public/demo-silo/` is committed
+- ✅ `public/test-files/` contains sample media
+- ✅ demo database is indexed and functional
+- ❌ do **not** commit `backend/silos.json`
+- ❌ do **not** commit personal silo data
 
-**Q: Can I use this offline?**
-A: Yes, completely offline after initial setup.
+### demo vs local mode comparison
 
-**Q: How accurate is face recognition?**
-A: Best with clear, well-lit photos of faces.
+| feature | demo mode | local mode |
+|---------|-----------|------------|
+| data source | `public/demo-silo/` | `backend/cache/silos/` |
+| media files | `public/test-files/` | user-configured paths |
+| activation | no `silos.json` | `silos.json` present |
+| write operations | ❌ disabled (403) | ✅ enabled |
+| silo management | ❌ hidden | ✅ available |
+| frontend banner | 🎯 demo mode | none |
+| api endpoint | `/api/system/mode` | `/api/system/mode` |
 
-**Q: Can I delete `.local` folder?**
-A: Yes, it will recreate on next launch.
+### frontend/backend communication
 
-**Q: How do I uninstall?**
-A: Delete the project folder. All data is local to this directory.
+**next.js proxy configuration** (`next.config.ts`):
+```typescript
+rewrites: async () => {
+  return {
+    beforeFiles: [
+      // all /api requests proxy to backend on port 8000
+      {
+        source: '/api/:path*',
+        destination: 'http://127.0.0.1:8000/api/:path*',
+      },
+    ],
+  };
+}
+```
 
-## 📄 License
+**demo mode detection:**
 
-MIT License - feel free to use, modify, and distribute.
+backend exposes demo status via:
+```bash
+GET /api/system/mode
+# returns: {"demo_mode": true, "read_only": true, "message": "..."}
+```
 
-## 🙏 Acknowledgments
+frontend uses `useDemoMode()` hook:
+```typescript
+import { useDemoMode } from '@/hooks/useDemoMode';
 
-Built with open-source technologies:
-- Next.js community
-- Hugging Face Transformers.js
-- Tailwind CSS team
+const { demoMode } = useDemoMode();
+// demoMode === true when backend is in demo mode
+```
+
+**protected operations in demo mode:**
+
+all write endpoints check demo mode:
+```python
+def check_read_only():
+    if SiloManager.is_demo_mode():
+        raise HTTPException(403, "operation not allowed in demo mode")
+```
+
+protected endpoints:
+- silo creation/deletion/management
+- file uploads/deletions
+- reindexing
+- configuration changes
+- face/animal labeling
+
+### local development with demo mode disabled
+
+to run locally with full features:
+
+1. **ensure silos.json exists**
+   ```bash
+   # check if silos.json is present
+   ls backend/silos.json
+   
+   # if missing, app will auto-create on first launch
+   ./start-all.sh
+   ```
+
+2. **verify local mode**
+   ```bash
+   curl http://localhost:8000/api/system/mode
+   # should return: {"demo_mode": false, "read_only": false, ...}
+   ```
+
+3. **configuration**
+   
+   **local mode uses:**
+   - silo config: `backend/silos.json`
+   - silo data: `backend/cache/silos/<silo-name>/`
+   - media paths: configured per-silo in settings
+   
+   **demo mode uses:**
+   - demo config: auto-generated by `SiloManager`
+   - demo data: `public/demo-silo/personalai.db`
+   - media paths: `public/test-files/`
+
+4. **switching between modes**
+   ```bash
+   # activate demo mode: remove silos.json
+   mv backend/silos.json backend/silos.json.backup
+   
+   # activate local mode: restore silos.json
+   mv backend/silos.json.backup backend/silos.json
+   
+   # restart to apply changes
+   ./stop-all.sh && ./start-all.sh
+   ```
+
+### production deployment
+
+**for public demo (vercel, netlify, etc.):**
+
+1. do **not** include `backend/silos.json` in deployment
+2. ensure `public/demo-silo/` is committed
+3. ensure `public/test-files/` has sample media
+4. backend will auto-detect demo mode
+5. frontend will show demo banner
+
+**for private deployment:**
+
+1. create `backend/silos.json` during deployment
+2. configure media paths in silo settings
+3. backend runs in full mode
+4. all features enabled
+
+see [DEMO_MODE.md](./DEMO_MODE.md) for detailed documentation.
 
 ---
 
-**Built for privacy. Powered by local AI. Owned by you.**
+## cache and data
 
-## 📋 How to Use
+all data stays on your machine:
 
-### Setup Wizard (First Launch)
-1. **Welcome**: Understand what the app does
-2. **Select Directories**: Choose folders to search
-3. **Grant Permissions**: Enable capabilities you want (default: minimal)
-4. **Review**: Confirm your settings
+- **ai models**: `backend/cache/` (downloaded on first use)
+- **search indices**: per-silo in `backend/cache/silos/<silo>/faiss.index`
+- **face clusters**: per-silo in `backend/cache/silos/<silo>/people.json`
+- **thumbnails**: per-silo in `backend/cache/silos/<silo>/thumbnails/`
+- **silo data**: `backend/cache/silos/<silo-name>/`
 
-### File Browser
-- Navigate with breadcrumb navigation
-- Double-click to enter folders
-- Click to select files
-- View file metadata (size, modification date)
+**demo mode data:**
+- **demo database**: `public/demo-silo/personalai.db`
+- **demo cache**: `public/demo-silo/`
+- **demo media**: `public/test-files/`
 
-### Semantic Search
-Natural language queries:
-- "Find photos of concerts"
-- "Show me GitHub projects"
-- "Look for documents with environment variables"
-- "Find pictures of my daughter [name]"
+to clear cache (local mode):
+```bash
+rm -rf backend/cache/silos/*
+```
 
-### Face Recognition (Coming Soon)
-- View detected face clusters
-- Rename faces with custom names
-- Organize by person
+## license
 
-## 🔐 Privacy & Security
+MIT License - see LICENSE file
 
-### What We Don't Do
-- ❌ No cloud uploads
-- ❌ No internet connectivity required
-- ❌ No external API calls
-- ❌ No user tracking
+## contributing
 
-### What We Do
-- ✅ Process everything locally
-- ✅ Cache models in `.local/models/`
-- ✅ Store index in `.local/index/`
-- ✅ Require explicit permission grants
-- ✅ Respect OS file permissions
+contributions welcome! please:
+1. fork the repository
+2. create a feature branch
+3. commit your changes
+4. push to the branch
+5. create a pull request
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**built for privacy. powered by local ai. owned by you.**

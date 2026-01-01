@@ -1044,16 +1044,12 @@ async def full_reindex() -> int:
     
     media_paths = SiloManager.get_silo_media_paths(current_silo_name)
     
-    # If silo has no specific media paths configured, fall back to global config for backward compatibility
-    # This handles the case where silos were created before per-silo paths were implemented
+    # CRITICAL: Do NOT fall back to global config - each silo must have its own media_paths
+    # Silos are isolated collections and should not share source folders
     if not media_paths:
-        print(f"[INDEXING] No silo-specific media paths for '{current_silo_name}', using global config")
-        media_paths = cfg.get("storage", {}).get("media_paths", [])
-    
-    if not media_paths:
-        print(f"[INDEXING] No media paths configured. Skipping indexing.")
+        print(f"[INDEXING] No media paths configured for silo '{current_silo_name}'. User must add sources via UI.")
         indexing_state["status"] = "complete"
-        indexing_state["message"] = "No media sources configured"
+        indexing_state["message"] = "No media sources configured for this silo. Add a source folder to begin."
         return 0
     
     print(f"[INDEXING] Using media paths for silo '{current_silo_name}': {media_paths}")
@@ -1141,19 +1137,27 @@ class WatchHandler(FileSystemEventHandler):
 
 
 async def watch_directories(callback):
-    cfg = load_config()
-    paths = cfg["storage"]["media_paths"]
-    observer = Observer()
-    handler = WatchHandler(callback)
-    for p in paths:
-        observer.schedule(handler, p, recursive=True)
-    observer.start()
-    try:
-        while True:
-            await asyncio.sleep(1)
-    finally:
-        observer.stop()
-        observer.join()
+    # CRITICAL SECURITY: This function uses global config and would watch paths across ALL silos
+    # File watching is DISABLED to prevent cross-silo data leakage
+    # Each silo must be isolated - watching should be per-silo if implemented
+    raise NotImplementedError(
+        "File watching is disabled for security. Global config paths would leak data between silos. "
+        "Implement per-silo watching if needed."
+    )
+    # REMOVED UNSAFE CODE:
+    # cfg = load_config()
+    # paths = cfg["storage"]["media_paths"]  # <-- GLOBAL PATHS! SECURITY BREACH!
+    # observer = Observer()
+    # handler = WatchHandler(callback)
+    # for p in paths:
+    #     observer.schedule(handler, p, recursive=True)
+    #     observer.start()
+    #     try:
+    #         while True:
+    #             await asyncio.sleep(1)
+    #     finally:
+    #         observer.stop()
+    #         observer.join()
 
 
 async def process_single(path: str):

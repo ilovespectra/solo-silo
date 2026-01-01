@@ -75,8 +75,11 @@ next-env.d.ts
 *.sqlite3
 personalai.db
 
-# Silo data (user-specific)
+# Silo data (user-specific - NEVER commit)
 /backend/cache/silos/
+/backend/silos.json
+archived_silos.json
+removed_silos.json
 
 # Thumbnails and generated images
 /backend/cache/thumbnails/
@@ -89,7 +92,12 @@ personalai.db
 # Search indices (should be rebuilt)
 /backend/cache/faiss.index
 /backend/cache/faiss_ids.npy
+Runtime logs (NEVER commit)
+backend.log
+frontend.log
+*.log
 
+# 
 # ===== DEVELOPMENT & TESTING FILES =====
 
 # Test and development Python scripts

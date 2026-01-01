@@ -2,6 +2,7 @@
 
 import { useAppStore, setupConfigPersistence } from '@/store/appStore';
 import SetupWizard from '@/components/SetupWizard';
+import GettingStartedTour from '@/components/GettingStartedTour';
 import MediaGallery from '@/components/MediaGallery';
 import AudioBrowser from '@/components/AudioBrowser';
 import Search from '@/components/Search';
@@ -10,9 +11,11 @@ import PeoplePane from '@/components/PeoplePane';
 import AnimalPane from '@/components/AnimalPane';
 import Retraining from '@/components/Retraining';
 import BackendStatus from '@/components/BackendStatus';
+import { DemoBanner } from '@/components/DemoBanner';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
 import { useIndexingStatus } from '@/hooks/useIndexingStatus';
+import { useDemoMode } from '@/hooks/useDemoMode';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
@@ -21,6 +24,7 @@ export default function Home() {
   const [hasIndexedFiles, setHasIndexedFiles] = useState(false);
   const [showSiloManager, setShowSiloManager] = useState(false);
   const [siloSwitchKey, setSiloSwitchKey] = useState(0);
+  const { demoMode } = useDemoMode();
 
   useIndexingStatus();
 
@@ -80,6 +84,9 @@ export default function Home() {
 
   return (
     <main className={`h-screen flex flex-col ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Demo Mode Banner */}
+      {demoMode && <DemoBanner />}
+      
       {/* Backend Status Bar */}
       <BackendStatus />
 
@@ -257,6 +264,9 @@ export default function Home() {
 
       {/* Setup Wizard Modal */}
       {showSetupWizard && <SetupWizard />}
+
+      {/* Getting Started Tour */}
+      <GettingStartedTour />
     </main>
   );
 }

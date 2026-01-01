@@ -261,6 +261,12 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
             <div>
               <h3 className={`text-sm font-semibold ${textClass} mb-2`}>Photo Info</h3>
               <div className={`text-xs space-y-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className="font-mono text-xs break-all">
+                  {photoData.path.split('/').pop() || photoData.path}
+                </p>
+                <p className="text-[10px] opacity-60">
+                  {photoData.path}
+                </p>
                 {photoData.date_taken && (
                   <p>Taken: {new Date(photoData.date_taken * 1000).toLocaleDateString()}</p>
                 )}

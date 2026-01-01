@@ -134,12 +134,20 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
       console.log(`Removing photo ${photoId} from cluster ${cluster.id}`);
       await removePhotoFromCluster(cluster.id, photoId);
       console.log(`Successfully removed photo ${photoId}`);
-      setPhotos(prev => prev.filter(p => p.id !== photoId));
+      const newPhotos = photos.filter(p => p.id !== photoId);
+      setPhotos(newPhotos);
       setPhotoRotations(prev => {
         const updated = { ...prev };
         delete updated[photoId];
         return updated;
       });
+      
+      // If this was the last photo, close the detail view and refresh
+      if (newPhotos.length === 0) {
+        console.log('Last photo removed, closing cluster detail view');
+        onClose();
+      }
+      
       onUpdated();
     } catch (err) {
       console.error('Failed to remove photo:', err);

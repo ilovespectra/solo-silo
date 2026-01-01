@@ -1,6 +1,8 @@
 """
 User metadata and configuration management.
 Persists user-defined labels, preferences, and metadata locally.
+
+CRITICAL: This is now SILO-SPECIFIC to prevent data leakage between silos.
 """
 
 import os
@@ -10,7 +12,15 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime
 
 
-CONFIG_PATH = os.environ.get("PAI_CONFIG", "./cache/user_config.json")
+# REMOVED: Global CONFIG_PATH that would be shared across silos
+# def _get_config_path():
+#     """Get silo-specific user_config.json path"""
+#     try:
+#         from .silo_manager import SiloManager
+#         cache_dir = SiloManager.get_silo_cache_dir()
+#         return os.path.join(cache_dir, "user_config.json")
+#     except:
+#         return "./cache/user_config.json"
 
 
 @dataclass
@@ -82,9 +92,22 @@ class UserConfig:
 
 
 class ConfigManager:
-    """Manage user configuration and metadata."""
+    """Manage user configuration and metadata.
     
-    def __init__(self, config_path: str = CONFIG_PATH):
+    CRITICAL SECURITY: Each silo has its own config to prevent data leakage.
+    """
+    
+    def __init__(self, config_path: str = None):
+        # CRITICAL: Use silo-specific config path
+        if config_path is None:
+            try:
+                from .silo_manager import SiloManager
+                cache_dir = SiloManager.get_silo_cache_dir()
+                config_path = os.path.join(cache_dir, "user_config.json")
+            except Exception as e:
+                print(f"[USER_CONFIG] WARNING: Could not get silo cache dir: {e}")
+                config_path = "./cache/user_config.json"
+        
         self.config_path = config_path
         self.config = self._load_config()
     
@@ -276,16 +299,32 @@ class ConfigManager:
         return self.config.recent_searches[:limit]
 
 
-# Global instance
-_config_manager: Optional[ConfigManager] = None
+# REMOVED: Global singleton that would be shared across silos - SECURITY BREACH
+# Each API call must get the silo-specific config manager
+# _config_manager: Optional[ConfigManager] = None
 
 
-def get_config_manager() -> ConfigManager:
-    """Get or create global config manager."""
-    global _config_manager
-    if _config_manager is None:
-        _config_manager = ConfigManager()
-    return _config_manager
+def get_config_manager(silo_name: Optional[str] = None) -> ConfigManager:
+    """Get silo-specific config manager.
+    
+    CRITICAL SECURITY: Returns config for specific silo only.
+    Each silo has isolated user preferences and labels.
+    
+    Args:
+        silo_name: Optional silo name. If not provided, uses active silo.
+    
+    Returns:
+        ConfigManager for the specified silo
+    """
+    try:
+        from .silo_manager import SiloManager
+        cache_dir = SiloManager.get_silo_cache_dir(silo_name)
+        config_path = os.path.join(cache_dir, "user_config.json")
+        return ConfigManager(config_path)
+    except Exception as e:
+        print(f"[USER_CONFIG] ERROR: Could not create silo-specific config: {e}")
+        # Fallback for startup/testing
+        return ConfigManager("./cache/user_config.json")
 
 
 __all__ = [

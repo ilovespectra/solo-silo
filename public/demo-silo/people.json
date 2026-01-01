@@ -1,0 +1,87 @@
+{
+  "person_2": {
+    "label": "bowie",
+    "hidden": false,
+    "confirmed": false
+  },
+  "person_1": {
+    "label": "luka don\u010dic",
+    "hidden": true,
+    "confirmed": false,
+    "confirmed_photos": [
+      407,
+      439,
+      411
+    ]
+  },
+  "person_8": {
+    "label": "tito",
+    "hidden": false,
+    "confirmed": false,
+    "confirmed_photos": [
+      438
+    ]
+  },
+  "person_9": {
+    "label": "walken",
+    "hidden": false,
+    "confirmed": false,
+    "confirmed_photos": [
+      397,
+      398,
+      399,
+      400,
+      401,
+      403,
+      404,
+      405,
+      406,
+      407,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      415,
+      416,
+      417,
+      439,
+      446,
+      451
+    ]
+  },
+  "person_0": {
+    "label": "paula abdul",
+    "hidden": false,
+    "confirmed": false,
+    "confirmed_photos": [
+      3
+    ]
+  },
+  "person_4": {
+    "hidden": true
+  },
+  "person_5": {
+    "hidden": true
+  },
+  "person_6": {
+    "hidden": true
+  },
+  "person_7": {
+    "hidden": true
+  },
+  "person_3": {
+    "confirmed_photos": [
+      401,
+      404,
+      408,
+      412,
+      414,
+      417,
+      399,
+      400,
+      405
+    ]
+  }
+}

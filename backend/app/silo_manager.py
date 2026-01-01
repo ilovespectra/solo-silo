@@ -25,13 +25,50 @@ SILOS_FILE = os.path.join(os.path.dirname(__file__), "..", "silos.json")
 CACHE_BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "cache")
 DEFAULT_SILO_NAME = "default"
 
+# Demo mode configuration
+DEMO_SILO_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "public", "demo-silo")
+DEMO_MODE_ENABLED = not os.path.exists(SILOS_FILE)  # Auto-detect demo mode
+
 
 class SiloManager:
     """Manages silo creation, switching, and operations."""
     
     @staticmethod
+    def is_demo_mode() -> bool:
+        """Check if running in demo mode (no silos.json found)."""
+        return DEMO_MODE_ENABLED or not os.path.exists(SILOS_FILE)
+    
+    @staticmethod
+    def get_demo_silo_info() -> dict:
+        """Get demo silo configuration."""
+        return {
+            "name": "demo",
+            "created_at": "2025-01-01T00:00:00",
+            "password": None,
+            "password_mode": None,
+            "authenticated": True,
+            "db_path": os.path.join(DEMO_SILO_PATH, "personalai.db"),
+            "cache_dir": DEMO_SILO_PATH,
+            "media_paths": [os.path.join(os.path.dirname(__file__), "..", "..", "public", "test-files")],
+            "read_only": True,  # Demo mode is read-only
+        }
+    
+    @staticmethod
     def load_silos() -> dict:
-        """Load all silos metadata."""
+        """Load all silos metadata. Returns demo silo if in demo mode."""
+        # DEMO MODE: Return singleton demo silo
+        if SiloManager.is_demo_mode():
+            demo_silo = SiloManager.get_demo_silo_info()
+            print(f"[DEMO_MODE] Using demo silo from: {demo_silo['cache_dir']}")
+            return {
+                "active_silo": "demo",
+                "silos": {
+                    "demo": demo_silo
+                },
+                "demo_mode": True
+            }
+        
+        # NORMAL MODE: Load silos.json
         if not os.path.exists(SILOS_FILE):
             return SiloManager._create_default_silos()
         

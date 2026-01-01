@@ -34,18 +34,24 @@ def cleanup_old_logs():
 
 
 def cleanup_thumbnail_cache():
-    """Clear thumbnail cache to save space."""
-    thumb_dir = Path(__file__).parent / 'cache' / 'thumbnails'
-    
-    if thumb_dir.exists():
+    """Clear thumbnail cache to save space - per silo."""
+    # CRITICAL: Clean up per-silo caches, not global cache
+    try:
+        from .silo_manager import SiloManager
+        # Clean active silo's thumbnail cache
         try:
-            # Remove all thumbnails but keep directory
-            for thumb_file in thumb_dir.glob('*'):
-                if thumb_file.is_file():
-                    thumb_file.unlink()
-            print(f"[STARTUP] Cleared thumbnail cache")
+            cache_dir = SiloManager.get_silo_cache_dir()
+            thumb_dir = Path(cache_dir) / 'thumbnails'
+            
+            if thumb_dir.exists():
+                for thumb_file in thumb_dir.glob('*'):
+                    if thumb_file.is_file():
+                        thumb_file.unlink()
+                print(f"[STARTUP] Cleared thumbnail cache for active silo")
         except Exception as e:
-            print(f"[STARTUP] Failed to clear thumbnail cache: {e}")
+            print(f"[STARTUP] Failed to clear silo thumbnail cache: {e}")
+    except Exception as e:
+        print(f"[STARTUP] Could not access SiloManager: {e}")
 
 
 def cleanup_python_cache():

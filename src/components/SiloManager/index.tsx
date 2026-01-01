@@ -99,6 +99,12 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
       const appStore = useAppStore.getState();
       appStore.setActiveSiloName(siloNameCreated);
       
+      const tourDismissed = typeof window !== 'undefined' && localStorage.getItem('tour-dismissed') === 'true';
+      if (!tourDismissed) {
+        appStore.setShowGettingStartedTour(true);
+        appStore.setGettingStartedStep(0);
+      }
+      
       setCreateName('');
       setCreatePassword('');
       setCreatePasswordConfirm('');
@@ -106,7 +112,11 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
       setShowCreatePassword(false);
       setToast({ message: `Silo "${siloNameCreated}" created successfully`, type: 'success' });
       console.log(`✓ Silo "${siloNameCreated}" created successfully with fresh config`);
-      setTimeout(() => onClose(), 500);
+      
+      setTimeout(() => {
+        onClose();
+        window.location.reload();
+      }, 500);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'failed to create silo';
       setFormError(message);

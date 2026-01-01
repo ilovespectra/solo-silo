@@ -44,6 +44,8 @@ def deep_merge(base: dict, override: dict) -> dict:
 
 
 def ensure_paths(cfg: dict) -> None:
+    # CRITICAL: Do NOT create directories for global config media_paths
+    # Each silo manages its own paths independently for security/isolation
     # Use silo-specific cache directory
     try:
         from .silo_manager import SiloManager
@@ -54,8 +56,8 @@ def ensure_paths(cfg: dict) -> None:
     thumbnail_path = os.path.join(cache_dir, "thumbnails")
     os.makedirs(thumbnail_path, exist_ok=True)
     
-    for p in cfg["storage"]["media_paths"]:
-        os.makedirs(p, exist_ok=True)
+    # REMOVED: Global config media_paths should NOT be used or created
+    # This prevents cross-silo contamination
 
 
 __all__ = ["load_config", "ensure_paths", "DEFAULT_CONFIG"]

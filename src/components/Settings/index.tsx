@@ -48,7 +48,7 @@ interface RetrainingLog {
 }
 
 export default function Settings() {
-  const { theme } = useAppStore();
+  const { theme, tourAutoOpenDebugLog, setTourAutoOpenDebugLog } = useAppStore();
   const { activeSilo } = useSilos();
   const [stats, setStats] = useState<MediaStats | null>(null);
   const [indexingProgress, setIndexingProgress] = useState<IndexingProgress | null>(null);
@@ -242,6 +242,13 @@ export default function Settings() {
       }
     }
   }, [isIndexing, showDebugLogs, indexingLogs.length]);
+
+  useEffect(() => {
+    if (tourAutoOpenDebugLog) {
+      setShowDebugLogs(true);
+      setTourAutoOpenDebugLog(false);
+    }
+  }, [tourAutoOpenDebugLog, setTourAutoOpenDebugLog]);
 
   useEffect(() => {
     const shouldPoll = shouldPollIndexing || isIndexing;

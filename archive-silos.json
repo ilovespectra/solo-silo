@@ -1,5 +1,5 @@
 {
-  "active_silo": "bighouse",
+  "active_silo": "myothersilo",
   "silos": {
     "testingnewsilo": {
       "name": "testingnewsilo",
@@ -40,6 +40,16 @@
         "/Users/tanny/Documents/test_documents",
         "/Users/tanny/Documents/Music/Tycho"
       ]
+    },
+    "myothersilo": {
+      "name": "myothersilo",
+      "created_at": "2025-12-27T15:58:28.043115",
+      "password": null,
+      "password_mode": null,
+      "authenticated": true,
+      "db_path": "/Users/tanny/Documents/github/dudlefotos/backend/app/../cache/silos/myothersilo/personalai.db",
+      "cache_dir": "/Users/tanny/Documents/github/dudlefotos/backend/app/../cache/silos/myothersilo",
+      "media_paths": []
     }
   }
 }

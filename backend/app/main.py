@@ -27,6 +27,15 @@ from .silo_manager import SiloManager
 from .startup_cleanup import startup_cleanup
 from . import silo_endpoints
 
+# Demo mode helper
+def check_read_only():
+    """Check if system is in read-only demo mode."""
+    if SiloManager.is_demo_mode():
+        raise HTTPException(
+            status_code=403,
+            detail="Operation not allowed in demo mode. This is a read-only demo deployment."
+        )
+
 # Global lock to ensure only one indexing operation runs at a time
 # Will be properly initialized in startup_event
 _indexing_lock = None
@@ -231,17 +240,18 @@ async def startup_event():
             import traceback
             traceback.print_exc()
     
-    # Discover and populate media_paths for existing silos on startup
-    try:
-        for silo_info in silo_manager.list_silos():
-            silo_name = silo_info["name"]
-            existing_paths = silo_manager.get_silo_media_paths(silo_name)
-            if not existing_paths:
-                # Auto-discover media paths from this silo's database
-                silo_manager.discover_and_set_silo_media_paths(silo_name)
-                print(f"[STARTUP] Discovered media paths for silo '{silo_name}'")
-    except Exception as e:
-        print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}")
+    # DISABLED: Do not auto-discover media paths on startup
+    # This can cause silos to inherit paths from each other, breaking isolation
+    # Users must explicitly configure media paths per-silo via UI
+    # try:
+    #     for silo_info in silo_manager.list_silos():
+    #         silo_name = silo_info["name"]
+    #         existing_paths = silo_manager.get_silo_media_paths(silo_name)
+    #         if not existing_paths:
+    #             silo_manager.discover_and_set_silo_media_paths(silo_name)
+    #             print(f"[STARTUP] Discovered media paths for silo '{silo_name}'")
+    # except Exception as e:
+    #     print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}")
     
     # Background watcher disabled - user should manually trigger indexing via UI
     # asyncio.create_task(watch_directories(process_single))
@@ -251,11 +261,30 @@ async def startup_event():
 async def health():
     return {"status": "ok", "time": int(time.time())}
 
+@app.get("/api/system/mode")
+async def get_system_mode():
+    """Get current system mode (demo or full)."""
+    is_demo = SiloManager.is_demo_mode()
+    return {
+        "demo_mode": is_demo,
+        "read_only": is_demo,
+        "message": "Demo mode - read only" if is_demo else "Full mode - all features enabled"
+    }
+
 @app.get("/api/system/health-extended")
-async def health_extended():
-    """Extended health check including crash logs and detection status."""
-    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    cache_dir = os.path.join(root_dir, "cache")
+async def health_extended(silo_name: str = Query(None)):
+    """Extended health check including crash logs and detection status.
+    
+    CRITICAL SECURITY: Returns status for specific silo only to prevent data leakage.
+    """
+    # CRITICAL: Use silo-specific cache directory
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    try:
+        cache_dir = SiloManager.get_silo_cache_dir(silo_name)
+    except Exception as e:
+        cache_dir = "./cache"  # Fallback for startup before silos initialized
     
     # Check for crash logs
     crash_log_path = os.path.join(cache_dir, "worker-crashes.log")
@@ -405,20 +434,30 @@ async def resolve_directory(request: ResolveDirectoryRequest):
 
 
 @app.get("/api/debug/worker-logs")
-async def get_worker_logs():
-    """Fetch worker logs for debugging face detection issues."""
-    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    cache_dir = os.path.join(root_dir, "cache")
+async def get_worker_logs(silo_name: str = Query(None)):
+    """Fetch worker logs for debugging face detection issues.
+    
+    CRITICAL SECURITY: Returns logs for specific silo only to prevent data leakage.
+    """
+    # CRITICAL: Use silo-specific cache directory
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    try:
+        cache_dir = SiloManager.get_silo_cache_dir(silo_name)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid silo: {e}")
     
     logs = {
         "worker_log": None,
         "crash_log": None,
         "progress": None,
         "skipped": None,
-        "backend_log": None
+        "backend_log": None,
+        "silo": silo_name or "active"
     }
     
-    # Read worker log
+    # Read worker log from silo-specific cache
     try:
         worker_log = os.path.join(cache_dir, "worker.log")
         if os.path.exists(worker_log):
@@ -492,6 +531,7 @@ async def reindex_all(silo_name: str = None):
     Existing database records are only updated if the file hash has changed.
     User labels and metadata are always preserved.
     """
+    check_read_only()  # Prevent reindexing in demo mode
     # If silo_name is provided, ensure it's set as active and locked for this operation
     if silo_name:
         _set_processing_silo(silo_name)
@@ -1392,10 +1432,15 @@ async def count_files(request: dict):
 
 
 @app.post("/api/index/rebuild")
-async def rebuild_index():
+async def rebuild_index(silo_name: Optional[str] = Query(None)):
+    """Rebuild FAISS search index from existing CLIP embeddings in database."""
+    # Set silo context
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
     # Rebuild FAISS index from existing embeddings in database
-    total = await rebuild_faiss_index_from_db()
-    return {"indexed": total}
+    total = await rebuild_faiss_index_from_db(silo_name=silo_name)
+    return {"indexed": total, "silo": silo_name}
 
 
 @app.post("/api/cache/rebuild-people-clusters")
@@ -1547,52 +1592,36 @@ async def serve_media_file(media_id: int):
 
 @app.get("/api/media/thumbnail/{media_id}")
 async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False):
-    """Serve compressed thumbnail for faster loading. Set square=true for square crops."""
+    """Serve compressed thumbnail directly from the file."""
     from PIL import Image
+    import io
     
     with get_db() as conn:
-        cur = conn.execute("SELECT path FROM media_files WHERE id = ?", (media_id,))
+        cur = conn.execute("SELECT path, rotation FROM media_files WHERE id = ?", (media_id,))
         row = cur.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Media not found")
         
         file_path = row[0]
+        rotation = row[1] if row[1] else 0
+        
         if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="File not found on disk")
+            raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
         
-        # Try to serve from cache first
-        from .silo_manager import SiloManager
-        silo_cache_dir = SiloManager.get_silo_cache_dir()
-        cache_dir = os.path.join(silo_cache_dir, "thumbnails")
-        os.makedirs(cache_dir, exist_ok=True)
-        cache_suffix = "_square" if square else ""
-        cache_file = os.path.join(cache_dir, f"{media_id}_{size}{cache_suffix}.jpg")
+        # Check if it's an image file
+        image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tiff'}
+        if not any(file_path.lower().endswith(ext) for ext in image_extensions):
+            return FileResponse(file_path, headers={"Cache-Control": "public, max-age=86400"})
         
-        if os.path.exists(cache_file):
-            return FileResponse(cache_file, media_type="image/jpeg")
-        
-        # Try to generate thumbnail for image files only
         try:
-            # Check if it's an image file
-            image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tiff'}
-            if not any(file_path.lower().endswith(ext) for ext in image_extensions):
-                # For non-image files (videos, etc), serve original with caching
-                return FileResponse(file_path, headers={"Cache-Control": "public, max-age=86400"})
-            
+            # Open image directly from the file
             img = Image.open(file_path)
             
-            # Load and apply rotation from database - BEFORE processing thumbnail
-            with get_db() as conn:
-                cur = conn.execute("SELECT rotation FROM media_files WHERE id = ?", (media_id,))
-                row = cur.fetchone()
-                rotation = row[0] if row and row[0] else 0
-            
+            # Apply rotation if needed
             if rotation and rotation != 0:
-                print(f"[THUMBNAIL] Applying rotation {rotation}° to thumbnail for {media_id}")
-                # Rotate the image - PIL.Image.rotate rotates counter-clockwise, so negate for clockwise
                 img = img.rotate(-rotation, expand=False, fillcolor='white')
             
-            # Convert RGBA to RGB if needed
+            # Convert RGBA to RGB
             if img.mode in ('RGBA', 'LA'):
                 rgb_img = Image.new('RGB', img.size, (255, 255, 255))
                 rgb_img.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
@@ -1604,42 +1633,21 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False):
                 square_size = min(width, height)
                 left = (width - square_size) // 2
                 top = (height - square_size) // 2
-                right = left + square_size
-                bottom = top + square_size
-                img = img.crop((left, top, right, bottom))
-                # Now resize to desired size
+                img = img.crop((left, top, left + square_size, top + square_size))
                 img.thumbnail((size, size), Image.Resampling.LANCZOS)
             else:
-                # Resize to fit in size x size box while maintaining aspect ratio
+                # Resize maintaining aspect ratio
                 img.thumbnail((size, size), Image.Resampling.LANCZOS)
             
-            # Save as JPEG with compression
-            img.save(cache_file, "JPEG", quality=80, optimize=True)
-            return FileResponse(cache_file, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"})
+            # Return compressed JPEG directly from memory
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, "JPEG", quality=80, optimize=True)
+            img_bytes.seek(0)
+            
+            return Response(content=img_bytes.getvalue(), media_type="image/jpeg")
         except Exception as e:
-            print(f"[THUMBNAIL] Failed to generate thumbnail for {media_id}: {str(e)}")
-            # Fallback: serve original file
-            return FileResponse(file_path, headers={"Cache-Control": "public, max-age=86400"})
-
-
-@app.get("/api/media/file/{media_id}")
-async def serve_full_image(media_id: int):
-    """Serve full-resolution image for photo modal."""
-    with get_db() as conn:
-        cur = conn.execute("SELECT path FROM media_files WHERE id = ?", (media_id,))
-        row = cur.fetchone()
-        if not row:
-            raise HTTPException(status_code=404, detail="Media not found")
-        
-        file_path = row[0]
-        if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="File not found on disk")
-        
-        # Serve the original file with caching headers
-        return FileResponse(
-            file_path,
-            headers={"Cache-Control": "public, max-age=2592000"}  # 30 days cache
-        )
+            print(f"[THUMBNAIL] Error generating thumbnail: {str(e)}")
+            return FileResponse(file_path)
 
 
 @app.get("/api/media/audio")
@@ -1955,6 +1963,7 @@ async def upload_media_file(file: UploadFile = File(...)):
     Upload a media file and add it to the database.
     Processes the image for face detection and adds to the search index.
     """
+    check_read_only()  # Prevent uploads in demo mode
     import tempfile
     import shutil
     from PIL import Image
@@ -2463,6 +2472,8 @@ async def list_people():
 
 @app.post("/api/people/{person_id}/name")
 async def name_person(person_id: str, request_body: NamePersonRequest = Body(...)):
+    # Allow naming people in demo mode to set up demo data
+    # check_read_only()
     set_label(person_id, name=request_body.name)
     return {"id": person_id, "name": request_body.name}
 
@@ -2837,6 +2848,7 @@ async def list_animals():
 
 @app.post("/api/animals/{animal_id}/name")
 async def name_animal(animal_id: str, request: NamePersonRequest = Body(...)):
+    check_read_only()  # Prevent naming animals in demo mode
     from .face_cluster import set_animal_label
     try:
         set_animal_label(animal_id, name=request.name)
@@ -3031,9 +3043,15 @@ async def count_uncertain_detections():
 # ============================================================================
 
 @app.get("/api/config")
-async def get_user_config():
-    """Get current user configuration."""
-    config_mgr = get_config_manager()
+async def get_user_config(silo_name: str = Query(None)):
+    """Get current user configuration.
+    
+    CRITICAL SECURITY: Returns config for specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     return {
         "sort_by": config_mgr.config.sort_by,
         "sort_order": config_mgr.config.sort_order,
@@ -3044,9 +3062,16 @@ async def get_user_config():
 
 
 @app.post("/api/config")
-async def update_user_config(settings: Dict[str, Any]):
-    """Update user configuration."""
-    config_mgr = get_config_manager()
+async def update_user_config(settings: Dict[str, Any], silo_name: str = Query(None)):
+    """Update user configuration.
+    
+    CRITICAL SECURITY: Updates config for specific silo only.
+    """
+    check_read_only()  # Prevent config changes in demo mode
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     
     if "sort_by" in settings:
         config_mgr.config.sort_by = settings["sort_by"]
@@ -3066,9 +3091,15 @@ async def update_user_config(settings: Dict[str, Any]):
 # ============================================================================
 
 @app.post("/api/labels/face/{person_id}")
-async def set_face_label(person_id: str, name: str, aliases: List[str] = None):
-    """Set or update face label."""
-    config_mgr = get_config_manager()
+async def set_face_label(person_id: str, name: str, aliases: List[str] = None, silo_name: str = Query(None)):
+    """Set or update face label.
+    
+    CRITICAL SECURITY: Sets label in specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     label = config_mgr.add_face_label(person_id, name, aliases or [])
     return {
         "id": label.id,
@@ -3078,9 +3109,15 @@ async def set_face_label(person_id: str, name: str, aliases: List[str] = None):
 
 
 @app.get("/api/labels/face/{person_id}")
-async def get_face_label(person_id: str):
-    """Get face label."""
-    config_mgr = get_config_manager()
+async def get_face_label(person_id: str, silo_name: str = Query(None)):
+    """Get face label.
+    
+    CRITICAL SECURITY: Gets label from specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     label = config_mgr.get_face_label(person_id)
     if not label:
         raise HTTPException(status_code=404, detail="Label not found")
@@ -3092,9 +3129,15 @@ async def get_face_label(person_id: str):
 
 
 @app.get("/api/labels/face")
-async def search_face_labels(q: str = Query("")):
-    """Search face labels."""
-    config_mgr = get_config_manager()
+async def search_face_labels(q: str = Query(""), silo_name: str = Query(None)):
+    """Search face labels.
+    
+    CRITICAL SECURITY: Searches labels in specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     if not q.strip():
         labels = list(config_mgr.config.face_labels.values())
     else:
@@ -3118,10 +3161,17 @@ async def search_face_labels(q: str = Query("")):
 async def set_animal_label_endpoint(
     animal_id: str,
     request: AnimalLabelRequest = Body(...),
+    silo_name: str = Query(None),
 ):
-    """Set or update animal label."""
+    """Set or update animal label.
+    
+    CRITICAL SECURITY: Sets label in specific silo only.
+    """
     try:
-        config_mgr = get_config_manager()
+        if silo_name:
+            _set_processing_silo(silo_name)
+        
+        config_mgr = get_config_manager(silo_name)
         label = config_mgr.add_animal_label(
             animal_id, request.species, request.name, request.breed
         )
@@ -3143,9 +3193,15 @@ async def set_animal_label_endpoint(
 
 
 @app.get("/api/labels/animal")
-async def search_animal_labels(q: str = Query("")):
-    """Search animal labels."""
-    config_mgr = get_config_manager()
+async def search_animal_labels(q: str = Query(""), silo_name: str = Query(None)):
+    """Search animal labels.
+    
+    CRITICAL SECURITY: Searches labels in specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    config_mgr = get_config_manager(silo_name)
     if not q.strip():
         labels = list(config_mgr.config.animal_labels.values())
     else:
@@ -3191,7 +3247,7 @@ async def advanced_search(
         
         # Full-text search on filename
         if q.strip():
-            config_mgr = get_config_manager()
+            config_mgr = get_config_manager(None)  # Search prefs can use active silo
             config_mgr.add_recent_search(q)
             
             query += " AND (path LIKE ? OR path LIKE ?)"
@@ -3220,7 +3276,7 @@ async def advanced_search(
         
         # Person filter (from user labels)
         if contains_person:
-            config_mgr = get_config_manager()
+            config_mgr = get_config_manager(None)  # Use active silo
             label = config_mgr.get_face_label(contains_person)
             if label:
                 # Would need additional logic to link faces to media
@@ -3262,8 +3318,14 @@ async def advanced_search(
 
 
 @app.get("/api/media/filter-options")
-async def get_filter_options():
-    """Get available filter options."""
+async def get_filter_options(silo_name: str = Query(None)):
+    """Get available filter options.
+    
+    CRITICAL SECURITY: Returns options for specific silo only.
+    """
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
     with get_db() as conn:
         # Get available file types
         cur = conn.execute(
@@ -3283,7 +3345,7 @@ async def get_filter_options():
         )
         size_range = cur.fetchone()
     
-    config_mgr = get_config_manager()
+    config_mgr = get_config_manager(silo_name)
     face_labels = [
         {"id": l.id, "name": l.name}
         for l in config_mgr.config.face_labels.values()
@@ -3346,6 +3408,7 @@ async def move_file(media_id: int, destination: str):
 @app.delete("/api/media/{media_id}")
 async def delete_file(media_id: int):
     """Delete a file (moves to trash or deletes)."""
+    check_read_only()  # Prevent deletions in demo mode
     with get_db() as conn:
         cur = conn.execute("SELECT path FROM media_files WHERE id = ?", (media_id,))
         row = cur.fetchone()
@@ -3741,100 +3804,52 @@ async def list_face_clusters(include_hidden: bool = False, min_photos: int = 1, 
         print(f"[API] Loaded labels.json with {len(labels)} entries for silo")
         
         result = []
-        processed_ids = set()
         
         with get_db() as conn:
-            # First, load all LABELED clusters from people.json
-            for cluster_id, label_data in labels.items():
-                if not isinstance(label_data, dict):
-                    continue
-                
-                # Get confirmed photos
-                confirmed_photos_raw = label_data.get("confirmed_photos", [])
-                confirmed_photos = set(int(pid) for pid in confirmed_photos_raw if pid is not None)
-                photo_count = len(confirmed_photos)
-                
-                # Only show if has photos
-                if photo_count == 0:
-                    continue
-                
-                cluster_name = label_data.get("name", label_data.get("label", "unknown"))
-                
-                # Get thumbnail
-                thumbnail_url = ""
-                if confirmed_photos:
-                    profile_media_id = label_data.get("profile_media_id")
-                    if profile_media_id:
-                        thumbnail_url = f"http://127.0.0.1:8000/api/media/file/{profile_media_id}"
-                    else:
-                        first_photo_id = list(confirmed_photos)[0]
-                        thumbnail_url = f"http://127.0.0.1:8000/api/media/file/{first_photo_id}"
-                
-                # Get timestamp
-                last_updated = int(time.time())
-                if confirmed_photos:
-                    photo_id_list = list(confirmed_photos)
-                    try:
-                        placeholders = ','.join(['?' for _ in photo_id_list])
-                        cur = conn.execute(
-                            f"SELECT MAX(date_taken) FROM media_files WHERE id IN ({placeholders})",
-                            photo_id_list
-                        )
-                        row = cur.fetchone()
-                        last_updated = row[0] if row and row[0] else int(time.time())
-                    except Exception as e:
-                        pass
-                
-                # Get confidence score from label data if available, otherwise calculate from photos
-                confidence_score = label_data.get("confidence_score", None)
-                
-                # If not in label data, calculate from photo face detection confidence
-                if confidence_score is None and confirmed_photos:
-                    try:
-                        photo_id_list = list(confirmed_photos)
-                        placeholders = ','.join(['?' for _ in photo_id_list])
-                        cur = conn.execute(
-                            f"SELECT AVG(confidence) FROM face_embeddings WHERE media_id IN ({placeholders})",
-                            photo_id_list
-                        )
-                        row = cur.fetchone()
-                        confidence_score = float(row[0]) if row and row[0] else 0.9
-                    except Exception as e:
-                        confidence_score = 0.9
-                else:
-                    confidence_score = confidence_score or 0.9
-                
-                result.append(FaceClusterResponse(
-                    id=cluster_id,
-                    name=cluster_name,
-                    primary_thumbnail=thumbnail_url,
-                    photo_count=photo_count,
-                    confidence_score=confidence_score,
-                    is_hidden=label_data.get("hidden", False),
-                    last_updated=last_updated,
-                    rotation_override=label_data.get("rotation_override", 0)
-                ))
-                processed_ids.add(cluster_id)
-                print(f"[API] Labeled Cluster: {cluster_id} ({cluster_name}) - {photo_count} photos, confidence: {confidence_score}")
-            
-            # Now load EMBEDDING-BASED clusters (unknown ones not in labels) using current face clustering
+            # Load embedding-based clusters and apply labels to them
             faces = load_faces_from_db()
             clusters = cluster_faces(faces)
             clusters = apply_labels(clusters)
-            clusters = assign_new_faces_to_confirmed_clusters(clusters)
-            
-            # Track which cluster IDs are already labeled
-            labeled_cluster_ids = set(labels.keys())
+            # Don't auto-assign - let user manually confirm/reject photos
+            # clusters = assign_new_faces_to_confirmed_clusters(clusters)
             
             for cluster in clusters:
                 cluster_id = cluster.get("id")
                 
-                # Skip if already processed as a labeled cluster
-                if cluster_id in processed_ids:
-                    continue
-                
                 photos = cluster.get("photos", [])
+                
+                # Get exclusions for this cluster
+                excluded_ids = set()
+                cur = conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name='face_cluster_exclusions'"
+                )
+                if cur.fetchone():
+                    cur = conn.execute(
+                        "SELECT media_id FROM face_cluster_exclusions WHERE cluster_id = ?",
+                        (cluster_id,)
+                    )
+                    excluded_ids = {row[0] for row in cur.fetchall()}
+                
+                # Filter out excluded photos
+                photos = [p for p in photos if p.get("media_id") not in excluded_ids]
                 photo_count = len(photos)
+                
+                # Check if cluster is hidden
+                cluster_label_data = labels.get(cluster_id, {})
+                is_hidden = cluster_label_data.get("hidden", False) if isinstance(cluster_label_data, dict) else False
+                
+                # Auto-hide if no photos remain (after exclusions)
+                if photo_count == 0 and not is_hidden:
+                    if cluster_id not in labels:
+                        labels[cluster_id] = {}
+                    labels[cluster_id]["hidden"] = True
+                    save_labels(labels)
+                    is_hidden = True
+                    print(f"[API] Auto-hiding empty cluster {cluster_id}")
+                
+                # Skip hidden clusters unless explicitly requested
+                if is_hidden and not include_hidden:
+                    continue
                 
                 # Only show if has photos AND meets minimum size
                 if photo_count < min_photos:
@@ -3879,18 +3894,21 @@ async def list_face_clusters(include_hidden: bool = False, min_photos: int = 1, 
                     except:
                         confidence_score = 0.0
                 
+                # Get name from cluster (apply_labels already added it)
+                # Check both "name" and "label" fields for backwards compatibility
+                cluster_name = cluster.get("name") or cluster.get("label") or "unknown"
+                
                 result.append(FaceClusterResponse(
                     id=cluster_id,
-                    name="unknown",
+                    name=cluster_name,
                     primary_thumbnail=thumbnail_url,
                     photo_count=photo_count,
                     confidence_score=confidence_score,
-                    is_hidden=False,
+                    is_hidden=is_hidden,
                     last_updated=last_updated,
                     rotation_override=0
                 ))
-                processed_ids.add(cluster_id)
-                print(f"[API] Embedding Cluster: {cluster_id} - {photo_count} photos")
+                print(f"[API] Cluster: {cluster_id} ({cluster_name}) - {photo_count} photos")
             
             # Sort by name (labeled first, then unknown)
             result.sort(key=lambda c: (c.name == "unknown", c.name))
@@ -3921,61 +3939,17 @@ async def get_cluster_photos(cluster_id: str, silo_name: str = Query(None)):
         _set_processing_silo(silo_name)
     
     try:
-        # Load labels to check for label-only clusters
+        # Load labels to check for confirmed photos
         labels = load_labels()
+        label_data = labels.get(cluster_id, {})
+        confirmed_photo_ids = set(label_data.get("confirmed_photos", []))
         
-        # Check if this is a labeled cluster (from people.json)
-        if cluster_id in labels:
-            label_data = labels[cluster_id]
-            if isinstance(label_data, dict):
-                # This is a user-organized cluster - use only confirmed_photos
-                confirmed_photo_ids = set(label_data.get("confirmed_photos", []))
-                
-                # Get exclusions for this cluster
-                excluded_ids = set()
-                with get_db() as conn:
-                    # Check if exclusions table exists
-                    cur = conn.execute(
-                        "SELECT name FROM sqlite_master WHERE type='table' AND name='face_cluster_exclusions'"
-                    )
-                    if cur.fetchone():
-                        cur = conn.execute(
-                            "SELECT media_id FROM face_cluster_exclusions WHERE cluster_id = ?",
-                            (cluster_id,)
-                        )
-                        excluded_ids = {row[0] for row in cur.fetchall()}
-                
-                # Return only confirmed photos, excluding removed ones
-                result = []
-                with get_db() as conn:
-                    for media_id in confirmed_photo_ids:
-                        if media_id in excluded_ids:
-                            continue
-                        
-                        cur = conn.execute(
-                            """SELECT id, path, date_taken FROM media_files WHERE id = ?""",
-                            (media_id,)
-                        )
-                        row = cur.fetchone()
-                        if row:
-                            media_id, file_path, date_taken = row
-                            result.append(ClusterPhotoResponse(
-                                id=str(media_id),
-                                image_path=file_path or "",
-                                thumbnail=f"http://127.0.0.1:8000/api/media/file/{media_id}",
-                                date_taken=date_taken,
-                                similarity_score=0.0,
-                                is_confirmed=True
-                            ))
-                
-                print(f"[API] Cluster {cluster_id} - returning {len(result)} confirmed photos")
-                return result
-        
-        # Not a labeled cluster - fall back to embedding-based clustering
-        # Load and cluster faces
+        # Always load all photos from embedding-based clustering
         faces = load_faces_from_db()
         clusters = cluster_faces(faces)
         clusters = apply_labels(clusters)
+        # Don't auto-assign - let user manually confirm/reject photos
+        # (auto-assignment only runs during bulk reclustering)
         
         # Find the requested cluster in embedding-based results
         cluster = None
@@ -4441,58 +4415,80 @@ async def remove_photo_from_cluster(cluster_id: str, media_id: int = Query(...))
 @app.post("/api/faces/merge")
 async def merge_clusters(request: MergeRequest = Body(...)):
     """Merge two face clusters into one."""
+    global _face_clusters_cache
     try:
         cluster_id_1 = request.cluster_id_1
         cluster_id_2 = request.cluster_id_2
         name_to_keep = request.name_to_keep
         
         # Load current labels
-        labels = {}
-        try:
-            from .face_cluster import load_labels, save_labels
-            labels = load_labels()
-        except:
-            pass
+        from .face_cluster import load_labels, save_labels
+        labels = load_labels()
         
-        # Get name of cluster 1
-        cluster1_name = labels.get(cluster_id_1, {}).get("label", "Unnamed")
-        cluster2_name = labels.get(cluster_id_2, {}).get("label", "Unnamed")
+        # Get cluster data
+        cluster1_data = labels.get(cluster_id_1, {})
+        cluster2_data = labels.get(cluster_id_2, {})
+        
+        cluster1_name = cluster1_data.get("label") or cluster1_data.get("name", "unknown")
+        cluster2_name = cluster2_data.get("label") or cluster2_data.get("name", "unknown")
         
         # Determine which name to keep
         if name_to_keep:
             final_name = name_to_keep
+        elif cluster1_name != "unknown":
+            final_name = cluster1_name
+        elif cluster2_name != "unknown":
+            final_name = cluster2_name
         else:
-            # Keep the one with more context (not "Unnamed")
-            if cluster1_name != "Unnamed":
-                final_name = cluster1_name
-            elif cluster2_name != "Unnamed":
-                final_name = cluster2_name
-            else:
-                final_name = "Unnamed"
+            final_name = "unknown"
         
-        # Merge by combining their labels and marking cluster 2 as merged into cluster 1
-        from .face_cluster import load_labels, save_labels
-        labels = load_labels()
+        # Get photos from both clusters
+        cluster1_confirmed = set(cluster1_data.get("confirmed_photos", []))
+        cluster2_confirmed = set(cluster2_data.get("confirmed_photos", []))
         
-        # Update cluster 1 with the final name
+        # Get all photos from cluster 2's embedding cluster
+        faces = load_faces_from_db()
+        clusters = cluster_faces(faces)
+        
+        cluster2_embedding_photos = set()
+        for cluster in clusters:
+            if cluster.get("id") == cluster_id_2:
+                for photo in cluster.get("photos", []):
+                    media_id = photo.get("media_id")
+                    if media_id:
+                        cluster2_embedding_photos.add(media_id)
+                break
+        
+        # Merge all photos into cluster 1
+        all_cluster2_photos = cluster2_confirmed | cluster2_embedding_photos
+        merged_photos = cluster1_confirmed | all_cluster2_photos
+        
+        # Update cluster 1
         if cluster_id_1 not in labels:
             labels[cluster_id_1] = {}
         labels[cluster_id_1]["label"] = final_name
-        labels[cluster_id_1]["merged_with"] = [cluster_id_2]
+        labels[cluster_id_1]["confirmed_photos"] = list(merged_photos)
         
-        # Mark cluster 2 as merged into cluster 1
+        # Hide cluster 2
         if cluster_id_2 not in labels:
             labels[cluster_id_2] = {}
+        labels[cluster_id_2]["hidden"] = True
         labels[cluster_id_2]["merged_into"] = cluster_id_1
-        labels[cluster_id_2]["hidden"] = True  # Hide the old cluster
         
         save_labels(labels)
+        
+        # Clear cache
+        _face_clusters_cache["data"] = None
+        
+        print(f"[MERGE] Merged {len(all_cluster2_photos)} photos from {cluster_id_2} into {cluster_id_1}. Total: {len(merged_photos)} photos")
         
         return {
             "success": True,
             "merged_cluster_id": cluster_id_1,
             "removed_cluster_id": cluster_id_2,
-            "name": final_name
+            "name": final_name,
+            "photos_moved": len(all_cluster2_photos),
+            "total_photos": len(merged_photos)
         }
     except Exception as e:
         print(f"[API_ERROR] Failed to merge clusters: {e}")
@@ -5210,6 +5206,7 @@ async def create_folder(request: CreateFolderRequest, silo_name: str = Query(Non
     
     CRITICAL SECURITY: silo_name parameter ensures folders are created in the correct silo only.
     """
+    check_read_only()  # Prevent folder creation in demo mode
     # CRITICAL SECURITY: Validate silo context
     if silo_name:
         _set_processing_silo(silo_name)
@@ -5315,6 +5312,7 @@ async def update_folder(folder_id: int, request: UpdateFolderRequest, silo_name:
     
     CRITICAL SECURITY: silo_name parameter ensures folder is updated in the correct silo only.
     """
+    check_read_only()  # Prevent folder updates in demo mode
     # CRITICAL SECURITY: Validate silo context
     if silo_name:
         _set_processing_silo(silo_name)
@@ -5343,6 +5341,13 @@ async def update_folder(folder_id: int, request: UpdateFolderRequest, silo_name:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/api/folders/{folder_id}")
+async def delete_folder(folder_id: int, recursive: bool = False, silo_name: str = Query(None)):
+    """Delete a folder.
+    
+    CRITICAL SECURITY: silo_name parameter ensures folder is deleted from the correct silo only.
+    """
+    check_read_only()  # Prevent folder deletion in demo mode
     # CRITICAL SECURITY: Validate silo context
     if silo_name:
         _set_processing_silo(silo_name)
@@ -5407,6 +5412,9 @@ async def get_folder_contents(folder_id: int, limit: int = 1000, offset: int = 0
 
 @app.post("/api/folders/{folder_id}/add-media", response_model=Dict[str, Any])
 async def add_media_to_folder(folder_id: int, request: AddMediaToFolderRequest, silo_name: str = Query(None)):
+    """Add media to folder."""
+    check_read_only()  # Prevent adding media in demo mode
+    check_read_only()  # Prevent adding media to folders in demo mode
     """Add one or more media files to a folder - HIGHLY OPTIMIZED for speed.
     
     CRITICAL SECURITY: silo_name parameter ensures media is added to folder in the correct silo only.
@@ -5448,6 +5456,9 @@ async def add_media_to_folder(folder_id: int, request: AddMediaToFolderRequest, 
 
 @app.post("/api/folders/{folder_id}/remove-media", response_model=Dict[str, Any])
 async def remove_media_from_folder(folder_id: int, request: AddMediaToFolderRequest, silo_name: str = Query(None)):
+    """Remove media from folder."""
+    check_read_only()  # Prevent removing media in demo mode
+    check_read_only()  # Prevent removing media from folders in demo mode
     """Remove media files from a folder.
     
     CRITICAL SECURITY: silo_name parameter ensures media is removed from folder in the correct silo only.

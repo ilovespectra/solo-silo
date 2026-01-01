@@ -56,7 +56,7 @@ export default function MediaGallery() {
     clearSelection,
   } = useFileSelection(mediaGridRef as React.RefObject<HTMLElement>);
 
-  const { indexingComplete, selectedMediaId, setSelectedMediaId, favorites, isFavorite, addFavorite, removeFavorite, loadFavorites, theme, setShowSetupWizard, setIsCreatingFolder, currentFolderId, navigationHistory, navigationIndex, navigateBack, navigateForward, folders, removeMediaFromFolder } =
+  const { indexingComplete, selectedMediaId, setSelectedMediaId, favorites, isFavorite, addFavorite, removeFavorite, loadFavorites, theme, setShowSetupWizard, setIsCreatingFolder, currentFolderId, navigationHistory, navigationIndex, navigateBack, navigateForward, folders, removeMediaFromFolder, showGettingStartedTour, gettingStartedStep } =
     useAppStore();
 
   const isVideo = (type: string) => {
@@ -441,6 +441,10 @@ export default function MediaGallery() {
                 theme === 'dark'
                   ? 'bg-orange-600 hover:bg-orange-700 text-white'
                   : 'bg-orange-600 hover:bg-orange-700 text-white'
+              } ${
+                showGettingStartedTour && gettingStartedStep === 1
+                  ? 'animate-pulse ring-4 ring-orange-400 ring-opacity-75 shadow-xl shadow-orange-400/50'
+                  : ''
               }`}
               title="Add another source directory"
             >
@@ -727,7 +731,7 @@ export default function MediaGallery() {
                             {/* Thumbnail */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=200&square=true`}
+                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover group-hover:scale-105 transition"
                               loading="lazy"
@@ -905,7 +909,7 @@ export default function MediaGallery() {
                           <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-300">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=60&square=true`}
+                              src={`http://127.0.0.1:8000/api/media/thumbnail/${item.id}?size=60&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover"
                               style={{ transform: `rotate(${item.rotation || 0}deg)` }}
