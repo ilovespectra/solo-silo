@@ -26,7 +26,10 @@ CACHE_BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "cache")
 DEFAULT_SILO_NAME = "default"
 
 # Demo mode configuration
-DEMO_SILO_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "public", "demo-silo")
+# Try backend/demo-silo first (for deployment), fallback to public/demo-silo (for local dev)
+DEMO_SILO_PATH_BACKEND = os.path.join(os.path.dirname(__file__), "..", "demo-silo")
+DEMO_SILO_PATH_PUBLIC = os.path.join(os.path.dirname(__file__), "..", "..", "public", "demo-silo")
+DEMO_SILO_PATH = DEMO_SILO_PATH_BACKEND if os.path.exists(DEMO_SILO_PATH_BACKEND) else DEMO_SILO_PATH_PUBLIC
 DEMO_MODE_ENABLED = not os.path.exists(SILOS_FILE)  # Auto-detect demo mode
 
 
