@@ -10,13 +10,16 @@ async function ensureBackendRunning(): Promise<void> {
   if (backendReady) return backendReady;
   backendReady = (async () => {
     // Check if backend is available via Next.js API route
-    for (let i = 0; i < 10; i++) {
-      try {
-        const res = await fetch(`/api/health`, { method: 'GET', signal: AbortSignal.timeout(2000) });
-        if (res.ok) return;
-      } catch {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+    // This will work in both demo mode and local mode since
+    // /api/health returns OK immediately in demo mode
+    try {
+      const res = await fetch(`/api/health`, { 
+        method: 'GET', 
+        signal: AbortSignal.timeout(3000) 
+      });
+      if (res.ok) return;
+    } catch (error) {
+      console.error('[backend] Health check failed:', error);
     }
   })();
   return backendReady;
