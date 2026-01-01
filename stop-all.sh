@@ -6,7 +6,7 @@ orange='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-echo -e "${orange}Stopping Dudlefotos services...${NC}"
+echo -e "${orange}Stopping Silo services...${NC}"
 
 # Kill all Python processes (backend)
 if pgrep -f "python.*uvicorn.*8000" > /dev/null; then

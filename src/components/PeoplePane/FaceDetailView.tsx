@@ -143,7 +143,6 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
         return updated;
       });
       
-      // If this was the last photo, close the detail view and refresh
       if (newPhotos.length === 0) {
         console.log('Last photo removed, closing cluster detail view');
         onClose();

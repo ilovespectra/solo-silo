@@ -337,7 +337,6 @@ export async function getReclusterStatus(siloName?: string): Promise<{is_running
   }, siloName);
 }
 
-// Export API_BASE and helper for constructing API URLs
 export { API_BASE };
 export function apiUrl(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;

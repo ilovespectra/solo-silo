@@ -18,7 +18,7 @@ interface UseSearchHistoryReturn {
   removeFromHistory: (query: string) => void;
 }
 
-const HISTORY_KEY_PREFIX = 'dudlefotos_search_history';
+const HISTORY_KEY_PREFIX = 'silo_search_history';
 const MAX_HISTORY = 50;
 
 function getHistoryKey(siloName?: string): string {

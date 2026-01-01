@@ -1,6 +1,6 @@
 # Demo Silo
 
-This is a read-only demo silo for public deployments of Dudlefotos.
+This is a read-only demo silo for public deployments of solo: silo.
 
 ## Contents
 

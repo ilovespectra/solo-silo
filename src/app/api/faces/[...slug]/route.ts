@@ -1,4 +1,3 @@
-// Demo clusters from public/demo-silo/people.json with real test-files images
 const DEMO_CLUSTERS = [
   {
     id: 'person_2',
@@ -65,9 +64,8 @@ interface DemoPhoto {
   is_confirmed: boolean;
 }
 
-// Demo photos for each cluster using real test-files images
 const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
-  person_9: [ // walken
+  person_9: [
     { id: '440', image_path: '/test-files/images/walken/download.jpeg', thumbnail: '/test-files/images/walken/download.jpeg', date_taken: 1522262442, similarity_score: 0.95, is_confirmed: true },
     { id: '441', image_path: '/test-files/images/walken/download (1).jpeg', thumbnail: '/test-files/images/walken/download (1).jpeg', date_taken: 1522262442, similarity_score: 0.94, is_confirmed: true },
     { id: '442', image_path: '/test-files/images/walken/download (2).jpeg', thumbnail: '/test-files/images/walken/download (2).jpeg', date_taken: 1522262442, similarity_score: 0.93, is_confirmed: true },
@@ -79,12 +77,12 @@ const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
     { id: '448', image_path: '/test-files/images/walken/download (8).jpeg', thumbnail: '/test-files/images/walken/download (8).jpeg', date_taken: 1522262442, similarity_score: 0.87, is_confirmed: false },
     { id: '449', image_path: '/test-files/images/walken/download (9).jpeg', thumbnail: '/test-files/images/walken/download (9).jpeg', date_taken: 1522262442, similarity_score: 0.86, is_confirmed: false }
   ],
-  person_1: [ // luka dončić
+  person_1: [
     { id: '407', image_path: '/test-files/images/luka/download (5).jpeg', thumbnail: '/test-files/images/luka/download (5).jpeg', date_taken: 1767258236, similarity_score: 0.91, is_confirmed: true },
     { id: '439', image_path: '/test-files/images/luka/download (10).jpeg', thumbnail: '/test-files/images/luka/download (10).jpeg', date_taken: 1767258236, similarity_score: 0.90, is_confirmed: true },
     { id: '411', image_path: '/test-files/images/luka/download (8).jpeg', thumbnail: '/test-files/images/luka/download (8).jpeg', date_taken: 1767258236, similarity_score: 0.89, is_confirmed: true }
   ],
-  person_2: [ // bowie
+  person_2: [
     { id: '14', image_path: '/test-files/images/bowie/download.jpeg', thumbnail: '/test-files/images/bowie/download.jpeg', date_taken: 1767258236, similarity_score: 0.96, is_confirmed: true },
     { id: '15', image_path: '/test-files/images/bowie/download (1).jpeg', thumbnail: '/test-files/images/bowie/download (1).jpeg', date_taken: 1767258236, similarity_score: 0.95, is_confirmed: true },
     { id: '16', image_path: '/test-files/images/bowie/download (2).jpeg', thumbnail: '/test-files/images/bowie/download (2).jpeg', date_taken: 1767258236, similarity_score: 0.94, is_confirmed: true },
@@ -97,7 +95,7 @@ const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
     { id: '23', image_path: '/test-files/images/bowie/download (9).jpeg', thumbnail: '/test-files/images/bowie/download (9).jpeg', date_taken: 1767258236, similarity_score: 0.87, is_confirmed: false },
     { id: '24', image_path: '/test-files/images/bowie/download (10).jpeg', thumbnail: '/test-files/images/bowie/download (10).jpeg', date_taken: 1767258236, similarity_score: 0.86, is_confirmed: false }
   ],
-  person_0: [ // paula abdul
+  person_0: [
     { id: '2', image_path: '/test-files/images/abdul/download (5).jpeg', thumbnail: '/test-files/images/abdul/download (5).jpeg', date_taken: 1767258236, similarity_score: 0.98, is_confirmed: true },
     { id: '3', image_path: '/test-files/images/abdul/download.jpeg', thumbnail: '/test-files/images/abdul/download.jpeg', date_taken: 1767258236, similarity_score: 0.96, is_confirmed: true },
     { id: '4', image_path: '/test-files/images/abdul/download (1).jpeg', thumbnail: '/test-files/images/abdul/download (1).jpeg', date_taken: 1767258236, similarity_score: 0.95, is_confirmed: false },
@@ -111,7 +109,7 @@ const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
     { id: '12', image_path: '/test-files/images/abdul/download (12).jpeg', thumbnail: '/test-files/images/abdul/download (12).jpeg', date_taken: 1767258236, similarity_score: 0.87, is_confirmed: false },
     { id: '13', image_path: '/test-files/images/abdul/download (1).jpeg', thumbnail: '/test-files/images/abdul/download (1).jpeg', date_taken: 1767258236, similarity_score: 0.86, is_confirmed: false }
   ],
-  person_8: [ // tito
+  person_8: [
     { id: '428', image_path: '/test-files/images/tito/download.jpeg', thumbnail: '/test-files/images/tito/download.jpeg', date_taken: 1767258236, similarity_score: 0.97, is_confirmed: true },
     { id: '429', image_path: '/test-files/images/tito/download (1).jpeg', thumbnail: '/test-files/images/tito/download (1).jpeg', date_taken: 1767258236, similarity_score: 0.96, is_confirmed: false },
     { id: '430', image_path: '/test-files/images/tito/download (2).jpeg', thumbnail: '/test-files/images/tito/download (2).jpeg', date_taken: 1767258236, similarity_score: 0.95, is_confirmed: false },
@@ -124,7 +122,7 @@ const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
     { id: '437', image_path: '/test-files/images/tito/download (9).jpeg', thumbnail: '/test-files/images/tito/download (9).jpeg', date_taken: 1767258236, similarity_score: 0.88, is_confirmed: false },
     { id: '438', image_path: '/test-files/images/tito/download (10).jpeg', thumbnail: '/test-files/images/tito/download (10).jpeg', date_taken: 1767258236, similarity_score: 0.87, is_confirmed: false }
   ],
-  person_3: [ // unknown
+  person_3: [
     { id: '397', image_path: '/test-files/images/luka/download (5).jpeg', thumbnail: '/test-files/images/luka/download (5).jpeg', date_taken: 1767258236, similarity_score: 0.99, is_confirmed: true },
     { id: '398', image_path: '/test-files/images/luka/download (6).jpeg', thumbnail: '/test-files/images/luka/download (6).jpeg', date_taken: 1767258236, similarity_score: 0.98, is_confirmed: false },
     { id: '399', image_path: '/test-files/images/luka/download (7).jpeg', thumbnail: '/test-files/images/luka/download (7).jpeg', date_taken: 1767258236, similarity_score: 0.97, is_confirmed: true },
@@ -153,14 +151,11 @@ export async function GET(
   const { slug } = await params;
   const pathSuffix = slug.join('/');
   
-  // Return demo data
   if (isDemoMode()) {
-    // Return clusters list
     if (pathSuffix === 'clusters') {
       console.log('[Demo Mode] Returning demo face clusters');
       return Response.json(DEMO_CLUSTERS);
     }
-    // Return photos for specific cluster
     const clusterId = slug[0];
     if (clusterId && DEMO_PHOTOS[clusterId]) {
       console.log(`[Demo Mode] Returning photos for ${clusterId}`);

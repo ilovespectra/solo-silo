@@ -1,8 +1,6 @@
-// Proxy for /api/people list endpoint to new /api/faces/clusters backend endpoint
 export async function GET(request: Request) {
   const url = new URL(request.url);
   
-  // Forward query parameters like include_hidden if present
   const backendUrl = `http://127.0.0.1:8000/api/faces/clusters${url.search}`;
   
   try {

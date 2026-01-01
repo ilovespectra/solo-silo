@@ -3,8 +3,8 @@
  * Stores audio file list for fast subsequent loads
  */
 
-const AUDIO_CACHE_KEY_PREFIX = 'dudlefotos-audio-cache';
-const AUDIO_CACHE_EXPIRY_KEY_PREFIX = 'dudlefotos-audio-cache-expiry';
+const AUDIO_CACHE_KEY_PREFIX = 'silo-audio-cache';
+const AUDIO_CACHE_EXPIRY_KEY_PREFIX = 'silo-audio-cache-expiry';
 const CACHE_DURATION_MS = 1000 * 60 * 60;
 
 function getAudioCacheKey(siloName?: string): string {
@@ -45,7 +45,6 @@ export function getCachedAudio(siloName?: string): AudioItem[] | null {
 
     const expiryTime = parseInt(expiry, 10);
     if (Date.now() > expiryTime) {
-      // Cache expired
       clearAudioCache(siloName);
       return null;
     }
@@ -59,9 +58,6 @@ export function getCachedAudio(siloName?: string): AudioItem[] | null {
   }
 }
 
-/**
- * Store audio files in cache
- */
 export function cacheAudio(items: AudioItem[], siloName?: string): void {
   try {
     const cacheKey = getAudioCacheKey(siloName);
@@ -80,9 +76,6 @@ export function cacheAudio(items: AudioItem[], siloName?: string): void {
   }
 }
 
-/**
- * Clear cached audio data
- */
 export function clearAudioCache(siloName?: string): void {
   try {
     const cacheKey = getAudioCacheKey(siloName);

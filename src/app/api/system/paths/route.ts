@@ -21,21 +21,16 @@ export async function GET() {
       Videos: path.join(homeDir, 'Videos'),
     };
 
-    // Platform-specific paths
     if (platform === 'darwin') {
-      // macOS specific
       commonPaths['iCloud Drive'] = path.join(homeDir, 'Library/Mobile Documents/com~apple~CloudDocs');
     } else if (platform === 'win32') {
-      // Windows specific
       commonPaths['C: Drive'] = 'C:\\';
       commonPaths['User Folder'] = homeDir;
     } else if (platform === 'linux') {
-      // Linux specific
       commonPaths['Root'] = '/';
       commonPaths['Mnt'] = '/mnt';
     }
 
-    // Verify paths exist
     const validPaths: Record<string, string> = {};
     for (const [label, dirPath] of Object.entries(commonPaths)) {
       if (fs.existsSync(dirPath)) {

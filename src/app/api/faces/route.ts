@@ -1,4 +1,3 @@
-// Demo clusters from public/demo-silo/people.json with real test-files images
 const DEMO_CLUSTERS = [
   {
     id: 'person_2',
@@ -61,9 +60,8 @@ function isDemoMode() {
 }
 
 export async function GET(request: Request) {
-  // Return demo clusters on Vercel
   if (isDemoMode()) {
-    console.log('[Demo Mode] Returning demo face clusters');
+    console.log('[demo mode] returning demo face clusters');
     return Response.json(DEMO_CLUSTERS);
   }
 
@@ -79,7 +77,7 @@ export async function GET(request: Request) {
     });
     
     if (!response.ok) {
-      return Response.json({ error: 'Backend request failed' }, { status: response.status });
+      return Response.json({ error: 'backend request failed' }, { status: response.status });
     }
     
     const data = await response.json();

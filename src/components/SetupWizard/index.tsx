@@ -55,7 +55,6 @@ export default function SetupWizard() {
   ];
 
   const handleComplete = () => {
-    // Grant all permissions by default since they're required for operation
     const allPermissions: Permissions = {
       readFiles: true,
       listDirectories: true,
@@ -281,7 +280,6 @@ export default function SetupWizard() {
     setProgress({ percentage: 0, processed: 0, total: 0, status: 'scanning' });
 
     try {
-      // Grant all required permissions
       const allPermissions: Permissions = {
         readFiles: true,
         listDirectories: true,

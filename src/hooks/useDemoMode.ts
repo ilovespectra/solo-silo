@@ -25,7 +25,6 @@ export function useDemoMode() {
       } catch (err) {
         console.error('Failed to detect demo mode:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
-        // Default to non-demo mode on error
         setDemoMode(false);
       } finally {
         setIsLoading(false);

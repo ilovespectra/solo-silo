@@ -115,6 +115,7 @@ build_*.py
 
 # Test result files
 face_clustering_results.json
+face_detection_service.log
 face_test_results.json
 
 # SQL query files

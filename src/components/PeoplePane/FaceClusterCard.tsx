@@ -31,7 +31,6 @@ export default function FaceClusterCard({ cluster, onClick, onContextMenu, onRot
     if (cluster.primary_thumbnail.startsWith('http')) {
       return cluster.primary_thumbnail;
     }
-    // If path starts with /, it's a public static file (demo mode)
     if (cluster.primary_thumbnail.startsWith('/')) {
       return cluster.primary_thumbnail;
     }
@@ -166,7 +165,7 @@ export default function FaceClusterCard({ cluster, onClick, onContextMenu, onRot
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
               }`}
             >
-              Unnamed
+              unnamed
             </span>
           )}
         </p>

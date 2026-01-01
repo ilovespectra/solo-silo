@@ -112,7 +112,7 @@ def analyze_space():
 
 
 def main():
-    print("\n🧹 Dudlefotos Cleanup Utility")
+    print("\n🧹 Silo Cleanup Utility")
     print("=" * 60)
     
     # What we're keeping (critical for the app)

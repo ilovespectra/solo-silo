@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
       path.join(homeDir, 'Videos'),
     ];
 
-    // Search for the folder in common locations
     for (const searchPath of searchPaths) {
       try {
         const items = fs.readdirSync(searchPath, { withFileTypes: true });
@@ -36,15 +35,13 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch {
-        // Continue to next search path if one fails
         continue;
       }
     }
 
-    // If not found in common locations, try deeper search in home directory
     try {
       const searchDirectory = (dir: string, depth: number = 0): string | null => {
-        if (depth > 2) return null; // Limit depth to avoid slow searches
+        if (depth > 2) return null;
 
         try {
           const items = fs.readdirSync(dir, { withFileTypes: true });
@@ -54,7 +51,6 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          // Search subdirectories
           for (const item of items) {
             if (item.isDirectory() && !item.name.startsWith('.')) {
               const result = searchDirectory(path.join(dir, item.name), depth + 1);
@@ -62,7 +58,6 @@ export async function POST(request: NextRequest) {
             }
           }
         } catch {
-          // Ignore permission errors
         }
 
         return null;
@@ -73,10 +68,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ path: foundPath });
       }
     } catch {
-      // Continue with fallback
     }
 
-    // Fallback: return the folder name as-is, backend will validate
     return NextResponse.json({ path: folderName });
   } catch (error) {
     console.error('Error resolving path:', error);

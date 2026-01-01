@@ -75,28 +75,23 @@ export const GettingStartedTour: React.FC = () => {
 
   const [dismissed, setDismissed] = useState(false);
 
-  // Auto-show tour on first visit if not dismissed
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const dismissed = localStorage.getItem('tour-dismissed');
-      const tourCompleted = localStorage.getItem('tour-completed');
       
       if (dismissed === 'true') {
-        // Use setTimeout to avoid setState during render
         setTimeout(() => {
           setDismissed(true);
           setShowGettingStartedTour(false);
         }, 0);
-      } else if (tourCompleted !== 'true') {
-        // Show tour on first visit
+      } else {
         setTimeout(() => {
           setShowGettingStartedTour(true);
         }, 0);
       }
     }
-  }, [setShowGettingStartedTour]); // Only run once on mount
+  }, [setShowGettingStartedTour]);
 
-  // Auto-navigate to the target view when step changes
   useEffect(() => {
     if (showGettingStartedTour && !dismissed) {
       const currentStep = TOUR_STEPS[gettingStartedStep];
@@ -107,10 +102,8 @@ export const GettingStartedTour: React.FC = () => {
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setCurrentView, dismissed]);
 
-  // Auto-advance to indexing step when user is on add-source step and navigates to settings
   useEffect(() => {
     if (showGettingStartedTour && gettingStartedStep === 1 && currentView === 'settings') {
-      // Set flag to auto-open debug log in Settings component
       setTourAutoOpenDebugLog(true);
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog]);
@@ -129,7 +122,6 @@ export const GettingStartedTour: React.FC = () => {
       const nextStep = gettingStartedStep + 1;
       setGettingStartedStep(nextStep);
       
-      // Navigation will be handled by the useEffect above
       const nextStepData = TOUR_STEPS[nextStep];
       if (nextStepData.action) {
         nextStepData.action();
@@ -139,7 +131,6 @@ export const GettingStartedTour: React.FC = () => {
     }
   };
 
-  // Check if we can proceed to next step (for steps that require being on correct view)
   const canProceed = () => {
     if (!currentStep.targetView) return true;
     return currentView === currentStep.targetView;
@@ -158,9 +149,6 @@ export const GettingStartedTour: React.FC = () => {
   };
 
   const handleComplete = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('tour-completed', 'true');
-    }
     setShowGettingStartedTour(false);
     setGettingStartedStep(0);
   };
@@ -207,7 +195,7 @@ export const GettingStartedTour: React.FC = () => {
           </p>
           {currentStep.targetView && (
             <div className="mt-3 px-3 py-2 bg-orange-500 bg-opacity-10 rounded text-orange-500 text-xs font-medium">
-              👉 Now viewing: {currentStep.targetView}
+              now viewing: {currentStep.targetView}
             </div>
           )}
         </div>

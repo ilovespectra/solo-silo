@@ -19,7 +19,7 @@ import { useDemoMode } from '@/hooks/useDemoMode';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard } = useAppStore();
+  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard, setShowGettingStartedTour, setGettingStartedStep } = useAppStore();
   const [mounted, setMounted] = useState(false);
   const [hasIndexedFiles, setHasIndexedFiles] = useState(false);
   const [showSiloManager, setShowSiloManager] = useState(false);
@@ -28,23 +28,30 @@ export default function Home() {
 
   useIndexingStatus();
 
+  const handleRestartTour = () => {
+    localStorage.removeItem('tour-dismissed');
+    
+    setGettingStartedStep(0);
+    setShowGettingStartedTour(true);
+  };
+
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        console.log('🔍 Checking for indexed files...');
+        console.log('🔍 checking for indexed files...');
         const response = await fetch('http://localhost:8000/api/status/has-indexed-files', {
           signal: AbortSignal.timeout(5000),
         });
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ Database check successful:', data);
+          console.log('database check successful:', data);
           setHasIndexedFiles(data.has_indexed_files);
         } else {
-          console.warn('⚠️ Failed to check indexed files:', response.status, response.statusText);
+          console.warn('⚠️ failed to check indexed files:', response.status, response.statusText);
           setHasIndexedFiles(false);
         }
       } catch (err) {
-        console.error('❌ Failed to initialize app:', err);
+        console.error('❌ failed to initialize app:', err);
         setHasIndexedFiles(false);
       } finally {
         setMounted(true);
@@ -103,6 +110,31 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleRestartTour}
+              className={`p-2 rounded-lg transition ${
+                theme === 'dark'
+                  ? 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+              title="Restart Getting Started Tour"
+              aria-label="Restart Getting Started Tour"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="w-5 h-5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </button>
             <SiloSelector onSiloSwitch={async () => {
               try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'}/api/status/has-indexed-files`, {

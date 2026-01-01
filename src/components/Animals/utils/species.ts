@@ -103,7 +103,6 @@ export const getConfidencePercentage = (confidence: number): string => {
   return `${Math.round(confidence * 100)}%`;
 };
 
-// Sort functions
 export const sortAnimalsByPhotoCount = (
   a: { photo_count: number },
   b: { photo_count: number },
@@ -135,7 +134,6 @@ export const sortAnimalsByDate = (
   return order === 'desc' ? bDate - aDate : aDate - bDate;
 };
 
-// Filter functions
 export const filterBySpecies = (
   species: SpeciesType | 'all',
   animalSpecies: SpeciesType | null

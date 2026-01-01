@@ -5,7 +5,7 @@
 import { FeedbackItem, FeedbackAction } from './types';
 
 const FEEDBACK_STORE_NAME = 'search_feedback_queue';
-const DB_NAME = 'dudlefotos_app';
+const DB_NAME = 'silo_app';
 const DB_VERSION = 1;
 
 export class FeedbackQueueManager {
