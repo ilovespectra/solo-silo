@@ -27,6 +27,18 @@ const getPermissions = (req: NextRequest): Permissions => {
 };
 
 export async function GET(req: NextRequest) {
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  
+  if (isDemoMode) {
+    // In demo mode, return empty directory structure
+    return NextResponse.json({
+      path: '/',
+      name: 'demo',
+      isDirectory: true,
+      children: []
+    });
+  }
+  
   try {
     const { searchParams } = new URL(req.url);
     const dirPath = searchParams.get('path');
