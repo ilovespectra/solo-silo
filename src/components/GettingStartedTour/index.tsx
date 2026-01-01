@@ -51,7 +51,7 @@ const DEMO_TOUR_STEPS: TourStep[] = [
   {
     id: 'complete',
     title: '✅ explore at your own pace!',
-    description: 'feel free to explore all the demo features. when ready to use silo with your own photos, visit the github repo for setup instructions.\n\nhttps://github.com/[your-repo]',
+    description: 'feel free to explore all the demo features. when ready to use silo with your own photos, visit the github repo for setup instructions.\n\nhttps://github.com/ilovespectra/solo-silo',
   },
 ];
 
