@@ -1,15 +1,18 @@
 import { MediaFile } from '@/types/backend';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+// In demo mode, we call Next.js API routes which return mock data
+// In local mode, API routes proxy to backend on port 8000
+const API_BASE = '';
 
 let backendReady: Promise<void> | null = null;
 
 async function ensureBackendRunning(): Promise<void> {
   if (backendReady) return backendReady;
   backendReady = (async () => {
+    // Check if backend is available via Next.js API route
     for (let i = 0; i < 10; i++) {
       try {
-        const res = await fetch(`${API_BASE}/api/health`, { method: 'GET', signal: AbortSignal.timeout(2000) });
+        const res = await fetch(`/api/health`, { method: 'GET', signal: AbortSignal.timeout(2000) });
         if (res.ok) return;
       } catch {
         await new Promise((resolve) => setTimeout(resolve, 500));

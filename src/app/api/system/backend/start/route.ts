@@ -1,5 +1,3 @@
-
-
 import { NextResponse } from 'next/server';
 
 
@@ -7,6 +5,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 async function isBackendUp() {
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  if (isDemoMode) return true; // Backend always "up" in demo mode
+  
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 500);
@@ -19,6 +20,9 @@ async function isBackendUp() {
 }
 
 async function checkBackend() {
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  if (isDemoMode) return true; // Backend always "up" in demo mode
+  
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 500);
@@ -36,6 +40,12 @@ export async function GET() {
 }
 
 export async function POST() {
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  
+  if (isDemoMode) {
+    return NextResponse.json({ status: 'running', mode: 'demo' });
+  }
+  
   try {
     const isUp = await isBackendUp();
     if (isUp) {
