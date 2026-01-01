@@ -1,0 +1,3671 @@
+[
+  {
+    "date_taken": "2025-12-31",
+    "items": [
+      {
+        "id": 1,
+        "path": "/test-files/docs/1237w-QlIJGIW-Mjg.webp",
+        "name": "1237w-QlIJGIW-Mjg.webp",
+        "type": "image",
+        "size": 143698,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/docs/bible.jpeg",
+        "name": "bible.jpeg",
+        "type": "image",
+        "size": 7483,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/docs/bible062824.jpg",
+        "name": "bible062824.jpg",
+        "type": "image",
+        "size": 187696,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/docs/big_4cda85d892a5c0b5dd63b510a9c83e9c9d06e739.jpg",
+        "name": "big_4cda85d892a5c0b5dd63b510a9c83e9c9d06e739.jpg",
+        "type": "image",
+        "size": 113592,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/docs/declaration of independence-1.webp",
+        "name": "declaration of independence-1.webp",
+        "type": "image",
+        "size": 290588,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/docs/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 9406,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/docs/images (1).jpeg",
+        "name": "images (1).jpeg",
+        "type": "image",
+        "size": 8154,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/docs/images.jpeg",
+        "name": "images.jpeg",
+        "type": "image",
+        "size": 7646,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/abdul/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 6004,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/abdul/download (12).jpeg",
+        "name": "download (12).jpeg",
+        "type": "image",
+        "size": 8989,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/abdul/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 9979,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/abdul/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 7719,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/abdul/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 5738,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/abdul/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 8824,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/abdul/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 12442,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/abdul/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 6319,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/abdul/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 13684,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/abdul/download (9).jpeg",
+        "name": "download (9).jpeg",
+        "type": "image",
+        "size": 5963,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/abdul/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 8354,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/bowie/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 4736,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/bowie/download (10).jpeg",
+        "name": "download (10).jpeg",
+        "type": "image",
+        "size": 4768,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/bowie/download (11).jpeg",
+        "name": "download (11).jpeg",
+        "type": "image",
+        "size": 6845,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/bowie/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 5073,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/bowie/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 8692,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/bowie/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 5740,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/bowie/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 9570,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/bowie/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 7859,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/bowie/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 4888,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/bowie/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 7706,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/bowie/download (9).jpeg",
+        "name": "download (9).jpeg",
+        "type": "image",
+        "size": 8690,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/bowie/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 6003,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/cars/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 9471,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/cars/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 9608,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/cars/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 10486,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/cars/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 8919,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/cars/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 4891,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/cars/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 6571,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/cars/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 9937,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/cars/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 9140,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/cars/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 8799,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/flowers/daisy/10140303196_b88d3d6cec_jpg.rf.ffe380b34f7886e83d843b8c3ec04e8c.jpg",
+        "name": "10140303196_b88d3d6cec_jpg.rf.ffe380b34f7886e83d843b8c3ec04e8c.jpg",
+        "type": "image",
+        "size": 34735,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/flowers/daisy/10437754174_22ec990b77_m_jpg.rf.56da7cdfbe45bdded2e31374953d470e.jpg",
+        "name": "10437754174_22ec990b77_m_jpg.rf.56da7cdfbe45bdded2e31374953d470e.jpg",
+        "type": "image",
+        "size": 18658,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/flowers/daisy/10437770546_8bb6f7bdd3_m_jpg.rf.539b70c93afeae3554329b43824a5ca4.jpg",
+        "name": "10437770546_8bb6f7bdd3_m_jpg.rf.539b70c93afeae3554329b43824a5ca4.jpg",
+        "type": "image",
+        "size": 18745,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/flowers/daisy/10555815624_dc211569b0_jpg.rf.51b3ab04fd97acd13cdebb3aa2d11dbe.jpg",
+        "name": "10555815624_dc211569b0_jpg.rf.51b3ab04fd97acd13cdebb3aa2d11dbe.jpg",
+        "type": "image",
+        "size": 34751,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/flowers/daisy/10712722853_5632165b04_jpg.rf.9478fbc7533f7f282c80e8344e01eb93.jpg",
+        "name": "10712722853_5632165b04_jpg.rf.9478fbc7533f7f282c80e8344e01eb93.jpg",
+        "type": "image",
+        "size": 21593,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/flowers/daisy/11023272144_fce94401f2_m_jpg.rf.7c529c710ef5e561b4065e103e9a597d.jpg",
+        "name": "11023272144_fce94401f2_m_jpg.rf.7c529c710ef5e561b4065e103e9a597d.jpg",
+        "type": "image",
+        "size": 27295,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/flowers/daisy/11124324295_503f3a0804_jpg.rf.90cbd83dacc888329199a4dbbe09f763.jpg",
+        "name": "11124324295_503f3a0804_jpg.rf.90cbd83dacc888329199a4dbbe09f763.jpg",
+        "type": "image",
+        "size": 37989,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/flowers/daisy/12601254324_3cb62c254a_m_jpg.rf.813ccf6f0d9cf525b51c50cd00e5f0a1.jpg",
+        "name": "12601254324_3cb62c254a_m_jpg.rf.813ccf6f0d9cf525b51c50cd00e5f0a1.jpg",
+        "type": "image",
+        "size": 25271,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/flowers/daisy/13583238844_573df2de8e_m_jpg.rf.3200e1861773f7e3c93ba079feac1af3.jpg",
+        "name": "13583238844_573df2de8e_m_jpg.rf.3200e1861773f7e3c93ba079feac1af3.jpg",
+        "type": "image",
+        "size": 28850,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/flowers/daisy/13977181862_f8237b6b52_jpg.rf.9dc549f8d59504920f736cd222e18e90.jpg",
+        "name": "13977181862_f8237b6b52_jpg.rf.9dc549f8d59504920f736cd222e18e90.jpg",
+        "type": "image",
+        "size": 24349,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/flowers/daisy/14088053307_1a13a0bf91_n_jpg.rf.4c3cdc6ecfb6e4fbd8a718124cb043ae.jpg",
+        "name": "14088053307_1a13a0bf91_n_jpg.rf.4c3cdc6ecfb6e4fbd8a718124cb043ae.jpg",
+        "type": "image",
+        "size": 54484,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/flowers/daisy/14245834619_153624f836_jpg.rf.f51e28533bb7efee3c3de6d7bb200f23.jpg",
+        "name": "14245834619_153624f836_jpg.rf.f51e28533bb7efee3c3de6d7bb200f23.jpg",
+        "type": "image",
+        "size": 14068,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 13,
+        "path": "/test-files/images/flowers/daisy/14330343061_99478302d4_m_jpg.rf.d37aa8b3f0070ec5f4fa6a56af925d60.jpg",
+        "name": "14330343061_99478302d4_m_jpg.rf.d37aa8b3f0070ec5f4fa6a56af925d60.jpg",
+        "type": "image",
+        "size": 40296,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 14,
+        "path": "/test-files/images/flowers/daisy/14332947164_9b13513c71_m_jpg.rf.d35430c426788f82287f1786ccf49c1a.jpg",
+        "name": "14332947164_9b13513c71_m_jpg.rf.d35430c426788f82287f1786ccf49c1a.jpg",
+        "type": "image",
+        "size": 38765,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 15,
+        "path": "/test-files/images/flowers/daisy/14350958832_29bdd3a254_jpg.rf.8334cf8042e62dc55ae0ff146eab9d9e.jpg",
+        "name": "14350958832_29bdd3a254_jpg.rf.8334cf8042e62dc55ae0ff146eab9d9e.jpg",
+        "type": "image",
+        "size": 21418,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 16,
+        "path": "/test-files/images/flowers/daisy/144099102_bf63a41e4f_n_jpg.rf.a8863e53ad302e4c4aacef8347664c73.jpg",
+        "name": "144099102_bf63a41e4f_n_jpg.rf.a8863e53ad302e4c4aacef8347664c73.jpg",
+        "type": "image",
+        "size": 60900,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 17,
+        "path": "/test-files/images/flowers/daisy/14507818175_05219b051c_m_jpg.rf.3b04f0b1aadf954164f74e48f4acf4f9.jpg",
+        "name": "14507818175_05219b051c_m_jpg.rf.3b04f0b1aadf954164f74e48f4acf4f9.jpg",
+        "type": "image",
+        "size": 19049,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 18,
+        "path": "/test-files/images/flowers/daisy/14554906452_35f066ffe9_n_jpg.rf.9b2032f6e0e8ac6a2c232d6730adb1c1.jpg",
+        "name": "14554906452_35f066ffe9_n_jpg.rf.9b2032f6e0e8ac6a2c232d6730adb1c1.jpg",
+        "type": "image",
+        "size": 67758,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 19,
+        "path": "/test-files/images/flowers/daisy/14698531521_0c2f0c6539_jpg.rf.787d556676fe7d11fe3909353835a730.jpg",
+        "name": "14698531521_0c2f0c6539_jpg.rf.787d556676fe7d11fe3909353835a730.jpg",
+        "type": "image",
+        "size": 40591,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 20,
+        "path": "/test-files/images/flowers/daisy/14921511479_7b0a647795_jpg.rf.eef04b31cccfa553517ee65e637646f0.jpg",
+        "name": "14921511479_7b0a647795_jpg.rf.eef04b31cccfa553517ee65e637646f0.jpg",
+        "type": "image",
+        "size": 14896,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 21,
+        "path": "/test-files/images/flowers/daisy/15207766_fc2f1d692c_n_jpg.rf.70648115586fcb136c3d337ab75549f1.jpg",
+        "name": "15207766_fc2f1d692c_n_jpg.rf.70648115586fcb136c3d337ab75549f1.jpg",
+        "type": "image",
+        "size": 30617,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 22,
+        "path": "/test-files/images/flowers/daisy/15327813273_06cdf42210_jpg.rf.1d82d7702ec0a1577ba9304b56b089c0.jpg",
+        "name": "15327813273_06cdf42210_jpg.rf.1d82d7702ec0a1577ba9304b56b089c0.jpg",
+        "type": "image",
+        "size": 37166,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 23,
+        "path": "/test-files/images/flowers/daisy/154332674_453cea64f4_jpg.rf.6c73e06882f40a242256192b6b0cd797.jpg",
+        "name": "154332674_453cea64f4_jpg.rf.6c73e06882f40a242256192b6b0cd797.jpg",
+        "type": "image",
+        "size": 38569,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 24,
+        "path": "/test-files/images/flowers/daisy/162362897_1d21b70621_m_jpg.rf.4bca1a07f884e7c5e21593ff199a645b.jpg",
+        "name": "162362897_1d21b70621_m_jpg.rf.4bca1a07f884e7c5e21593ff199a645b.jpg",
+        "type": "image",
+        "size": 29906,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 25,
+        "path": "/test-files/images/flowers/daisy/16291797949_a1b1b7c2bd_n_jpg.rf.dea8f63ec1fc40cd763eac5780f80050.jpg",
+        "name": "16291797949_a1b1b7c2bd_n_jpg.rf.dea8f63ec1fc40cd763eac5780f80050.jpg",
+        "type": "image",
+        "size": 26405,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 26,
+        "path": "/test-files/images/flowers/daisy/16323838000_3818bce5c6_n_jpg.rf.23a0cb3c8aa1ef099deaea62d36fa8ef.jpg",
+        "name": "16323838000_3818bce5c6_n_jpg.rf.23a0cb3c8aa1ef099deaea62d36fa8ef.jpg",
+        "type": "image",
+        "size": 47839,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 27,
+        "path": "/test-files/images/flowers/daisy/16819071290_471d99e166_m_jpg.rf.fa518ab30276578586959fe5b8c1d0b7.jpg",
+        "name": "16819071290_471d99e166_m_jpg.rf.fa518ab30276578586959fe5b8c1d0b7.jpg",
+        "type": "image",
+        "size": 31901,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 28,
+        "path": "/test-files/images/flowers/daisy/169371301_d9b91a2a42_jpg.rf.58fab26a8e228e87ec24e221143ff07b.jpg",
+        "name": "169371301_d9b91a2a42_jpg.rf.58fab26a8e228e87ec24e221143ff07b.jpg",
+        "type": "image",
+        "size": 71473,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 29,
+        "path": "/test-files/images/flowers/daisy/172882635_4cc7b86731_m_jpg.rf.41433c60b4f982822cfe6197ad5bd20c.jpg",
+        "name": "172882635_4cc7b86731_m_jpg.rf.41433c60b4f982822cfe6197ad5bd20c.jpg",
+        "type": "image",
+        "size": 28478,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 30,
+        "path": "/test-files/images/flowers/daisy/174131220_c853df1287_jpg.rf.64fd3bdadae8ddf9b65034c2a2fa37cb.jpg",
+        "name": "174131220_c853df1287_jpg.rf.64fd3bdadae8ddf9b65034c2a2fa37cb.jpg",
+        "type": "image",
+        "size": 29667,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 31,
+        "path": "/test-files/images/flowers/daisy/17821980772_35164ae1e8_n_jpg.rf.cbc53ae8847b4da84f638c9ad62d7aa5.jpg",
+        "name": "17821980772_35164ae1e8_n_jpg.rf.cbc53ae8847b4da84f638c9ad62d7aa5.jpg",
+        "type": "image",
+        "size": 22103,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 32,
+        "path": "/test-files/images/flowers/daisy/18023717391_e2c9089e10_jpg.rf.06545eedc5a3dddf9a3e9cd71505663d.jpg",
+        "name": "18023717391_e2c9089e10_jpg.rf.06545eedc5a3dddf9a3e9cd71505663d.jpg",
+        "type": "image",
+        "size": 52083,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 33,
+        "path": "/test-files/images/flowers/daisy/18195689904_46619b7e16_n_jpg.rf.c3e4317c94918d3eb2543a8d471a90c3.jpg",
+        "name": "18195689904_46619b7e16_n_jpg.rf.c3e4317c94918d3eb2543a8d471a90c3.jpg",
+        "type": "image",
+        "size": 26736,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 34,
+        "path": "/test-files/images/flowers/daisy/18203367608_07a04e98a4_n_jpg.rf.3e4a609293c2c7dae23fcb7e7bb5844b.jpg",
+        "name": "18203367608_07a04e98a4_n_jpg.rf.3e4a609293c2c7dae23fcb7e7bb5844b.jpg",
+        "type": "image",
+        "size": 19904,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 35,
+        "path": "/test-files/images/flowers/daisy/18354545086_693ea7bc2a_jpg.rf.d23c7564f681f45bc26090f729062b41.jpg",
+        "name": "18354545086_693ea7bc2a_jpg.rf.d23c7564f681f45bc26090f729062b41.jpg",
+        "type": "image",
+        "size": 23432,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 36,
+        "path": "/test-files/images/flowers/daisy/18582579815_4c6637e9ff_m_jpg.rf.ce1e521f5d0d018742cb17bde6feff6f.jpg",
+        "name": "18582579815_4c6637e9ff_m_jpg.rf.ce1e521f5d0d018742cb17bde6feff6f.jpg",
+        "type": "image",
+        "size": 40135,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 37,
+        "path": "/test-files/images/flowers/daisy/18679421522_3be9879e32_jpg.rf.71b6281598440de36c1583b866f8f5af.jpg",
+        "name": "18679421522_3be9879e32_jpg.rf.71b6281598440de36c1583b866f8f5af.jpg",
+        "type": "image",
+        "size": 18544,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 38,
+        "path": "/test-files/images/flowers/daisy/18711159980_11d3bd5042_jpg.rf.9ad603dcb68121fcc70a94a2a1daf01a.jpg",
+        "name": "18711159980_11d3bd5042_jpg.rf.9ad603dcb68121fcc70a94a2a1daf01a.jpg",
+        "type": "image",
+        "size": 26508,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 39,
+        "path": "/test-files/images/flowers/daisy/19813618946_93818db7aa_m_jpg.rf.04d74810ee1a7ffe39fa67cda82613f6.jpg",
+        "name": "19813618946_93818db7aa_m_jpg.rf.04d74810ee1a7ffe39fa67cda82613f6.jpg",
+        "type": "image",
+        "size": 34346,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 40,
+        "path": "/test-files/images/flowers/daisy/19975899671_ebc42b7865_n_jpg.rf.b54dd73a9197efddbea56163263cc8f5.jpg",
+        "name": "19975899671_ebc42b7865_n_jpg.rf.b54dd73a9197efddbea56163263cc8f5.jpg",
+        "type": "image",
+        "size": 39708,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 41,
+        "path": "/test-files/images/flowers/daisy/20182559506_40a112f762_jpg.rf.03c7de8ea6580bbdf89245944baf9343.jpg",
+        "name": "20182559506_40a112f762_jpg.rf.03c7de8ea6580bbdf89245944baf9343.jpg",
+        "type": "image",
+        "size": 74706,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 42,
+        "path": "/test-files/images/flowers/daisy/2019064575_7656b9340f_m_jpg.rf.2d417274746c782e435e014fd61add56.jpg",
+        "name": "2019064575_7656b9340f_m_jpg.rf.2d417274746c782e435e014fd61add56.jpg",
+        "type": "image",
+        "size": 21813,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 43,
+        "path": "/test-files/images/flowers/daisy/20580471306_ab5a011b15_n_jpg.rf.f894c158cc68c5e7ffc7009d9d973887.jpg",
+        "name": "20580471306_ab5a011b15_n_jpg.rf.f894c158cc68c5e7ffc7009d9d973887.jpg",
+        "type": "image",
+        "size": 35925,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 44,
+        "path": "/test-files/images/flowers/daisy/20619292635_9857a12d54_jpg.rf.2d688447a839d3417507970b1e4a9f7b.jpg",
+        "name": "20619292635_9857a12d54_jpg.rf.2d688447a839d3417507970b1e4a9f7b.jpg",
+        "type": "image",
+        "size": 38404,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 45,
+        "path": "/test-files/images/flowers/daisy/20685027271_0e7306e7c1_n_jpg.rf.c6edaddb494372b68280ece580982b44.jpg",
+        "name": "20685027271_0e7306e7c1_n_jpg.rf.c6edaddb494372b68280ece580982b44.jpg",
+        "type": "image",
+        "size": 48654,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 46,
+        "path": "/test-files/images/flowers/daisy/2349640101_212c275aa7_jpg.rf.17f4610a82403de87fd568c25590959b.jpg",
+        "name": "2349640101_212c275aa7_jpg.rf.17f4610a82403de87fd568c25590959b.jpg",
+        "type": "image",
+        "size": 15787,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 47,
+        "path": "/test-files/images/flowers/daisy/2365428551_39f83f10bf_n_jpg.rf.743a3321a00748058399fc5a3b67ed43.jpg",
+        "name": "2365428551_39f83f10bf_n_jpg.rf.743a3321a00748058399fc5a3b67ed43.jpg",
+        "type": "image",
+        "size": 27385,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 48,
+        "path": "/test-files/images/flowers/daisy/2454280135_ac3aa75cdc_n_jpg.rf.887628306390369ec097b003e3f1ce53.jpg",
+        "name": "2454280135_ac3aa75cdc_n_jpg.rf.887628306390369ec097b003e3f1ce53.jpg",
+        "type": "image",
+        "size": 36829,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 49,
+        "path": "/test-files/images/flowers/daisy/2480569557_f4e1f0dcb8_n_jpg.rf.be755826d4381afdc14274b2cd6eb299.jpg",
+        "name": "2480569557_f4e1f0dcb8_n_jpg.rf.be755826d4381afdc14274b2cd6eb299.jpg",
+        "type": "image",
+        "size": 21383,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 50,
+        "path": "/test-files/images/flowers/daisy/2488902131_3417698611_n_jpg.rf.6e0045c4c65d027077fae128391d300f.jpg",
+        "name": "2488902131_3417698611_n_jpg.rf.6e0045c4c65d027077fae128391d300f.jpg",
+        "type": "image",
+        "size": 45312,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 51,
+        "path": "/test-files/images/flowers/daisy/2513618768_ff7c004796_m_jpg.rf.6dabe16796e47d473f77b470b759b6d4.jpg",
+        "name": "2513618768_ff7c004796_m_jpg.rf.6dabe16796e47d473f77b470b759b6d4.jpg",
+        "type": "image",
+        "size": 32329,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 52,
+        "path": "/test-files/images/flowers/daisy/25360380_1a881a5648_jpg.rf.35d4a0734686c810ca0d3316bec22568.jpg",
+        "name": "25360380_1a881a5648_jpg.rf.35d4a0734686c810ca0d3316bec22568.jpg",
+        "type": "image",
+        "size": 34626,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 53,
+        "path": "/test-files/images/flowers/daisy/2561352120_7961d8263f_jpg.rf.0843ed2c6f42b0afa9d98cb4f5ccd23c.jpg",
+        "name": "2561352120_7961d8263f_jpg.rf.0843ed2c6f42b0afa9d98cb4f5ccd23c.jpg",
+        "type": "image",
+        "size": 36774,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 54,
+        "path": "/test-files/images/flowers/daisy/2573240560_ff7ffdd449_jpg.rf.11d1996f7f3d26bdfc6020e5ce3be6a5.jpg",
+        "name": "2573240560_ff7ffdd449_jpg.rf.11d1996f7f3d26bdfc6020e5ce3be6a5.jpg",
+        "type": "image",
+        "size": 38535,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 55,
+        "path": "/test-files/images/flowers/daisy/2581171297_b0a249b92b_n_jpg.rf.9acf1bc1a8d4b722e11a922e548e7e8f.jpg",
+        "name": "2581171297_b0a249b92b_n_jpg.rf.9acf1bc1a8d4b722e11a922e548e7e8f.jpg",
+        "type": "image",
+        "size": 27648,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 56,
+        "path": "/test-files/images/flowers/daisy/2599662355_7782218c83_jpg.rf.8cbb05b1a5029c198a3798f67e3a4a80.jpg",
+        "name": "2599662355_7782218c83_jpg.rf.8cbb05b1a5029c198a3798f67e3a4a80.jpg",
+        "type": "image",
+        "size": 25964,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 57,
+        "path": "/test-files/images/flowers/daisy/2619413565_61a6cd3ac9_m_jpg.rf.4b11b97a03ea6a3a15a248fb44872153.jpg",
+        "name": "2619413565_61a6cd3ac9_m_jpg.rf.4b11b97a03ea6a3a15a248fb44872153.jpg",
+        "type": "image",
+        "size": 74385,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 58,
+        "path": "/test-files/images/flowers/daisy/28056118836_77a6847d94_n_jpg.rf.b4a90eb36ffca2ef6ec77f477b77ddac.jpg",
+        "name": "28056118836_77a6847d94_n_jpg.rf.b4a90eb36ffca2ef6ec77f477b77ddac.jpg",
+        "type": "image",
+        "size": 32363,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 59,
+        "path": "/test-files/images/flowers/daisy/2812442552_3eed5fb9f2_m_jpg.rf.f93bc521ceae4afdd2dcdfdde95e771c.jpg",
+        "name": "2812442552_3eed5fb9f2_m_jpg.rf.f93bc521ceae4afdd2dcdfdde95e771c.jpg",
+        "type": "image",
+        "size": 52933,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 60,
+        "path": "/test-files/images/flowers/daisy/2828733818_1c1ed0089d_n_jpg.rf.fdaacac3363ca8c39c2d7f355edefb91.jpg",
+        "name": "2828733818_1c1ed0089d_n_jpg.rf.fdaacac3363ca8c39c2d7f355edefb91.jpg",
+        "type": "image",
+        "size": 28858,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 61,
+        "path": "/test-files/images/flowers/daisy/3084924076_4d5c5711af_m_jpg.rf.8a33bcc64bc3c90c888880949efe6d78.jpg",
+        "name": "3084924076_4d5c5711af_m_jpg.rf.8a33bcc64bc3c90c888880949efe6d78.jpg",
+        "type": "image",
+        "size": 28313,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 62,
+        "path": "/test-files/images/flowers/daisy/3117644024_1cbb59a509_n_jpg.rf.920c6a11af61f8f8f30359192584b623.jpg",
+        "name": "3117644024_1cbb59a509_n_jpg.rf.920c6a11af61f8f8f30359192584b623.jpg",
+        "type": "image",
+        "size": 23081,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 63,
+        "path": "/test-files/images/flowers/daisy/3196066025_d187108070_n_jpg.rf.bc73b548c9dcb3f839ed85e149123866.jpg",
+        "name": "3196066025_d187108070_n_jpg.rf.bc73b548c9dcb3f839ed85e149123866.jpg",
+        "type": "image",
+        "size": 66964,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 64,
+        "path": "/test-files/images/flowers/daisy/3275951182_d27921af97_n_jpg.rf.ecf9875a4abc4446e427d6a6244f785d.jpg",
+        "name": "3275951182_d27921af97_n_jpg.rf.ecf9875a4abc4446e427d6a6244f785d.jpg",
+        "type": "image",
+        "size": 29971,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 65,
+        "path": "/test-files/images/flowers/daisy/3285641623_da0e47f49a_jpg.rf.0a29b4d881cadd5d44af6a7daf2029fc.jpg",
+        "name": "3285641623_da0e47f49a_jpg.rf.0a29b4d881cadd5d44af6a7daf2029fc.jpg",
+        "type": "image",
+        "size": 31892,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 66,
+        "path": "/test-files/images/flowers/daisy/3336704121_cfeb67a7d7_jpg.rf.a61c5f86d2ddb90699008a8163ea5b9c.jpg",
+        "name": "3336704121_cfeb67a7d7_jpg.rf.a61c5f86d2ddb90699008a8163ea5b9c.jpg",
+        "type": "image",
+        "size": 21333,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 67,
+        "path": "/test-files/images/flowers/daisy/3379332157_04724f6480_jpg.rf.651717a3182afb7d29a3122e42088d39.jpg",
+        "name": "3379332157_04724f6480_jpg.rf.651717a3182afb7d29a3122e42088d39.jpg",
+        "type": "image",
+        "size": 47659,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 68,
+        "path": "/test-files/images/flowers/daisy/33807950584_f5b63715e4_n_jpg.rf.afd1f42a8a9c15e2e78ef690df41dab7.jpg",
+        "name": "33807950584_f5b63715e4_n_jpg.rf.afd1f42a8a9c15e2e78ef690df41dab7.jpg",
+        "type": "image",
+        "size": 28766,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 69,
+        "path": "/test-files/images/flowers/daisy/33822751084_c83a7abffd_n_jpg.rf.36512eba9e84816a33f70980ff30677e.jpg",
+        "name": "33822751084_c83a7abffd_n_jpg.rf.36512eba9e84816a33f70980ff30677e.jpg",
+        "type": "image",
+        "size": 33139,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 70,
+        "path": "/test-files/images/flowers/daisy/33838292353_8b143f7980_n_jpg.rf.0e11d02227c2c6ddeb49205b6b5d7047.jpg",
+        "name": "33838292353_8b143f7980_n_jpg.rf.0e11d02227c2c6ddeb49205b6b5d7047.jpg",
+        "type": "image",
+        "size": 25997,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 71,
+        "path": "/test-files/images/flowers/daisy/33849854704_d2a2415e4d_n_jpg.rf.2e6aa6660d23383bf92f4d994ffef70e.jpg",
+        "name": "33849854704_d2a2415e4d_n_jpg.rf.2e6aa6660d23383bf92f4d994ffef70e.jpg",
+        "type": "image",
+        "size": 18537,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 72,
+        "path": "/test-files/images/flowers/daisy/33863293993_3ed7515936_n_jpg.rf.d25b0140a0a0bd0b2d37f2c6f6067b5b.jpg",
+        "name": "33863293993_3ed7515936_n_jpg.rf.d25b0140a0a0bd0b2d37f2c6f6067b5b.jpg",
+        "type": "image",
+        "size": 32338,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 73,
+        "path": "/test-files/images/flowers/daisy/33887503434_a2762228f4_n_jpg.rf.d3c82d5692f0282fe05968d4ad1ddeca.jpg",
+        "name": "33887503434_a2762228f4_n_jpg.rf.d3c82d5692f0282fe05968d4ad1ddeca.jpg",
+        "type": "image",
+        "size": 57527,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 74,
+        "path": "/test-files/images/flowers/daisy/33901756843_94e198d40e_n_jpg.rf.a9f5024e549e77930ab70a9ff2af0ffd.jpg",
+        "name": "33901756843_94e198d40e_n_jpg.rf.a9f5024e549e77930ab70a9ff2af0ffd.jpg",
+        "type": "image",
+        "size": 26283,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 75,
+        "path": "/test-files/images/flowers/daisy/3410906335_37e8a24b1c_n_jpg.rf.dab0c0a9767e14f61788b21e80794518.jpg",
+        "name": "3410906335_37e8a24b1c_n_jpg.rf.dab0c0a9767e14f61788b21e80794518.jpg",
+        "type": "image",
+        "size": 19397,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 76,
+        "path": "/test-files/images/flowers/daisy/34287492780_6dab677857_n_jpg.rf.7be573fe8d8f164db9d0bfdfe7360363.jpg",
+        "name": "34287492780_6dab677857_n_jpg.rf.7be573fe8d8f164db9d0bfdfe7360363.jpg",
+        "type": "image",
+        "size": 58158,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 77,
+        "path": "/test-files/images/flowers/daisy/34288158610_6e42406193_n_jpg.rf.ccde85d9f26f8a4d4c143fe5c9c40ea7.jpg",
+        "name": "34288158610_6e42406193_n_jpg.rf.ccde85d9f26f8a4d4c143fe5c9c40ea7.jpg",
+        "type": "image",
+        "size": 60064,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 78,
+        "path": "/test-files/images/flowers/daisy/34293312980_5f6c492c52_n_jpg.rf.664de78fe41d00d62425acf235d43a3d.jpg",
+        "name": "34293312980_5f6c492c52_n_jpg.rf.664de78fe41d00d62425acf235d43a3d.jpg",
+        "type": "image",
+        "size": 17896,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 79,
+        "path": "/test-files/images/flowers/daisy/34295444880_b4376b3a8b_n_jpg.rf.2e949406a6d96d57a493967d4589cc80.jpg",
+        "name": "34295444880_b4376b3a8b_n_jpg.rf.2e949406a6d96d57a493967d4589cc80.jpg",
+        "type": "image",
+        "size": 17719,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 80,
+        "path": "/test-files/images/flowers/daisy/34300874850_923cc2881c_n_jpg.rf.5c16e0fa5563d0fe6e55cf8c15d04755.jpg",
+        "name": "34300874850_923cc2881c_n_jpg.rf.5c16e0fa5563d0fe6e55cf8c15d04755.jpg",
+        "type": "image",
+        "size": 30277,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 81,
+        "path": "/test-files/images/flowers/daisy/34310869690_56cdc84a17_n_jpg.rf.d9f8a84b5b19debfe0168402def5ba6c.jpg",
+        "name": "34310869690_56cdc84a17_n_jpg.rf.d9f8a84b5b19debfe0168402def5ba6c.jpg",
+        "type": "image",
+        "size": 19318,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 82,
+        "path": "/test-files/images/flowers/daisy/34476770012_38fba290f3_n_jpg.rf.adc5ee16a35c117ad35a52cbf574c461.jpg",
+        "name": "34476770012_38fba290f3_n_jpg.rf.adc5ee16a35c117ad35a52cbf574c461.jpg",
+        "type": "image",
+        "size": 32269,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 83,
+        "path": "/test-files/images/flowers/daisy/34510103621_250ee7ae64_n_jpg.rf.638f3e5cf217a25115840c848b52276f.jpg",
+        "name": "34510103621_250ee7ae64_n_jpg.rf.638f3e5cf217a25115840c848b52276f.jpg",
+        "type": "image",
+        "size": 37043,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 84,
+        "path": "/test-files/images/flowers/daisy/34532930772_5cc5fc600d_n_jpg.rf.67b5930f1415efcc9934cebb13f71567.jpg",
+        "name": "34532930772_5cc5fc600d_n_jpg.rf.67b5930f1415efcc9934cebb13f71567.jpg",
+        "type": "image",
+        "size": 30533,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 85,
+        "path": "/test-files/images/flowers/daisy/34540176411_a35a19a8ef_n_jpg.rf.6197755b8f4433f00aa8e1fe33bb48b1.jpg",
+        "name": "34540176411_a35a19a8ef_n_jpg.rf.6197755b8f4433f00aa8e1fe33bb48b1.jpg",
+        "type": "image",
+        "size": 20108,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 86,
+        "path": "/test-files/images/flowers/daisy/34547261352_d39bf4073a_n_jpg.rf.0068e885ecf26475f71e72b1cb8e737e.jpg",
+        "name": "34547261352_d39bf4073a_n_jpg.rf.0068e885ecf26475f71e72b1cb8e737e.jpg",
+        "type": "image",
+        "size": 26184,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 87,
+        "path": "/test-files/images/flowers/daisy/34554334542_7d8f68a75c_n_jpg.rf.d676678c93d0bb2ab272ed420186ff26.jpg",
+        "name": "34554334542_7d8f68a75c_n_jpg.rf.d676678c93d0bb2ab272ed420186ff26.jpg",
+        "type": "image",
+        "size": 17622,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 88,
+        "path": "/test-files/images/flowers/daisy/3456403987_5bd5fa6ece_n_jpg.rf.9c04ca0620800d5e7771e4b387bfd51e.jpg",
+        "name": "3456403987_5bd5fa6ece_n_jpg.rf.9c04ca0620800d5e7771e4b387bfd51e.jpg",
+        "type": "image",
+        "size": 41258,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 89,
+        "path": "/test-files/images/flowers/daisy/34566613262_fefbcc279a_n_jpg.rf.ddcc3afd7addcbed656f9142f17c47d9.jpg",
+        "name": "34566613262_fefbcc279a_n_jpg.rf.ddcc3afd7addcbed656f9142f17c47d9.jpg",
+        "type": "image",
+        "size": 19770,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 90,
+        "path": "/test-files/images/flowers/daisy/34590677231_0ed33ccd55_n_jpg.rf.8cae841b80e5d40299277a77a639a074.jpg",
+        "name": "34590677231_0ed33ccd55_n_jpg.rf.8cae841b80e5d40299277a77a639a074.jpg",
+        "type": "image",
+        "size": 17045,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 91,
+        "path": "/test-files/images/flowers/daisy/34602180741_cf2f671ba5_n_jpg.rf.f4ebece048b14f13a095680792689200.jpg",
+        "name": "34602180741_cf2f671ba5_n_jpg.rf.f4ebece048b14f13a095680792689200.jpg",
+        "type": "image",
+        "size": 23776,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 92,
+        "path": "/test-files/images/flowers/daisy/34637970155_a2b917077c_n_jpg.rf.2fc44a9163b39bc444188c9963e94641.jpg",
+        "name": "34637970155_a2b917077c_n_jpg.rf.2fc44a9163b39bc444188c9963e94641.jpg",
+        "type": "image",
+        "size": 57612,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 93,
+        "path": "/test-files/images/flowers/daisy/34643914016_2e659d6e82_n_jpg.rf.419ae7d8ee78548041c472e69a58b1a2.jpg",
+        "name": "34643914016_2e659d6e82_n_jpg.rf.419ae7d8ee78548041c472e69a58b1a2.jpg",
+        "type": "image",
+        "size": 24359,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 94,
+        "path": "/test-files/images/flowers/daisy/34665595995_13f76d5b60_n_jpg.rf.4c8e4851187b41d282f4fb23ccfd82a2.jpg",
+        "name": "34665595995_13f76d5b60_n_jpg.rf.4c8e4851187b41d282f4fb23ccfd82a2.jpg",
+        "type": "image",
+        "size": 29347,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 95,
+        "path": "/test-files/images/flowers/daisy/34701078235_4a770d14a1_n_jpg.rf.cfd33e5bef4e5ab9662d8e54bbe6a4ce.jpg",
+        "name": "34701078235_4a770d14a1_n_jpg.rf.cfd33e5bef4e5ab9662d8e54bbe6a4ce.jpg",
+        "type": "image",
+        "size": 44617,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 96,
+        "path": "/test-files/images/flowers/daisy/34727863665_b00ac77266_n_jpg.rf.6701e34653fd671b0ee56a1987fa28a6.jpg",
+        "name": "34727863665_b00ac77266_n_jpg.rf.6701e34653fd671b0ee56a1987fa28a6.jpg",
+        "type": "image",
+        "size": 34373,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 97,
+        "path": "/test-files/images/flowers/daisy/3533954656_79156c8473_jpg.rf.e1d05a965e22515ed1f95e4494f89a8e.jpg",
+        "name": "3533954656_79156c8473_jpg.rf.e1d05a965e22515ed1f95e4494f89a8e.jpg",
+        "type": "image",
+        "size": 14747,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 98,
+        "path": "/test-files/images/flowers/daisy/3588872598_e0f9a1d2a1_m_jpg.rf.c1b0ef0dca40c82db1d60e8bc3827661.jpg",
+        "name": "3588872598_e0f9a1d2a1_m_jpg.rf.c1b0ef0dca40c82db1d60e8bc3827661.jpg",
+        "type": "image",
+        "size": 17129,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 99,
+        "path": "/test-files/images/flowers/daisy/3628485766_4ff937954a_n_jpg.rf.91eab4990c47259adebfe1cc1a818bbf.jpg",
+        "name": "3628485766_4ff937954a_n_jpg.rf.91eab4990c47259adebfe1cc1a818bbf.jpg",
+        "type": "image",
+        "size": 16893,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 100,
+        "path": "/test-files/images/flowers/daisy/3661613900_b15ca1d35d_m_jpg.rf.3f063183919033f72398c7374aa6faa4.jpg",
+        "name": "3661613900_b15ca1d35d_m_jpg.rf.3f063183919033f72398c7374aa6faa4.jpg",
+        "type": "image",
+        "size": 56091,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 101,
+        "path": "/test-files/images/flowers/daisy/3695826945_9f374e8a00_m_jpg.rf.8d311663690947beebf67e198ec9110f.jpg",
+        "name": "3695826945_9f374e8a00_m_jpg.rf.8d311663690947beebf67e198ec9110f.jpg",
+        "type": "image",
+        "size": 19806,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 102,
+        "path": "/test-files/images/flowers/daisy/3704305945_a80e60e2f6_m_jpg.rf.346e935d6087ded0e7b69d4019dc1465.jpg",
+        "name": "3704305945_a80e60e2f6_m_jpg.rf.346e935d6087ded0e7b69d4019dc1465.jpg",
+        "type": "image",
+        "size": 68876,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 103,
+        "path": "/test-files/images/flowers/daisy/3720632920_93cf1cc7f3_m_jpg.rf.72efadb681fa6fb9e4fd9310498eb9f8.jpg",
+        "name": "3720632920_93cf1cc7f3_m_jpg.rf.72efadb681fa6fb9e4fd9310498eb9f8.jpg",
+        "type": "image",
+        "size": 22189,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 104,
+        "path": "/test-files/images/flowers/daisy/3758221664_b19116d61f_jpg.rf.c17fbf11c4387c40d760d86e77ad67f5.jpg",
+        "name": "3758221664_b19116d61f_jpg.rf.c17fbf11c4387c40d760d86e77ad67f5.jpg",
+        "type": "image",
+        "size": 31900,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 105,
+        "path": "/test-files/images/flowers/daisy/3773181799_5def396456_jpg.rf.8b4126c071f6e652e324988d257f4916.jpg",
+        "name": "3773181799_5def396456_jpg.rf.8b4126c071f6e652e324988d257f4916.jpg",
+        "type": "image",
+        "size": 19927,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 106,
+        "path": "/test-files/images/flowers/daisy/3962240986_0661edc43a_n_jpg.rf.486f4f9060644e1656d269d25eae1ba6.jpg",
+        "name": "3962240986_0661edc43a_n_jpg.rf.486f4f9060644e1656d269d25eae1ba6.jpg",
+        "type": "image",
+        "size": 34148,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 107,
+        "path": "/test-files/images/flowers/daisy/4141147800_813f660b47_jpg.rf.f44e05235da78a741c6a054a91097d4c.jpg",
+        "name": "4141147800_813f660b47_jpg.rf.f44e05235da78a741c6a054a91097d4c.jpg",
+        "type": "image",
+        "size": 25791,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 108,
+        "path": "/test-files/images/flowers/daisy/4333085242_bbeb3e2841_m_jpg.rf.d56ea33343c57d994533c4c20b46d1d5.jpg",
+        "name": "4333085242_bbeb3e2841_m_jpg.rf.d56ea33343c57d994533c4c20b46d1d5.jpg",
+        "type": "image",
+        "size": 23517,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 109,
+        "path": "/test-files/images/flowers/daisy/437859108_173fb33c98_jpg.rf.d435b1fa04c6ca471d7d511593945037.jpg",
+        "name": "437859108_173fb33c98_jpg.rf.d435b1fa04c6ca471d7d511593945037.jpg",
+        "type": "image",
+        "size": 26520,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 110,
+        "path": "/test-files/images/flowers/daisy/4584890753_14ea24a619_n_jpg.rf.c0eee91e2274bc9d47106b47b98c2532.jpg",
+        "name": "4584890753_14ea24a619_n_jpg.rf.c0eee91e2274bc9d47106b47b98c2532.jpg",
+        "type": "image",
+        "size": 68786,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 111,
+        "path": "/test-files/images/flowers/daisy/4598422221_b37313a3e3_n_jpg.rf.22cd3fff9fbe26843b35a11d86a9e7b3.jpg",
+        "name": "4598422221_b37313a3e3_n_jpg.rf.22cd3fff9fbe26843b35a11d86a9e7b3.jpg",
+        "type": "image",
+        "size": 42405,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 112,
+        "path": "/test-files/images/flowers/daisy/4666648087_b10f376f19_jpg.rf.5c1c209295cabd9039ee33a62f4eb23b.jpg",
+        "name": "4666648087_b10f376f19_jpg.rf.5c1c209295cabd9039ee33a62f4eb23b.jpg",
+        "type": "image",
+        "size": 40874,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 113,
+        "path": "/test-files/images/flowers/daisy/4669117051_ce61e91b76_jpg.rf.378c0b249afbaa64d31c55fb89ce8db8.jpg",
+        "name": "4669117051_ce61e91b76_jpg.rf.378c0b249afbaa64d31c55fb89ce8db8.jpg",
+        "type": "image",
+        "size": 25832,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 114,
+        "path": "/test-files/images/flowers/daisy/4753134939_8e87649db6_jpg.rf.31a107a953902a24cc54e4d0336e414e.jpg",
+        "name": "4753134939_8e87649db6_jpg.rf.31a107a953902a24cc54e4d0336e414e.jpg",
+        "type": "image",
+        "size": 69023,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 115,
+        "path": "/test-files/images/flowers/daisy/4757448834_a29a9538c9_n_jpg.rf.e62c0bde044bb076fcc6b1ac248bc06b.jpg",
+        "name": "4757448834_a29a9538c9_n_jpg.rf.e62c0bde044bb076fcc6b1ac248bc06b.jpg",
+        "type": "image",
+        "size": 43291,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 116,
+        "path": "/test-files/images/flowers/daisy/4785888250_b661eac225_n_jpg.rf.d8ac88216aa5649ea455a8c48a726913.jpg",
+        "name": "4785888250_b661eac225_n_jpg.rf.d8ac88216aa5649ea455a8c48a726913.jpg",
+        "type": "image",
+        "size": 63236,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 117,
+        "path": "/test-files/images/flowers/daisy/5014137563_d03eb0ed75_n_jpg.rf.7ea27c57e20ad37752ad14ea47f9df78.jpg",
+        "name": "5014137563_d03eb0ed75_n_jpg.rf.7ea27c57e20ad37752ad14ea47f9df78.jpg",
+        "type": "image",
+        "size": 44917,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 118,
+        "path": "/test-files/images/flowers/daisy/5054771689_00dd40b971_n_jpg.rf.90c07bac4a063344abaac7269d263715.jpg",
+        "name": "5054771689_00dd40b971_n_jpg.rf.90c07bac4a063344abaac7269d263715.jpg",
+        "type": "image",
+        "size": 21994,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 119,
+        "path": "/test-files/images/flowers/daisy/506348009_9ecff8b6ef_jpg.rf.6ee77b8a61afacec4c79d07ecd8824e7.jpg",
+        "name": "506348009_9ecff8b6ef_jpg.rf.6ee77b8a61afacec4c79d07ecd8824e7.jpg",
+        "type": "image",
+        "size": 20418,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 120,
+        "path": "/test-files/images/flowers/daisy/5087720485_c0914fb623_jpg.rf.6f6380c0fc65881e96929276c88b8ecd.jpg",
+        "name": "5087720485_c0914fb623_jpg.rf.6f6380c0fc65881e96929276c88b8ecd.jpg",
+        "type": "image",
+        "size": 24338,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 121,
+        "path": "/test-files/images/flowers/daisy/5110107234_12ddc0206b_m_jpg.rf.a042a83f026cb3e56f95598b0aa0fb87.jpg",
+        "name": "5110107234_12ddc0206b_m_jpg.rf.a042a83f026cb3e56f95598b0aa0fb87.jpg",
+        "type": "image",
+        "size": 16919,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 122,
+        "path": "/test-files/images/flowers/daisy/5133243796_44de429de5_m_jpg.rf.a477b1c9d30930f82eedda624d7b66c3.jpg",
+        "name": "5133243796_44de429de5_m_jpg.rf.a477b1c9d30930f82eedda624d7b66c3.jpg",
+        "type": "image",
+        "size": 44996,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 123,
+        "path": "/test-files/images/flowers/daisy/5434742166_35773eba57_m_jpg.rf.27e42329ede24824860b00caa92c6518.jpg",
+        "name": "5434742166_35773eba57_m_jpg.rf.27e42329ede24824860b00caa92c6518.jpg",
+        "type": "image",
+        "size": 61826,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 124,
+        "path": "/test-files/images/flowers/daisy/5435522104_1d6a61b431_n_jpg.rf.334199b654fa21082da9d2d1c6fcf473.jpg",
+        "name": "5435522104_1d6a61b431_n_jpg.rf.334199b654fa21082da9d2d1c6fcf473.jpg",
+        "type": "image",
+        "size": 39947,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 125,
+        "path": "/test-files/images/flowers/daisy/5512287917_9f5d3f0f98_n_jpg.rf.d18982c4943884d52f200de957db7184.jpg",
+        "name": "5512287917_9f5d3f0f98_n_jpg.rf.d18982c4943884d52f200de957db7184.jpg",
+        "type": "image",
+        "size": 13472,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 126,
+        "path": "/test-files/images/flowers/daisy/5602738326_97121e007d_n_jpg.rf.4be0e18668dcc69f3dceebb594e5f803.jpg",
+        "name": "5602738326_97121e007d_n_jpg.rf.4be0e18668dcc69f3dceebb594e5f803.jpg",
+        "type": "image",
+        "size": 55646,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 127,
+        "path": "/test-files/images/flowers/daisy/5623010186_796ca8d29a_jpg.rf.1c9e00b6b5420bc5f8c0113252a35315.jpg",
+        "name": "5623010186_796ca8d29a_jpg.rf.1c9e00b6b5420bc5f8c0113252a35315.jpg",
+        "type": "image",
+        "size": 17659,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 128,
+        "path": "/test-files/images/flowers/daisy/5626784099_b36dd3fb11_n_jpg.rf.2de3fdc78ab0e5dfee9241eda03fb202.jpg",
+        "name": "5626784099_b36dd3fb11_n_jpg.rf.2de3fdc78ab0e5dfee9241eda03fb202.jpg",
+        "type": "image",
+        "size": 35299,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 129,
+        "path": "/test-files/images/flowers/daisy/5673551_01d1ea993e_n_jpg.rf.67903e6adc78b5d3de2a898c82911350.jpg",
+        "name": "5673551_01d1ea993e_n_jpg.rf.67903e6adc78b5d3de2a898c82911350.jpg",
+        "type": "image",
+        "size": 41445,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 130,
+        "path": "/test-files/images/flowers/daisy/5740004086_690a1eef85_n_jpg.rf.7d6db0b71a5f1d552655ca565323ea45.jpg",
+        "name": "5740004086_690a1eef85_n_jpg.rf.7d6db0b71a5f1d552655ca565323ea45.jpg",
+        "type": "image",
+        "size": 54733,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 131,
+        "path": "/test-files/images/flowers/daisy/5769217520_c90efc3c93_m_jpg.rf.8e84358d6606a10685aca2f151f88eff.jpg",
+        "name": "5769217520_c90efc3c93_m_jpg.rf.8e84358d6606a10685aca2f151f88eff.jpg",
+        "type": "image",
+        "size": 20987,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 132,
+        "path": "/test-files/images/flowers/daisy/5794839_200acd910c_n_jpg.rf.7e1ca3c24b13bb849bbbaabcf47b119a.jpg",
+        "name": "5794839_200acd910c_n_jpg.rf.7e1ca3c24b13bb849bbbaabcf47b119a.jpg",
+        "type": "image",
+        "size": 25531,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 133,
+        "path": "/test-files/images/flowers/daisy/5896105367_fa08a65869_n_jpg.rf.f22f182d1f7cdc22c58e23b04339a12d.jpg",
+        "name": "5896105367_fa08a65869_n_jpg.rf.f22f182d1f7cdc22c58e23b04339a12d.jpg",
+        "type": "image",
+        "size": 38048,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 134,
+        "path": "/test-files/images/flowers/daisy/5896676090_68bb74b1e9_n_jpg.rf.8c6c8c55e8acdfa3ea71054a10f31a5a.jpg",
+        "name": "5896676090_68bb74b1e9_n_jpg.rf.8c6c8c55e8acdfa3ea71054a10f31a5a.jpg",
+        "type": "image",
+        "size": 45848,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 135,
+        "path": "/test-files/images/flowers/daisy/5896680664_641de2de5a_n_jpg.rf.aa0a1dd23c68079db69bf82855ab3539.jpg",
+        "name": "5896680664_641de2de5a_n_jpg.rf.aa0a1dd23c68079db69bf82855ab3539.jpg",
+        "type": "image",
+        "size": 40988,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 136,
+        "path": "/test-files/images/flowers/daisy/5944315415_2be8abeb2f_m_jpg.rf.a73cbc1bdae609c0fe896b545d3265e2.jpg",
+        "name": "5944315415_2be8abeb2f_m_jpg.rf.a73cbc1bdae609c0fe896b545d3265e2.jpg",
+        "type": "image",
+        "size": 34499,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 137,
+        "path": "/test-files/images/flowers/daisy/5973488341_50bdf6cee3_n_jpg.rf.30d5810e7d1f05d55b25b36fad20e4b4.jpg",
+        "name": "5973488341_50bdf6cee3_n_jpg.rf.30d5810e7d1f05d55b25b36fad20e4b4.jpg",
+        "type": "image",
+        "size": 21642,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 138,
+        "path": "/test-files/images/flowers/daisy/6095817094_3a5b1d793d_jpg.rf.196f7414bc2a735e83b303b63be9148e.jpg",
+        "name": "6095817094_3a5b1d793d_jpg.rf.196f7414bc2a735e83b303b63be9148e.jpg",
+        "type": "image",
+        "size": 38584,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 139,
+        "path": "/test-files/images/flowers/daisy/6208851904_9d916ebb32_n_jpg.rf.be299a6a7cbeee0deb82c0ff46435994.jpg",
+        "name": "6208851904_9d916ebb32_n_jpg.rf.be299a6a7cbeee0deb82c0ff46435994.jpg",
+        "type": "image",
+        "size": 42322,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 140,
+        "path": "/test-files/images/flowers/daisy/6210664514_f1d211217a_jpg.rf.f146702e5a13358caa7d6e44ba2d1eea.jpg",
+        "name": "6210664514_f1d211217a_jpg.rf.f146702e5a13358caa7d6e44ba2d1eea.jpg",
+        "type": "image",
+        "size": 40992,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 141,
+        "path": "/test-files/images/flowers/daisy/6299910262_336309ffa5_n_jpg.rf.4d977a31a491f73884237c394d6cc927.jpg",
+        "name": "6299910262_336309ffa5_n_jpg.rf.4d977a31a491f73884237c394d6cc927.jpg",
+        "type": "image",
+        "size": 30540,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 142,
+        "path": "/test-files/images/flowers/daisy/6884975451_c74f445d69_m_jpg.rf.c94da1266d715af5418525716203c0bc.jpg",
+        "name": "6884975451_c74f445d69_m_jpg.rf.c94da1266d715af5418525716203c0bc.jpg",
+        "type": "image",
+        "size": 24153,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 143,
+        "path": "/test-files/images/flowers/daisy/695778683_890c46ebac_jpg.rf.002721084494d5922d3f237ea38bf0b5.jpg",
+        "name": "695778683_890c46ebac_jpg.rf.002721084494d5922d3f237ea38bf0b5.jpg",
+        "type": "image",
+        "size": 21996,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 144,
+        "path": "/test-files/images/flowers/daisy/6978826370_7b9aa7c7d5_jpg.rf.11b5f11b09d429b24f9357616af33b83.jpg",
+        "name": "6978826370_7b9aa7c7d5_jpg.rf.11b5f11b09d429b24f9357616af33b83.jpg",
+        "type": "image",
+        "size": 30621,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 145,
+        "path": "/test-files/images/flowers/daisy/705422469_ffa28c566d_jpg.rf.7b7f83f5c54bbe5beaa0e6f6bda7f756.jpg",
+        "name": "705422469_ffa28c566d_jpg.rf.7b7f83f5c54bbe5beaa0e6f6bda7f756.jpg",
+        "type": "image",
+        "size": 46986,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 146,
+        "path": "/test-files/images/flowers/daisy/7189043225_2fe781439a_n_jpg.rf.2da6438e50d2ad9ffb9c0f9f29ef1626.jpg",
+        "name": "7189043225_2fe781439a_n_jpg.rf.2da6438e50d2ad9ffb9c0f9f29ef1626.jpg",
+        "type": "image",
+        "size": 33312,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 147,
+        "path": "/test-files/images/flowers/daisy/7568630428_8cf0fc16ff_n_jpg.rf.92b1695fd1a527171e6fea69ad4182f7.jpg",
+        "name": "7568630428_8cf0fc16ff_n_jpg.rf.92b1695fd1a527171e6fea69ad4182f7.jpg",
+        "type": "image",
+        "size": 27367,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 148,
+        "path": "/test-files/images/flowers/daisy/8021540573_c56cf9070d_n_jpg.rf.03a6176578ce3f03ec9deb9c9a665885.jpg",
+        "name": "8021540573_c56cf9070d_n_jpg.rf.03a6176578ce3f03ec9deb9c9a665885.jpg",
+        "type": "image",
+        "size": 26141,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 149,
+        "path": "/test-files/images/flowers/daisy/8348621545_8f02b82662_n_jpg.rf.2d996b3ea7e2228b264b54106d4b70c6.jpg",
+        "name": "8348621545_8f02b82662_n_jpg.rf.2d996b3ea7e2228b264b54106d4b70c6.jpg",
+        "type": "image",
+        "size": 16922,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 150,
+        "path": "/test-files/images/flowers/daisy/8382667241_0f046cecdb_n_jpg.rf.132d2a982445bf9c551b3ae847bc3db2.jpg",
+        "name": "8382667241_0f046cecdb_n_jpg.rf.132d2a982445bf9c551b3ae847bc3db2.jpg",
+        "type": "image",
+        "size": 26368,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 151,
+        "path": "/test-files/images/flowers/daisy/8619103877_d8c82c5f34_n_jpg.rf.fb846926ce534f8f10eba4bbffa8beab.jpg",
+        "name": "8619103877_d8c82c5f34_n_jpg.rf.fb846926ce534f8f10eba4bbffa8beab.jpg",
+        "type": "image",
+        "size": 23261,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 152,
+        "path": "/test-files/images/flowers/daisy/8645839873_0151fb92bf_n_jpg.rf.121e09b945006aba6fb7e0aa5cd9896d.jpg",
+        "name": "8645839873_0151fb92bf_n_jpg.rf.121e09b945006aba6fb7e0aa5cd9896d.jpg",
+        "type": "image",
+        "size": 30302,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 153,
+        "path": "/test-files/images/flowers/daisy/8671824531_64b816949e_m_jpg.rf.37d56da9b7507cab09ff3d8d56894a1c.jpg",
+        "name": "8671824531_64b816949e_m_jpg.rf.37d56da9b7507cab09ff3d8d56894a1c.jpg",
+        "type": "image",
+        "size": 28873,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 154,
+        "path": "/test-files/images/flowers/daisy/8719756744_34a5a83976_n_jpg.rf.5fe0825d13cddccc4ad15e64c15aaf09.jpg",
+        "name": "8719756744_34a5a83976_n_jpg.rf.5fe0825d13cddccc4ad15e64c15aaf09.jpg",
+        "type": "image",
+        "size": 40141,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 155,
+        "path": "/test-files/images/flowers/daisy/8740807508_0587f5b7b7_jpg.rf.d26cfb5a9f78784b1cb460189bbe5be7.jpg",
+        "name": "8740807508_0587f5b7b7_jpg.rf.d26cfb5a9f78784b1cb460189bbe5be7.jpg",
+        "type": "image",
+        "size": 37993,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 156,
+        "path": "/test-files/images/flowers/daisy/8983779970_9d3a6a3bf2_n_jpg.rf.a439044597ae238e7f048e96379c2ade.jpg",
+        "name": "8983779970_9d3a6a3bf2_n_jpg.rf.a439044597ae238e7f048e96379c2ade.jpg",
+        "type": "image",
+        "size": 59159,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 157,
+        "path": "/test-files/images/flowers/daisy/9158041313_7a6a102f7a_n_jpg.rf.7c4f87166b327872b939bc83253a25a8.jpg",
+        "name": "9158041313_7a6a102f7a_n_jpg.rf.7c4f87166b327872b939bc83253a25a8.jpg",
+        "type": "image",
+        "size": 49351,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 158,
+        "path": "/test-files/images/flowers/daisy/9467543719_c4800becbb_m_jpg.rf.67486a7209e840364fca93ac55660312.jpg",
+        "name": "9467543719_c4800becbb_m_jpg.rf.67486a7209e840364fca93ac55660312.jpg",
+        "type": "image",
+        "size": 50650,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 159,
+        "path": "/test-files/images/flowers/daisy/9496209717_25a6ebdab6_m_jpg.rf.ecac94c472421cc279e0992fc250b8c9.jpg",
+        "name": "9496209717_25a6ebdab6_m_jpg.rf.ecac94c472421cc279e0992fc250b8c9.jpg",
+        "type": "image",
+        "size": 20964,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 160,
+        "path": "/test-files/images/flowers/daisy/9515186037_3be48fe68f_jpg.rf.9aa0250138183eaf3e825ad5c849d86c.jpg",
+        "name": "9515186037_3be48fe68f_jpg.rf.9aa0250138183eaf3e825ad5c849d86c.jpg",
+        "type": "image",
+        "size": 24817,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 161,
+        "path": "/test-files/images/flowers/daisy/9529916092_de70623523_n_jpg.rf.f8fd8dd41a739e4a63436c2922981525.jpg",
+        "name": "9529916092_de70623523_n_jpg.rf.f8fd8dd41a739e4a63436c2922981525.jpg",
+        "type": "image",
+        "size": 27167,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 162,
+        "path": "/test-files/images/flowers/daisy/9595857626_979c45e5bf_n_jpg.rf.f07c4f220d3dfca75bc30d3ab9268885.jpg",
+        "name": "9595857626_979c45e5bf_n_jpg.rf.f07c4f220d3dfca75bc30d3ab9268885.jpg",
+        "type": "image",
+        "size": 27303,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 163,
+        "path": "/test-files/images/flowers/daisy/9922116524_ab4a2533fe_n_jpg.rf.300dd991f1ee7f49f3a544165db04668.jpg",
+        "name": "9922116524_ab4a2533fe_n_jpg.rf.300dd991f1ee7f49f3a544165db04668.jpg",
+        "type": "image",
+        "size": 45398,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/flowers/dandelion/10200780773_c6051a7d71_n_jpg.rf.ff5edd069ad59c00902c43e589aff9b4.jpg",
+        "name": "10200780773_c6051a7d71_n_jpg.rf.ff5edd069ad59c00902c43e589aff9b4.jpg",
+        "type": "image",
+        "size": 25104,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/flowers/dandelion/10779476016_9130714dc0_jpg.rf.3c7e68dd5e1aee875b933f3dd9d0d5b1.jpg",
+        "name": "10779476016_9130714dc0_jpg.rf.3c7e68dd5e1aee875b933f3dd9d0d5b1.jpg",
+        "type": "image",
+        "size": 17176,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/flowers/dandelion/10919961_0af657c4e8_jpg.rf.d527609365d174a511758b40fdc53834.jpg",
+        "name": "10919961_0af657c4e8_jpg.rf.d527609365d174a511758b40fdc53834.jpg",
+        "type": "image",
+        "size": 60312,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/flowers/dandelion/11124381625_24b17662bd_n_jpg.rf.dcf5bd7b8395099f500bea7dc04f5def.jpg",
+        "name": "11124381625_24b17662bd_n_jpg.rf.dcf5bd7b8395099f500bea7dc04f5def.jpg",
+        "type": "image",
+        "size": 32298,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/flowers/dandelion/1128626197_3f52424215_n_jpg.rf.c367df23bcccac3fe70dcc6b36b379bd.jpg",
+        "name": "1128626197_3f52424215_n_jpg.rf.c367df23bcccac3fe70dcc6b36b379bd.jpg",
+        "type": "image",
+        "size": 32431,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/flowers/dandelion/1273326361_b90ea56d0d_m_jpg.rf.7a22d4efa756028d17cc523de5740bd6.jpg",
+        "name": "1273326361_b90ea56d0d_m_jpg.rf.7a22d4efa756028d17cc523de5740bd6.jpg",
+        "type": "image",
+        "size": 54659,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/flowers/dandelion/13386618495_3df1f1330d_jpg.rf.56a391d64af0c5b6ff4119d58615bc94.jpg",
+        "name": "13386618495_3df1f1330d_jpg.rf.56a391d64af0c5b6ff4119d58615bc94.jpg",
+        "type": "image",
+        "size": 31298,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/flowers/dandelion/136999986_e410a68efb_n_jpg.rf.502dc43fd285faeef9c89ffe63f5a520.jpg",
+        "name": "136999986_e410a68efb_n_jpg.rf.502dc43fd285faeef9c89ffe63f5a520.jpg",
+        "type": "image",
+        "size": 32874,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/flowers/dandelion/138132145_782763b84f_m_jpg.rf.1b55e35f7f455a43bbe36c8803de7eaf.jpg",
+        "name": "138132145_782763b84f_m_jpg.rf.1b55e35f7f455a43bbe36c8803de7eaf.jpg",
+        "type": "image",
+        "size": 22877,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/flowers/dandelion/13887066460_64156a9021_jpg.rf.7ee48e2e06fc05908ec261276ee8f1e7.jpg",
+        "name": "13887066460_64156a9021_jpg.rf.7ee48e2e06fc05908ec261276ee8f1e7.jpg",
+        "type": "image",
+        "size": 23824,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/flowers/dandelion/139124974_9e3ba69f6c_jpg.rf.06edf791b14fef93c670dafceffc77dc.jpg",
+        "name": "139124974_9e3ba69f6c_jpg.rf.06edf791b14fef93c670dafceffc77dc.jpg",
+        "type": "image",
+        "size": 36999,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/flowers/dandelion/13967344688_aa629dcdee_n_jpg.rf.19e501c8987fe602cb2b082dddc09437.jpg",
+        "name": "13967344688_aa629dcdee_n_jpg.rf.19e501c8987fe602cb2b082dddc09437.jpg",
+        "type": "image",
+        "size": 24853,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 13,
+        "path": "/test-files/images/flowers/dandelion/14003401241_543535b385_jpg.rf.0ba300cd08b6e1b33fe40163f576a378.jpg",
+        "name": "14003401241_543535b385_jpg.rf.0ba300cd08b6e1b33fe40163f576a378.jpg",
+        "type": "image",
+        "size": 31238,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 14,
+        "path": "/test-files/images/flowers/dandelion/14053397367_75cba846eb_n_jpg.rf.f528ec704a774927e4a5fe6cb96e1aa1.jpg",
+        "name": "14053397367_75cba846eb_n_jpg.rf.f528ec704a774927e4a5fe6cb96e1aa1.jpg",
+        "type": "image",
+        "size": 45601,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 15,
+        "path": "/test-files/images/flowers/dandelion/14065420729_9b388bf7cb_m_jpg.rf.097a92b2851f6ed080f883441af3c3f6.jpg",
+        "name": "14065420729_9b388bf7cb_m_jpg.rf.097a92b2851f6ed080f883441af3c3f6.jpg",
+        "type": "image",
+        "size": 27272,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 16,
+        "path": "/test-files/images/flowers/dandelion/14093744313_b66bc95072_jpg.rf.0019ff83664af459f614ad9302419a2c.jpg",
+        "name": "14093744313_b66bc95072_jpg.rf.0019ff83664af459f614ad9302419a2c.jpg",
+        "type": "image",
+        "size": 25104,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 17,
+        "path": "/test-files/images/flowers/dandelion/14128839257_23def53028_jpg.rf.2060807da621e2851ff481a1ee527032.jpg",
+        "name": "14128839257_23def53028_jpg.rf.2060807da621e2851ff481a1ee527032.jpg",
+        "type": "image",
+        "size": 16423,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 18,
+        "path": "/test-files/images/flowers/dandelion/141935731_d26d600f4f_m_jpg.rf.8f886721d427cb43adbe72ca505626a6.jpg",
+        "name": "141935731_d26d600f4f_m_jpg.rf.8f886721d427cb43adbe72ca505626a6.jpg",
+        "type": "image",
+        "size": 41602,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 19,
+        "path": "/test-files/images/flowers/dandelion/142813254_20a7fd5fb6_n_jpg.rf.43976102044e305a48e0905db478f529.jpg",
+        "name": "142813254_20a7fd5fb6_n_jpg.rf.43976102044e305a48e0905db478f529.jpg",
+        "type": "image",
+        "size": 24651,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 20,
+        "path": "/test-files/images/flowers/dandelion/14306875733_61d71c64c0_n_jpg.rf.2dc32140ac4ebca9f351dfd49744918f.jpg",
+        "name": "14306875733_61d71c64c0_n_jpg.rf.2dc32140ac4ebca9f351dfd49744918f.jpg",
+        "type": "image",
+        "size": 63319,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 21,
+        "path": "/test-files/images/flowers/dandelion/14313509432_6f2343d6c8_m_jpg.rf.01497ce162dea438d1246fdfeadbf8c0.jpg",
+        "name": "14313509432_6f2343d6c8_m_jpg.rf.01497ce162dea438d1246fdfeadbf8c0.jpg",
+        "type": "image",
+        "size": 29270,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 22,
+        "path": "/test-files/images/flowers/dandelion/1443259657_2704fab26e_n_jpg.rf.a7a59da405d43e92a3fa749f1d1ea4c5.jpg",
+        "name": "1443259657_2704fab26e_n_jpg.rf.a7a59da405d43e92a3fa749f1d1ea4c5.jpg",
+        "type": "image",
+        "size": 33271,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 23,
+        "path": "/test-files/images/flowers/dandelion/14439618952_470224b89b_n_jpg.rf.5f06063a970a53ceace442c9fbb2a609.jpg",
+        "name": "14439618952_470224b89b_n_jpg.rf.5f06063a970a53ceace442c9fbb2a609.jpg",
+        "type": "image",
+        "size": 30018,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 24,
+        "path": "/test-files/images/flowers/dandelion/14469481104_d0e29f7ffd_jpg.rf.8f220af2953d67f53d2734d96df08851.jpg",
+        "name": "14469481104_d0e29f7ffd_jpg.rf.8f220af2953d67f53d2734d96df08851.jpg",
+        "type": "image",
+        "size": 16767,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 25,
+        "path": "/test-files/images/flowers/dandelion/1469549847_eac61a6802_jpg.rf.33c6c1f63c0548925e9b270f7f1ae138.jpg",
+        "name": "1469549847_eac61a6802_jpg.rf.33c6c1f63c0548925e9b270f7f1ae138.jpg",
+        "type": "image",
+        "size": 41294,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 26,
+        "path": "/test-files/images/flowers/dandelion/14740350060_a489d9fa06_jpg.rf.e490cc03192f1a5d69339b512fa00d2b.jpg",
+        "name": "14740350060_a489d9fa06_jpg.rf.e490cc03192f1a5d69339b512fa00d2b.jpg",
+        "type": "image",
+        "size": 24273,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 27,
+        "path": "/test-files/images/flowers/dandelion/14829055_2a2e646a8f_m_jpg.rf.e7b82939f82ef450acccaec9ff5cdfbd.jpg",
+        "name": "14829055_2a2e646a8f_m_jpg.rf.e7b82939f82ef450acccaec9ff5cdfbd.jpg",
+        "type": "image",
+        "size": 29753,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 28,
+        "path": "/test-files/images/flowers/dandelion/14886860069_b84665a073_jpg.rf.4db9e880b60dd13ab00fdc64dbe2814f.jpg",
+        "name": "14886860069_b84665a073_jpg.rf.4db9e880b60dd13ab00fdc64dbe2814f.jpg",
+        "type": "image",
+        "size": 46958,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 29,
+        "path": "/test-files/images/flowers/dandelion/14886963928_d4856f1eb6_n_jpg.rf.3a41a2400949e624ec708c2ca12ed756.jpg",
+        "name": "14886963928_d4856f1eb6_n_jpg.rf.3a41a2400949e624ec708c2ca12ed756.jpg",
+        "type": "image",
+        "size": 28333,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 30,
+        "path": "/test-files/images/flowers/dandelion/151385302_f8980a257f_n_jpg.rf.dfcc33125591399df3faa7584901ea77.jpg",
+        "name": "151385302_f8980a257f_n_jpg.rf.dfcc33125591399df3faa7584901ea77.jpg",
+        "type": "image",
+        "size": 27429,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 31,
+        "path": "/test-files/images/flowers/dandelion/151861297_55b10a03a6_n_jpg.rf.09e308a9bc85c7a88e72400d78c8aec1.jpg",
+        "name": "151861297_55b10a03a6_n_jpg.rf.09e308a9bc85c7a88e72400d78c8aec1.jpg",
+        "type": "image",
+        "size": 22584,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 32,
+        "path": "/test-files/images/flowers/dandelion/15378782362_4161b23af7_m_jpg.rf.5660236373de659a56b40ae54cc25e61.jpg",
+        "name": "15378782362_4161b23af7_m_jpg.rf.5660236373de659a56b40ae54cc25e61.jpg",
+        "type": "image",
+        "size": 39733,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 33,
+        "path": "/test-files/images/flowers/dandelion/155646858_9a8b5e8fc8_jpg.rf.45bf7b349857c779337090b1ca73b217.jpg",
+        "name": "155646858_9a8b5e8fc8_jpg.rf.45bf7b349857c779337090b1ca73b217.jpg",
+        "type": "image",
+        "size": 65285,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 34,
+        "path": "/test-files/images/flowers/dandelion/16650892835_9228a3ef67_m_jpg.rf.de1c92ca3a9c8008a929c707f50fe056.jpg",
+        "name": "16650892835_9228a3ef67_m_jpg.rf.de1c92ca3a9c8008a929c707f50fe056.jpg",
+        "type": "image",
+        "size": 25754,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 35,
+        "path": "/test-files/images/flowers/dandelion/16691236594_4287cea9d6_n_jpg.rf.d27f2ad7febb8270ddb10aa1d1b0c741.jpg",
+        "name": "16691236594_4287cea9d6_n_jpg.rf.d27f2ad7febb8270ddb10aa1d1b0c741.jpg",
+        "type": "image",
+        "size": 43054,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 36,
+        "path": "/test-files/images/flowers/dandelion/16699732794_5bfd639cf8_n_jpg.rf.64778e4df3054200f02844b530ecfc20.jpg",
+        "name": "16699732794_5bfd639cf8_n_jpg.rf.64778e4df3054200f02844b530ecfc20.jpg",
+        "type": "image",
+        "size": 74900,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 37,
+        "path": "/test-files/images/flowers/dandelion/16970837587_4a9d8500d7_jpg.rf.566e636e2ccc6cdc3dca1825f32d52fe.jpg",
+        "name": "16970837587_4a9d8500d7_jpg.rf.566e636e2ccc6cdc3dca1825f32d52fe.jpg",
+        "type": "image",
+        "size": 82272,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 38,
+        "path": "/test-files/images/flowers/dandelion/17075803866_aeeded2637_jpg.rf.59a9934a6d8cc12bc651d2424b47a143.jpg",
+        "name": "17075803866_aeeded2637_jpg.rf.59a9934a6d8cc12bc651d2424b47a143.jpg",
+        "type": "image",
+        "size": 71547,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 39,
+        "path": "/test-files/images/flowers/dandelion/17080000869_a80e767f4a_m_jpg.rf.9fe7cb57193ec86a7772901b8c7b36d0.jpg",
+        "name": "17080000869_a80e767f4a_m_jpg.rf.9fe7cb57193ec86a7772901b8c7b36d0.jpg",
+        "type": "image",
+        "size": 30937,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 40,
+        "path": "/test-files/images/flowers/dandelion/17244252705_328e0bcda6_jpg.rf.3abea371ef8c73f6b9af8fb4e7f80424.jpg",
+        "name": "17244252705_328e0bcda6_jpg.rf.3abea371ef8c73f6b9af8fb4e7f80424.jpg",
+        "type": "image",
+        "size": 14718,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 41,
+        "path": "/test-files/images/flowers/dandelion/17367866236_61abd4d243_n_jpg.rf.d1df6f1e3795ad2a7ab185df303f9453.jpg",
+        "name": "17367866236_61abd4d243_n_jpg.rf.d1df6f1e3795ad2a7ab185df303f9453.jpg",
+        "type": "image",
+        "size": 34095,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 42,
+        "path": "/test-files/images/flowers/dandelion/17388674711_6dca8a2e8b_n_jpg.rf.3aa27a620511c516583009b27429addc.jpg",
+        "name": "17388674711_6dca8a2e8b_n_jpg.rf.3aa27a620511c516583009b27429addc.jpg",
+        "type": "image",
+        "size": 18617,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 43,
+        "path": "/test-files/images/flowers/dandelion/17420983523_2e32d70359_jpg.rf.2b98bd5210890e6cfebbbd6ba02b2bb6.jpg",
+        "name": "17420983523_2e32d70359_jpg.rf.2b98bd5210890e6cfebbbd6ba02b2bb6.jpg",
+        "type": "image",
+        "size": 17500,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 44,
+        "path": "/test-files/images/flowers/dandelion/17862580326_293070978d_m_jpg.rf.3da14ed9e3d81d1102da9ed6992c6dff.jpg",
+        "name": "17862580326_293070978d_m_jpg.rf.3da14ed9e3d81d1102da9ed6992c6dff.jpg",
+        "type": "image",
+        "size": 55759,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 45,
+        "path": "/test-files/images/flowers/dandelion/18001393975_2a6acaabd8_jpg.rf.134ba0bb786ef7005d9b1b2a838a3dd8.jpg",
+        "name": "18001393975_2a6acaabd8_jpg.rf.134ba0bb786ef7005d9b1b2a838a3dd8.jpg",
+        "type": "image",
+        "size": 59687,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 46,
+        "path": "/test-files/images/flowers/dandelion/18111636378_856027a7b8_n_jpg.rf.b554e7b8f7d98498d6e54ae7366c7a04.jpg",
+        "name": "18111636378_856027a7b8_n_jpg.rf.b554e7b8f7d98498d6e54ae7366c7a04.jpg",
+        "type": "image",
+        "size": 25183,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 47,
+        "path": "/test-files/images/flowers/dandelion/18243351371_5fda92ac0a_n_jpg.rf.c49911e54ff726d57ce4250d4291bce1.jpg",
+        "name": "18243351371_5fda92ac0a_n_jpg.rf.c49911e54ff726d57ce4250d4291bce1.jpg",
+        "type": "image",
+        "size": 28453,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 48,
+        "path": "/test-files/images/flowers/dandelion/18996760154_58d3c48604_jpg.rf.4517620ef6bdb434da220fb2788bc669.jpg",
+        "name": "18996760154_58d3c48604_jpg.rf.4517620ef6bdb434da220fb2788bc669.jpg",
+        "type": "image",
+        "size": 27756,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 49,
+        "path": "/test-files/images/flowers/dandelion/19440910519_cb1162470e_jpg.rf.41d5fcceb0eb206322bc56fa28195a7c.jpg",
+        "name": "19440910519_cb1162470e_jpg.rf.41d5fcceb0eb206322bc56fa28195a7c.jpg",
+        "type": "image",
+        "size": 21495,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 50,
+        "path": "/test-files/images/flowers/dandelion/19506262462_d0945c14a6_jpg.rf.ae3f6b80443e692c5e9a783abc1bc4de.jpg",
+        "name": "19506262462_d0945c14a6_jpg.rf.ae3f6b80443e692c5e9a783abc1bc4de.jpg",
+        "type": "image",
+        "size": 34709,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 51,
+        "path": "/test-files/images/flowers/dandelion/19526570282_1d1e71b0f3_m_jpg.rf.9f862038c70de449166461c08b29ca42.jpg",
+        "name": "19526570282_1d1e71b0f3_m_jpg.rf.9f862038c70de449166461c08b29ca42.jpg",
+        "type": "image",
+        "size": 32506,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 52,
+        "path": "/test-files/images/flowers/dandelion/19551343814_48f764535f_m_jpg.rf.f92f515479a7421b9e02acd88d426d24.jpg",
+        "name": "19551343814_48f764535f_m_jpg.rf.f92f515479a7421b9e02acd88d426d24.jpg",
+        "type": "image",
+        "size": 26271,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 53,
+        "path": "/test-files/images/flowers/dandelion/19593576916_f5a083d7fe_n_jpg.rf.e92e14397eef8602de53eaed673063c6.jpg",
+        "name": "19593576916_f5a083d7fe_n_jpg.rf.e92e14397eef8602de53eaed673063c6.jpg",
+        "type": "image",
+        "size": 57486,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 54,
+        "path": "/test-files/images/flowers/dandelion/19617425002_b914c1e2ab_jpg.rf.4ba867651fc3f260b2d85a15a29c84a9.jpg",
+        "name": "19617425002_b914c1e2ab_jpg.rf.4ba867651fc3f260b2d85a15a29c84a9.jpg",
+        "type": "image",
+        "size": 24234,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 55,
+        "path": "/test-files/images/flowers/dandelion/19691175559_ef12b8b354_n_jpg.rf.5e8c04b3bb5d411c225fd3420ad55283.jpg",
+        "name": "19691175559_ef12b8b354_n_jpg.rf.5e8c04b3bb5d411c225fd3420ad55283.jpg",
+        "type": "image",
+        "size": 22695,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 56,
+        "path": "/test-files/images/flowers/dandelion/19961979110_fcd8092388_m_jpg.rf.65a165d6774c0586dc273457b762bde1.jpg",
+        "name": "19961979110_fcd8092388_m_jpg.rf.65a165d6774c0586dc273457b762bde1.jpg",
+        "type": "image",
+        "size": 15029,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 57,
+        "path": "/test-files/images/flowers/dandelion/20983660733_06b35b9eb8_jpg.rf.bc85b88e6cc658055167dec24590d09d.jpg",
+        "name": "20983660733_06b35b9eb8_jpg.rf.bc85b88e6cc658055167dec24590d09d.jpg",
+        "type": "image",
+        "size": 40677,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 58,
+        "path": "/test-files/images/flowers/dandelion/2133943140_9fc7bcc9aa_jpg.rf.96f25b2b50350d1e2e8dbecb0372015f.jpg",
+        "name": "2133943140_9fc7bcc9aa_jpg.rf.96f25b2b50350d1e2e8dbecb0372015f.jpg",
+        "type": "image",
+        "size": 57654,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 59,
+        "path": "/test-files/images/flowers/dandelion/21523597492_39b6765cd7_m_jpg.rf.804126c29fb0ce02afa347f80bfb7a73.jpg",
+        "name": "21523597492_39b6765cd7_m_jpg.rf.804126c29fb0ce02afa347f80bfb7a73.jpg",
+        "type": "image",
+        "size": 68154,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 60,
+        "path": "/test-files/images/flowers/dandelion/22190242684_8c3300d4e6_jpg.rf.75a54d0fc4c9a174e331766d1197d1e5.jpg",
+        "name": "22190242684_8c3300d4e6_jpg.rf.75a54d0fc4c9a174e331766d1197d1e5.jpg",
+        "type": "image",
+        "size": 25043,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 61,
+        "path": "/test-files/images/flowers/dandelion/23192507093_2e6ec77bef_n_jpg.rf.a718a2742298d729d64c7c304d0715ed.jpg",
+        "name": "23192507093_2e6ec77bef_n_jpg.rf.a718a2742298d729d64c7c304d0715ed.jpg",
+        "type": "image",
+        "size": 38267,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 62,
+        "path": "/test-files/images/flowers/dandelion/2326334426_2dc74fceb1_jpg.rf.49ac96508c76f847d1d9977909b5005e.jpg",
+        "name": "2326334426_2dc74fceb1_jpg.rf.49ac96508c76f847d1d9977909b5005e.jpg",
+        "type": "image",
+        "size": 45582,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 63,
+        "path": "/test-files/images/flowers/dandelion/2335702923_decb9a860b_m_jpg.rf.fb34df384bcd8d5c7130519f817fa933.jpg",
+        "name": "2335702923_decb9a860b_m_jpg.rf.fb34df384bcd8d5c7130519f817fa933.jpg",
+        "type": "image",
+        "size": 31416,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 64,
+        "path": "/test-files/images/flowers/dandelion/2395009660_295c8ffd67_m_jpg.rf.05b1681057ebf4fbf9ba1ae72e694cdc.jpg",
+        "name": "2395009660_295c8ffd67_m_jpg.rf.05b1681057ebf4fbf9ba1ae72e694cdc.jpg",
+        "type": "image",
+        "size": 22580,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 65,
+        "path": "/test-files/images/flowers/dandelion/2444241718_3ca53ce921_jpg.rf.79d31ca3b8296b9312581f01d45ab925.jpg",
+        "name": "2444241718_3ca53ce921_jpg.rf.79d31ca3b8296b9312581f01d45ab925.jpg",
+        "type": "image",
+        "size": 26457,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 66,
+        "path": "/test-files/images/flowers/dandelion/2467980325_237b14c737_m_jpg.rf.7305eac1c87991681a7f458209882b30.jpg",
+        "name": "2467980325_237b14c737_m_jpg.rf.7305eac1c87991681a7f458209882b30.jpg",
+        "type": "image",
+        "size": 26751,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 67,
+        "path": "/test-files/images/flowers/dandelion/2469856983_fe8e36ba57_jpg.rf.74ee1502f9df99e534bd8cc88abffdfa.jpg",
+        "name": "2469856983_fe8e36ba57_jpg.rf.74ee1502f9df99e534bd8cc88abffdfa.jpg",
+        "type": "image",
+        "size": 35200,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 68,
+        "path": "/test-files/images/flowers/dandelion/2470874500_43d8011e75_jpg.rf.a5b859e7e938574529b6a0886632dd05.jpg",
+        "name": "2470874500_43d8011e75_jpg.rf.a5b859e7e938574529b6a0886632dd05.jpg",
+        "type": "image",
+        "size": 24976,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 69,
+        "path": "/test-files/images/flowers/dandelion/2472641499_cbe617a93d_jpg.rf.385ae5ad860bf60cc545dd9b7c9ba556.jpg",
+        "name": "2472641499_cbe617a93d_jpg.rf.385ae5ad860bf60cc545dd9b7c9ba556.jpg",
+        "type": "image",
+        "size": 33522,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 70,
+        "path": "/test-files/images/flowers/dandelion/2476098674_e6f39536f5_n_jpg.rf.c4993f9ddd7ca34118d4d4cf4adafe64.jpg",
+        "name": "2476098674_e6f39536f5_n_jpg.rf.c4993f9ddd7ca34118d4d4cf4adafe64.jpg",
+        "type": "image",
+        "size": 25928,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 71,
+        "path": "/test-files/images/flowers/dandelion/2477231067_3aecef1bf8_n_jpg.rf.21cb5619be696e0ad2514e94537b766c.jpg",
+        "name": "2477231067_3aecef1bf8_n_jpg.rf.21cb5619be696e0ad2514e94537b766c.jpg",
+        "type": "image",
+        "size": 76024,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 72,
+        "path": "/test-files/images/flowers/dandelion/2512977446_ac498955ee_jpg.rf.983d340fb6bbb0a75d157b4b6cae416a.jpg",
+        "name": "2512977446_ac498955ee_jpg.rf.983d340fb6bbb0a75d157b4b6cae416a.jpg",
+        "type": "image",
+        "size": 36678,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 73,
+        "path": "/test-files/images/flowers/dandelion/2540640433_dedd577263_jpg.rf.055d14851de224595547f6ec4ba1f48b.jpg",
+        "name": "2540640433_dedd577263_jpg.rf.055d14851de224595547f6ec4ba1f48b.jpg",
+        "type": "image",
+        "size": 53538,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 74,
+        "path": "/test-files/images/flowers/dandelion/2622697182_ea4aff29dd_n_jpg.rf.006213ec57786158e0a338090e2df094.jpg",
+        "name": "2622697182_ea4aff29dd_n_jpg.rf.006213ec57786158e0a338090e2df094.jpg",
+        "type": "image",
+        "size": 23811,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 75,
+        "path": "/test-files/images/flowers/dandelion/2628514700_b6d5325797_n_jpg.rf.4248eeeba8c3b6c1fce3721c830c8472.jpg",
+        "name": "2628514700_b6d5325797_n_jpg.rf.4248eeeba8c3b6c1fce3721c830c8472.jpg",
+        "type": "image",
+        "size": 31635,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 76,
+        "path": "/test-files/images/flowers/dandelion/2693136371_dde2570813_jpg.rf.2e1933435406a36fc22cba8ccd4bb250.jpg",
+        "name": "2693136371_dde2570813_jpg.rf.2e1933435406a36fc22cba8ccd4bb250.jpg",
+        "type": "image",
+        "size": 27322,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 77,
+        "path": "/test-files/images/flowers/dandelion/29138994986_267e0e36c9_n_jpg.rf.66321e343148501cd2c6438e9e458b52.jpg",
+        "name": "29138994986_267e0e36c9_n_jpg.rf.66321e343148501cd2c6438e9e458b52.jpg",
+        "type": "image",
+        "size": 41059,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 78,
+        "path": "/test-files/images/flowers/dandelion/2995221296_a6ddaccc39_jpg.rf.4f076325527f023ae451059e39c991ff.jpg",
+        "name": "2995221296_a6ddaccc39_jpg.rf.4f076325527f023ae451059e39c991ff.jpg",
+        "type": "image",
+        "size": 55428,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 79,
+        "path": "/test-files/images/flowers/dandelion/32120685303_90b5f21ab2_n_jpg.rf.4729e6a4c91ce173f8519af52d8b564f.jpg",
+        "name": "32120685303_90b5f21ab2_n_jpg.rf.4729e6a4c91ce173f8519af52d8b564f.jpg",
+        "type": "image",
+        "size": 24423,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 80,
+        "path": "/test-files/images/flowers/dandelion/33857574164_b0b724b567_n_jpg.rf.7b99dd4c5c099777768ab5129a29d570.jpg",
+        "name": "33857574164_b0b724b567_n_jpg.rf.7b99dd4c5c099777768ab5129a29d570.jpg",
+        "type": "image",
+        "size": 32262,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 81,
+        "path": "/test-files/images/flowers/dandelion/33869330174_b259025135_n_jpg.rf.f81be0ce6439b45c8319ba377e1daedb.jpg",
+        "name": "33869330174_b259025135_n_jpg.rf.f81be0ce6439b45c8319ba377e1daedb.jpg",
+        "type": "image",
+        "size": 28751,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 82,
+        "path": "/test-files/images/flowers/dandelion/33877696673_2d1de2d252_n_jpg.rf.2047cb00d659135805d32def63a0c23f.jpg",
+        "name": "33877696673_2d1de2d252_n_jpg.rf.2047cb00d659135805d32def63a0c23f.jpg",
+        "type": "image",
+        "size": 21011,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 83,
+        "path": "/test-files/images/flowers/dandelion/33885269993_3968e1aacc_n_jpg.rf.3f98414d9ad10ce85f2c1acfc2b6eea4.jpg",
+        "name": "33885269993_3968e1aacc_n_jpg.rf.3f98414d9ad10ce85f2c1acfc2b6eea4.jpg",
+        "type": "image",
+        "size": 36847,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 84,
+        "path": "/test-files/images/flowers/dandelion/33904560113_497239a68f_n_jpg.rf.c48d8f4f65da16af36f68eff5fe6c52e.jpg",
+        "name": "33904560113_497239a68f_n_jpg.rf.c48d8f4f65da16af36f68eff5fe6c52e.jpg",
+        "type": "image",
+        "size": 22233,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 85,
+        "path": "/test-files/images/flowers/dandelion/33925191623_d355f976ef_n_jpg.rf.6d05942a7a6eade54858343b80d29f23.jpg",
+        "name": "33925191623_d355f976ef_n_jpg.rf.6d05942a7a6eade54858343b80d29f23.jpg",
+        "type": "image",
+        "size": 22757,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 86,
+        "path": "/test-files/images/flowers/dandelion/340190928_d77bf4d615_jpg.rf.4c536b71ac733083357539a318b8d875.jpg",
+        "name": "340190928_d77bf4d615_jpg.rf.4c536b71ac733083357539a318b8d875.jpg",
+        "type": "image",
+        "size": 38915,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 87,
+        "path": "/test-files/images/flowers/dandelion/3418355347_2bdcca592a_jpg.rf.cfaa2132ca6da01e6af9eea32f0ca6d3.jpg",
+        "name": "3418355347_2bdcca592a_jpg.rf.cfaa2132ca6da01e6af9eea32f0ca6d3.jpg",
+        "type": "image",
+        "size": 36438,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 88,
+        "path": "/test-files/images/flowers/dandelion/34323484476_6406ee1e37_n_jpg.rf.2b2b09f98ffb8aa8912cee0720027286.jpg",
+        "name": "34323484476_6406ee1e37_n_jpg.rf.2b2b09f98ffb8aa8912cee0720027286.jpg",
+        "type": "image",
+        "size": 35183,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 89,
+        "path": "/test-files/images/flowers/dandelion/34334194690_0dfe3d8701_n_jpg.rf.5de31f8e7ad3aa9c81b3075f70964d7a.jpg",
+        "name": "34334194690_0dfe3d8701_n_jpg.rf.5de31f8e7ad3aa9c81b3075f70964d7a.jpg",
+        "type": "image",
+        "size": 25625,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 90,
+        "path": "/test-files/images/flowers/dandelion/34335432530_cd667cbb19_n_jpg.rf.43815811b073e764f65e351d83c1e65c.jpg",
+        "name": "34335432530_cd667cbb19_n_jpg.rf.43815811b073e764f65e351d83c1e65c.jpg",
+        "type": "image",
+        "size": 27167,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 91,
+        "path": "/test-files/images/flowers/dandelion/34343228430_8df9f1c03a_n_jpg.rf.43293bb1adc4e5af1be654bc776576b5.jpg",
+        "name": "34343228430_8df9f1c03a_n_jpg.rf.43293bb1adc4e5af1be654bc776576b5.jpg",
+        "type": "image",
+        "size": 21218,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 92,
+        "path": "/test-files/images/flowers/dandelion/3451079245_2139200d66_n_jpg.rf.25340a1e9b0544a7014672e274e20eb6.jpg",
+        "name": "3451079245_2139200d66_n_jpg.rf.25340a1e9b0544a7014672e274e20eb6.jpg",
+        "type": "image",
+        "size": 35663,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 93,
+        "path": "/test-files/images/flowers/dandelion/3451646670_3eff7094b7_n_jpg.rf.392c7bc357ebcc2a645e68178f2cec0e.jpg",
+        "name": "3451646670_3eff7094b7_n_jpg.rf.392c7bc357ebcc2a645e68178f2cec0e.jpg",
+        "type": "image",
+        "size": 49438,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 94,
+        "path": "/test-files/images/flowers/dandelion/3454102259_957ecd0a9b_jpg.rf.502dc93094f0fc086b27f318abbe413c.jpg",
+        "name": "3454102259_957ecd0a9b_jpg.rf.502dc93094f0fc086b27f318abbe413c.jpg",
+        "type": "image",
+        "size": 18184,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 95,
+        "path": "/test-files/images/flowers/dandelion/34550871222_a9d795a2c0_n_jpg.rf.922561872b156c964c9e1bd596e3203c.jpg",
+        "name": "34550871222_a9d795a2c0_n_jpg.rf.922561872b156c964c9e1bd596e3203c.jpg",
+        "type": "image",
+        "size": 67350,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 96,
+        "path": "/test-files/images/flowers/dandelion/34551666432_c5b5f9684e_n_jpg.rf.c586aecb83150d61f68f387be66bce00.jpg",
+        "name": "34551666432_c5b5f9684e_n_jpg.rf.c586aecb83150d61f68f387be66bce00.jpg",
+        "type": "image",
+        "size": 23842,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 97,
+        "path": "/test-files/images/flowers/dandelion/34561332721_04b6f1c889_n_jpg.rf.37079d1a648a7e643840203b470d4a49.jpg",
+        "name": "34561332721_04b6f1c889_n_jpg.rf.37079d1a648a7e643840203b470d4a49.jpg",
+        "type": "image",
+        "size": 43031,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 98,
+        "path": "/test-files/images/flowers/dandelion/34562347042_e4dc06879a_n_jpg.rf.c06a382facb495319d07a6fb8cae6306.jpg",
+        "name": "34562347042_e4dc06879a_n_jpg.rf.c06a382facb495319d07a6fb8cae6306.jpg",
+        "type": "image",
+        "size": 27618,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 99,
+        "path": "/test-files/images/flowers/dandelion/34571238031_7eff74ca43_n_jpg.rf.4b34bccc31ed72da801b7a236937bd6f.jpg",
+        "name": "34571238031_7eff74ca43_n_jpg.rf.4b34bccc31ed72da801b7a236937bd6f.jpg",
+        "type": "image",
+        "size": 15814,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 100,
+        "path": "/test-files/images/flowers/dandelion/34586667251_bfda649f33_n_jpg.rf.cb2d8cf6470dde5c70c94b354a75f459.jpg",
+        "name": "34586667251_bfda649f33_n_jpg.rf.cb2d8cf6470dde5c70c94b354a75f459.jpg",
+        "type": "image",
+        "size": 57279,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 101,
+        "path": "/test-files/images/flowers/dandelion/34587934371_1a0429111e_n_jpg.rf.ea47048bc0cf6ad4fa2a0c125507d8f9.jpg",
+        "name": "34587934371_1a0429111e_n_jpg.rf.ea47048bc0cf6ad4fa2a0c125507d8f9.jpg",
+        "type": "image",
+        "size": 39477,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 102,
+        "path": "/test-files/images/flowers/dandelion/3464015936_6845f46f64_jpg.rf.4b0f488e7ac245798930acd8206f3df9.jpg",
+        "name": "3464015936_6845f46f64_jpg.rf.4b0f488e7ac245798930acd8206f3df9.jpg",
+        "type": "image",
+        "size": 17472,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 103,
+        "path": "/test-files/images/flowers/dandelion/34653465656_31bc613631_n_jpg.rf.1140db40c32e2636d82dfe138f46c674.jpg",
+        "name": "34653465656_31bc613631_n_jpg.rf.1140db40c32e2636d82dfe138f46c674.jpg",
+        "type": "image",
+        "size": 16394,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 104,
+        "path": "/test-files/images/flowers/dandelion/34686041416_e50c8028f9_n_jpg.rf.b94587ea842ebdde79ca3f8a94003441.jpg",
+        "name": "34686041416_e50c8028f9_n_jpg.rf.b94587ea842ebdde79ca3f8a94003441.jpg",
+        "type": "image",
+        "size": 56719,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 105,
+        "path": "/test-files/images/flowers/dandelion/34690508115_bafcb9845c_n_jpg.rf.fab2c6d48b2817f3cfb2520d19e7582d.jpg",
+        "name": "34690508115_bafcb9845c_n_jpg.rf.fab2c6d48b2817f3cfb2520d19e7582d.jpg",
+        "type": "image",
+        "size": 24629,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 106,
+        "path": "/test-files/images/flowers/dandelion/3469112805_6cc8640236_jpg.rf.b02e2169b00148b76fccaffe971ba454.jpg",
+        "name": "3469112805_6cc8640236_jpg.rf.b02e2169b00148b76fccaffe971ba454.jpg",
+        "type": "image",
+        "size": 97426,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 107,
+        "path": "/test-files/images/flowers/dandelion/34692530906_fe2470a5e5_n_jpg.rf.f9d6785be023790faf8fd614d8ded9ae.jpg",
+        "name": "34692530906_fe2470a5e5_n_jpg.rf.f9d6785be023790faf8fd614d8ded9ae.jpg",
+        "type": "image",
+        "size": 30101,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 108,
+        "path": "/test-files/images/flowers/dandelion/34694287966_43ce068108_n_jpg.rf.0f618b7a2f42ea085d3c25d910feb5cf.jpg",
+        "name": "34694287966_43ce068108_n_jpg.rf.0f618b7a2f42ea085d3c25d910feb5cf.jpg",
+        "type": "image",
+        "size": 36436,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 109,
+        "path": "/test-files/images/flowers/dandelion/34694292346_83b4d97809_n_jpg.rf.f9ecdfbf87b91ad079bb44b08099c610.jpg",
+        "name": "34694292346_83b4d97809_n_jpg.rf.f9ecdfbf87b91ad079bb44b08099c610.jpg",
+        "type": "image",
+        "size": 30478,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 110,
+        "path": "/test-files/images/flowers/dandelion/34722644565_812fcc1397_n_jpg.rf.2171bbd61d5323545936d4c0a1ab87ca.jpg",
+        "name": "34722644565_812fcc1397_n_jpg.rf.2171bbd61d5323545936d4c0a1ab87ca.jpg",
+        "type": "image",
+        "size": 41087,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 111,
+        "path": "/test-files/images/flowers/dandelion/34724303275_b9494837aa_n_jpg.rf.1d0bdd12cec969f45c7cd607b11290ff.jpg",
+        "name": "34724303275_b9494837aa_n_jpg.rf.1d0bdd12cec969f45c7cd607b11290ff.jpg",
+        "type": "image",
+        "size": 22039,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 112,
+        "path": "/test-files/images/flowers/dandelion/34728513735_ebb4b179eb_n_jpg.rf.dcacde5c59bbb77f449eb0d020811788.jpg",
+        "name": "34728513735_ebb4b179eb_n_jpg.rf.dcacde5c59bbb77f449eb0d020811788.jpg",
+        "type": "image",
+        "size": 35865,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 113,
+        "path": "/test-files/images/flowers/dandelion/3483575184_cb8d16a083_n_jpg.rf.173790a2ba84c1b831959467d068dc80.jpg",
+        "name": "3483575184_cb8d16a083_n_jpg.rf.173790a2ba84c1b831959467d068dc80.jpg",
+        "type": "image",
+        "size": 62472,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 114,
+        "path": "/test-files/images/flowers/dandelion/3539077354_c67aa7168d_m_jpg.rf.0a59b9f6706708a198c3f1d10bddd6d1.jpg",
+        "name": "3539077354_c67aa7168d_m_jpg.rf.0a59b9f6706708a198c3f1d10bddd6d1.jpg",
+        "type": "image",
+        "size": 36587,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 115,
+        "path": "/test-files/images/flowers/dandelion/3554992110_81d8c9b0bd_m_jpg.rf.fc2868f4633e3f32e1a4f7b0a674c152.jpg",
+        "name": "3554992110_81d8c9b0bd_m_jpg.rf.fc2868f4633e3f32e1a4f7b0a674c152.jpg",
+        "type": "image",
+        "size": 40241,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 116,
+        "path": "/test-files/images/flowers/dandelion/3562861685_8b8d747b4d_jpg.rf.4361b0785e5ec39e2e9524e1fbd5419d.jpg",
+        "name": "3562861685_8b8d747b4d_jpg.rf.4361b0785e5ec39e2e9524e1fbd5419d.jpg",
+        "type": "image",
+        "size": 18223,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 117,
+        "path": "/test-files/images/flowers/dandelion/3581252194_8c976d333a_n_jpg.rf.262a5e54bda59dec5177396e66822350.jpg",
+        "name": "3581252194_8c976d333a_n_jpg.rf.262a5e54bda59dec5177396e66822350.jpg",
+        "type": "image",
+        "size": 47335,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 118,
+        "path": "/test-files/images/flowers/dandelion/3664916269_29f07c7c7b_jpg.rf.c867f0a27e2f383c0491dca7affe9fec.jpg",
+        "name": "3664916269_29f07c7c7b_jpg.rf.c867f0a27e2f383c0491dca7affe9fec.jpg",
+        "type": "image",
+        "size": 24488,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 119,
+        "path": "/test-files/images/flowers/dandelion/3675486971_d4c8683b54_n_jpg.rf.4c4a05ea0b66fe9f4a3fa56528f500e6.jpg",
+        "name": "3675486971_d4c8683b54_n_jpg.rf.4c4a05ea0b66fe9f4a3fa56528f500e6.jpg",
+        "type": "image",
+        "size": 27611,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 120,
+        "path": "/test-files/images/flowers/dandelion/3696596109_4c4419128a_m_jpg.rf.003cb976f4403bbf6aae622d629d9841.jpg",
+        "name": "3696596109_4c4419128a_m_jpg.rf.003cb976f4403bbf6aae622d629d9841.jpg",
+        "type": "image",
+        "size": 42840,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 121,
+        "path": "/test-files/images/flowers/dandelion/3844111216_742ea491a0_jpg.rf.5137ddd3390093404f9f2212c3d36741.jpg",
+        "name": "3844111216_742ea491a0_jpg.rf.5137ddd3390093404f9f2212c3d36741.jpg",
+        "type": "image",
+        "size": 20975,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 122,
+        "path": "/test-files/images/flowers/dandelion/3954167682_128398bf79_m_jpg.rf.7b8de7b13b2edcefe7ecaf3bf324a763.jpg",
+        "name": "3954167682_128398bf79_m_jpg.rf.7b8de7b13b2edcefe7ecaf3bf324a763.jpg",
+        "type": "image",
+        "size": 22187,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 123,
+        "path": "/test-files/images/flowers/dandelion/3998927705_af499a4f29_jpg.rf.53f3f58c478e2346559c0cae8a70c208.jpg",
+        "name": "3998927705_af499a4f29_jpg.rf.53f3f58c478e2346559c0cae8a70c208.jpg",
+        "type": "image",
+        "size": 48026,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 124,
+        "path": "/test-files/images/flowers/dandelion/4258272073_f616d1e575_m_jpg.rf.52baa30ffb80822d2bfb75402e464a61.jpg",
+        "name": "4258272073_f616d1e575_m_jpg.rf.52baa30ffb80822d2bfb75402e464a61.jpg",
+        "type": "image",
+        "size": 36188,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 125,
+        "path": "/test-files/images/flowers/dandelion/4290112545_3528055993_m_jpg.rf.450093d33c05a31ed72588ed2e235fa6.jpg",
+        "name": "4290112545_3528055993_m_jpg.rf.450093d33c05a31ed72588ed2e235fa6.jpg",
+        "type": "image",
+        "size": 72798,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 126,
+        "path": "/test-files/images/flowers/dandelion/4496277750_8c34256e28_jpg.rf.a036f2baebfec8c22a46e7cde0145369.jpg",
+        "name": "4496277750_8c34256e28_jpg.rf.a036f2baebfec8c22a46e7cde0145369.jpg",
+        "type": "image",
+        "size": 53874,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 127,
+        "path": "/test-files/images/flowers/dandelion/4530848609_02a1d9b791_jpg.rf.1f606f7bc7e464733fd5946957b7833f.jpg",
+        "name": "4530848609_02a1d9b791_jpg.rf.1f606f7bc7e464733fd5946957b7833f.jpg",
+        "type": "image",
+        "size": 21251,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 128,
+        "path": "/test-files/images/flowers/dandelion/4552571121_2677bcdec3_jpg.rf.c205a14542abf77e23076c779be1aa30.jpg",
+        "name": "4552571121_2677bcdec3_jpg.rf.c205a14542abf77e23076c779be1aa30.jpg",
+        "type": "image",
+        "size": 28769,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 129,
+        "path": "/test-files/images/flowers/dandelion/4558562689_c8e2ab9f10_jpg.rf.35909170dd91d544857b179051882921.jpg",
+        "name": "4558562689_c8e2ab9f10_jpg.rf.35909170dd91d544857b179051882921.jpg",
+        "type": "image",
+        "size": 16706,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 130,
+        "path": "/test-files/images/flowers/dandelion/4560613196_91a04f8dcf_m_jpg.rf.3aeb35e524be3032fcb44c884c92b318.jpg",
+        "name": "4560613196_91a04f8dcf_m_jpg.rf.3aeb35e524be3032fcb44c884c92b318.jpg",
+        "type": "image",
+        "size": 44160,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 131,
+        "path": "/test-files/images/flowers/dandelion/4562516418_8ccb8c103f_jpg.rf.2279c34d1c050ae9eb0efe05d2c0a58a.jpg",
+        "name": "4562516418_8ccb8c103f_jpg.rf.2279c34d1c050ae9eb0efe05d2c0a58a.jpg",
+        "type": "image",
+        "size": 38338,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 132,
+        "path": "/test-files/images/flowers/dandelion/4589787911_851cb80157_n_jpg.rf.df15705fc4e103e299809c6beeb8a01a.jpg",
+        "name": "4589787911_851cb80157_n_jpg.rf.df15705fc4e103e299809c6beeb8a01a.jpg",
+        "type": "image",
+        "size": 23560,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 133,
+        "path": "/test-files/images/flowers/dandelion/4598938531_9749b3b56a_jpg.rf.dab89926cab465b00502ef13a3410753.jpg",
+        "name": "4598938531_9749b3b56a_jpg.rf.dab89926cab465b00502ef13a3410753.jpg",
+        "type": "image",
+        "size": 36226,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 134,
+        "path": "/test-files/images/flowers/dandelion/4601270210_60136f2b87_n_jpg.rf.1a476803c0f820c9a139a51babdf4c72.jpg",
+        "name": "4601270210_60136f2b87_n_jpg.rf.1a476803c0f820c9a139a51babdf4c72.jpg",
+        "type": "image",
+        "size": 31206,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 135,
+        "path": "/test-files/images/flowers/dandelion/4607183665_3472643bc8_jpg.rf.a790448de748de87a238714400770683.jpg",
+        "name": "4607183665_3472643bc8_jpg.rf.a790448de748de87a238714400770683.jpg",
+        "type": "image",
+        "size": 17172,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 136,
+        "path": "/test-files/images/flowers/dandelion/4629844753_4e02015d29_m_jpg.rf.b90f77d521d9c593b4ef500611458169.jpg",
+        "name": "4629844753_4e02015d29_m_jpg.rf.b90f77d521d9c593b4ef500611458169.jpg",
+        "type": "image",
+        "size": 39900,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 137,
+        "path": "/test-files/images/flowers/dandelion/4632235020_d00ce1e497_jpg.rf.580b44f1f22d4b1ce8860de27c564a7d.jpg",
+        "name": "4632235020_d00ce1e497_jpg.rf.580b44f1f22d4b1ce8860de27c564a7d.jpg",
+        "type": "image",
+        "size": 29440,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 138,
+        "path": "/test-files/images/flowers/dandelion/4645161319_c308fc31ef_n_jpg.rf.591afd72a6120d80e0b4b572fc9bb3bf.jpg",
+        "name": "4645161319_c308fc31ef_n_jpg.rf.591afd72a6120d80e0b4b572fc9bb3bf.jpg",
+        "type": "image",
+        "size": 35101,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 139,
+        "path": "/test-files/images/flowers/dandelion/4657801292_73bef15031_jpg.rf.8b35ef4931d02bf4572486deea2b1d81.jpg",
+        "name": "4657801292_73bef15031_jpg.rf.8b35ef4931d02bf4572486deea2b1d81.jpg",
+        "type": "image",
+        "size": 35566,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 140,
+        "path": "/test-files/images/flowers/dandelion/4669006062_6b3d260037_n_jpg.rf.82cde4741ebb902da75bf5af341b5bc4.jpg",
+        "name": "4669006062_6b3d260037_n_jpg.rf.82cde4741ebb902da75bf5af341b5bc4.jpg",
+        "type": "image",
+        "size": 37346,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 141,
+        "path": "/test-files/images/flowers/dandelion/4691257171_23a29aaa33_n_jpg.rf.33a8cc76c36b999663ddfc1b0646ce87.jpg",
+        "name": "4691257171_23a29aaa33_n_jpg.rf.33a8cc76c36b999663ddfc1b0646ce87.jpg",
+        "type": "image",
+        "size": 25403,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 142,
+        "path": "/test-files/images/flowers/dandelion/4714026966_93846ddb74_m_jpg.rf.9b4fbb48218a325278be5981b1f90024.jpg",
+        "name": "4714026966_93846ddb74_m_jpg.rf.9b4fbb48218a325278be5981b1f90024.jpg",
+        "type": "image",
+        "size": 39574,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 143,
+        "path": "/test-files/images/flowers/dandelion/483097906_2c35054346_jpg.rf.4628346e95fc682b71f972768c7cfe7e.jpg",
+        "name": "483097906_2c35054346_jpg.rf.4628346e95fc682b71f972768c7cfe7e.jpg",
+        "type": "image",
+        "size": 42537,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 144,
+        "path": "/test-files/images/flowers/dandelion/4847150510_7a5db086fa_jpg.rf.5f6cee2e1edcc8d9fc145e0e9bb79bf4.jpg",
+        "name": "4847150510_7a5db086fa_jpg.rf.5f6cee2e1edcc8d9fc145e0e9bb79bf4.jpg",
+        "type": "image",
+        "size": 33481,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 145,
+        "path": "/test-files/images/flowers/dandelion/494108764_e00178af6e_jpg.rf.7bc719a775d24bf455c87eb38f09f78c.jpg",
+        "name": "494108764_e00178af6e_jpg.rf.7bc719a775d24bf455c87eb38f09f78c.jpg",
+        "type": "image",
+        "size": 32357,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 146,
+        "path": "/test-files/images/flowers/dandelion/4944731313_023a0508fd_n_jpg.rf.90af0636cc3f0cde64634fd4d2cb83d1.jpg",
+        "name": "4944731313_023a0508fd_n_jpg.rf.90af0636cc3f0cde64634fd4d2cb83d1.jpg",
+        "type": "image",
+        "size": 32470,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 147,
+        "path": "/test-files/images/flowers/dandelion/501987276_744448580c_m_jpg.rf.e460fa007a89798f536a1db09014576d.jpg",
+        "name": "501987276_744448580c_m_jpg.rf.e460fa007a89798f536a1db09014576d.jpg",
+        "type": "image",
+        "size": 27251,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 148,
+        "path": "/test-files/images/flowers/dandelion/501987288_c69c4e0c90_m_jpg.rf.6026d37f308e00682e5c9877ab549112.jpg",
+        "name": "501987288_c69c4e0c90_m_jpg.rf.6026d37f308e00682e5c9877ab549112.jpg",
+        "type": "image",
+        "size": 31584,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 149,
+        "path": "/test-files/images/flowers/dandelion/5045509402_6e052ce443_jpg.rf.498af212ff1a9d465e669f75c20b4e4b.jpg",
+        "name": "5045509402_6e052ce443_jpg.rf.498af212ff1a9d465e669f75c20b4e4b.jpg",
+        "type": "image",
+        "size": 30624,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 150,
+        "path": "/test-files/images/flowers/dandelion/5109501167_2d9bbb0f27_m_jpg.rf.9d6ceccd0868ea253ba2ec5e23e6470d.jpg",
+        "name": "5109501167_2d9bbb0f27_m_jpg.rf.9d6ceccd0868ea253ba2ec5e23e6470d.jpg",
+        "type": "image",
+        "size": 18131,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 151,
+        "path": "/test-files/images/flowers/dandelion/5110104894_a52c685516_n_jpg.rf.43caea3a62bb363d388668229b9407c8.jpg",
+        "name": "5110104894_a52c685516_n_jpg.rf.43caea3a62bb363d388668229b9407c8.jpg",
+        "type": "image",
+        "size": 27684,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 152,
+        "path": "/test-files/images/flowers/dandelion/5598845098_13e8e9460f_jpg.rf.74279a14093ce2bc23fc42484180e895.jpg",
+        "name": "5598845098_13e8e9460f_jpg.rf.74279a14093ce2bc23fc42484180e895.jpg",
+        "type": "image",
+        "size": 40691,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 153,
+        "path": "/test-files/images/flowers/dandelion/5605502523_05acb00ae7_n_jpg.rf.bb6a0022a32bc20859e345ffd62a5b02.jpg",
+        "name": "5605502523_05acb00ae7_n_jpg.rf.bb6a0022a32bc20859e345ffd62a5b02.jpg",
+        "type": "image",
+        "size": 41518,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 154,
+        "path": "/test-files/images/flowers/dandelion/5607983792_f8b8766ff7_jpg.rf.011e016018d8373dccd60fe8440e0992.jpg",
+        "name": "5607983792_f8b8766ff7_jpg.rf.011e016018d8373dccd60fe8440e0992.jpg",
+        "type": "image",
+        "size": 25418,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 155,
+        "path": "/test-files/images/flowers/dandelion/5623855601_ecaebdb8fe_jpg.rf.c054889bc7ba8a6b1a1c6d6ac10347db.jpg",
+        "name": "5623855601_ecaebdb8fe_jpg.rf.c054889bc7ba8a6b1a1c6d6ac10347db.jpg",
+        "type": "image",
+        "size": 42363,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 156,
+        "path": "/test-files/images/flowers/dandelion/5628515159_6b437ff1e5_n_jpg.rf.c0f4d055d35de2eb4ac0879b7a4b2985.jpg",
+        "name": "5628515159_6b437ff1e5_n_jpg.rf.c0f4d055d35de2eb4ac0879b7a4b2985.jpg",
+        "type": "image",
+        "size": 30090,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 157,
+        "path": "/test-files/images/flowers/dandelion/5655177340_78fc36ce59_m_jpg.rf.57a28c729419f6afad9062281f5bc4cf.jpg",
+        "name": "5655177340_78fc36ce59_m_jpg.rf.57a28c729419f6afad9062281f5bc4cf.jpg",
+        "type": "image",
+        "size": 20673,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 158,
+        "path": "/test-files/images/flowers/dandelion/5673112305_02fe19297b_n_jpg.rf.e06133900b82be415cb00e5e0e74a50f.jpg",
+        "name": "5673112305_02fe19297b_n_jpg.rf.e06133900b82be415cb00e5e0e74a50f.jpg",
+        "type": "image",
+        "size": 68586,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 159,
+        "path": "/test-files/images/flowers/dandelion/5675705011_82729927ca_n_jpg.rf.7202328057fd386c2d6c4c399e6c5602.jpg",
+        "name": "5675705011_82729927ca_n_jpg.rf.7202328057fd386c2d6c4c399e6c5602.jpg",
+        "type": "image",
+        "size": 31833,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 160,
+        "path": "/test-files/images/flowers/dandelion/5726984343_ae124aed97_jpg.rf.1b3d3667674cb3dbf0a9a30fc67b3b92.jpg",
+        "name": "5726984343_ae124aed97_jpg.rf.1b3d3667674cb3dbf0a9a30fc67b3b92.jpg",
+        "type": "image",
+        "size": 23948,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 161,
+        "path": "/test-files/images/flowers/dandelion/5762590366_5cf7a32b87_n_jpg.rf.9064fe42754f1a15ff968b1ce5f39468.jpg",
+        "name": "5762590366_5cf7a32b87_n_jpg.rf.9064fe42754f1a15ff968b1ce5f39468.jpg",
+        "type": "image",
+        "size": 23328,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 162,
+        "path": "/test-files/images/flowers/dandelion/5767676943_4f9c7323f3_n_jpg.rf.10d74f0ef934ca335e3a7a488c465fde.jpg",
+        "name": "5767676943_4f9c7323f3_n_jpg.rf.10d74f0ef934ca335e3a7a488c465fde.jpg",
+        "type": "image",
+        "size": 38034,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 163,
+        "path": "/test-files/images/flowers/dandelion/5909154147_9da14d1730_n_jpg.rf.b6a4282f8cf0ee54bae42027c95ed005.jpg",
+        "name": "5909154147_9da14d1730_n_jpg.rf.b6a4282f8cf0ee54bae42027c95ed005.jpg",
+        "type": "image",
+        "size": 32853,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 164,
+        "path": "/test-files/images/flowers/dandelion/6104442744_ee2bcd32e7_n_jpg.rf.b534452697cbbb9d158d20448e495b05.jpg",
+        "name": "6104442744_ee2bcd32e7_n_jpg.rf.b534452697cbbb9d158d20448e495b05.jpg",
+        "type": "image",
+        "size": 38893,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 165,
+        "path": "/test-files/images/flowers/dandelion/6250363717_17732e992e_n_jpg.rf.e2b0456f3b29ba134f1f73650a5514b8.jpg",
+        "name": "6250363717_17732e992e_n_jpg.rf.e2b0456f3b29ba134f1f73650a5514b8.jpg",
+        "type": "image",
+        "size": 14578,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 166,
+        "path": "/test-files/images/flowers/dandelion/6495802659_98b57e0cca_m_jpg.rf.1095124909c35debcea108ed07d44eb9.jpg",
+        "name": "6495802659_98b57e0cca_m_jpg.rf.1095124909c35debcea108ed07d44eb9.jpg",
+        "type": "image",
+        "size": 24228,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 167,
+        "path": "/test-files/images/flowers/dandelion/6953830582_8525e0423c_n_jpg.rf.e4e349be90248b397b38a3cb78a46737.jpg",
+        "name": "6953830582_8525e0423c_n_jpg.rf.e4e349be90248b397b38a3cb78a46737.jpg",
+        "type": "image",
+        "size": 29962,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 168,
+        "path": "/test-files/images/flowers/dandelion/6985099958_5249a4688b_jpg.rf.7adf8b6822bf57e04edcfcc4908bb3a8.jpg",
+        "name": "6985099958_5249a4688b_jpg.rf.7adf8b6822bf57e04edcfcc4908bb3a8.jpg",
+        "type": "image",
+        "size": 26931,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 169,
+        "path": "/test-files/images/flowers/dandelion/6994931380_a7588c1192_m_jpg.rf.b980f94f75d690f29691ce133f5e12e0.jpg",
+        "name": "6994931380_a7588c1192_m_jpg.rf.b980f94f75d690f29691ce133f5e12e0.jpg",
+        "type": "image",
+        "size": 42437,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 170,
+        "path": "/test-files/images/flowers/dandelion/7083589767_2859993846_n_jpg.rf.ce03f7ea0d529cf251b8da0b9642670f.jpg",
+        "name": "7083589767_2859993846_n_jpg.rf.ce03f7ea0d529cf251b8da0b9642670f.jpg",
+        "type": "image",
+        "size": 28459,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 171,
+        "path": "/test-files/images/flowers/dandelion/7132605107_f5e033d725_n_jpg.rf.edec3ea78cf1866a32bf243bac327be7.jpg",
+        "name": "7132605107_f5e033d725_n_jpg.rf.edec3ea78cf1866a32bf243bac327be7.jpg",
+        "type": "image",
+        "size": 25247,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 172,
+        "path": "/test-files/images/flowers/dandelion/7132677385_bcbdcc6001_jpg.rf.df3c23fa668c07341647a73fa058622a.jpg",
+        "name": "7132677385_bcbdcc6001_jpg.rf.df3c23fa668c07341647a73fa058622a.jpg",
+        "type": "image",
+        "size": 31886,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 173,
+        "path": "/test-files/images/flowers/dandelion/7162551630_3647eb9254_jpg.rf.e0f22e5d7f06a405a17e68274442d993.jpg",
+        "name": "7162551630_3647eb9254_jpg.rf.e0f22e5d7f06a405a17e68274442d993.jpg",
+        "type": "image",
+        "size": 37141,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 174,
+        "path": "/test-files/images/flowers/dandelion/7164500544_332b75aa3b_jpg.rf.a2778b619a55b108e2b3e2ce65688bda.jpg",
+        "name": "7164500544_332b75aa3b_jpg.rf.a2778b619a55b108e2b3e2ce65688bda.jpg",
+        "type": "image",
+        "size": 33864,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 175,
+        "path": "/test-files/images/flowers/dandelion/7196409186_a59957ce0b_m_jpg.rf.582d2a056a0f524589c9fe2606397e32.jpg",
+        "name": "7196409186_a59957ce0b_m_jpg.rf.582d2a056a0f524589c9fe2606397e32.jpg",
+        "type": "image",
+        "size": 12199,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 176,
+        "path": "/test-files/images/flowers/dandelion/7280227122_7ea2bef7f4_n_jpg.rf.48a72ef097cda874da8a1e58a09ec1d1.jpg",
+        "name": "7280227122_7ea2bef7f4_n_jpg.rf.48a72ef097cda874da8a1e58a09ec1d1.jpg",
+        "type": "image",
+        "size": 42240,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 177,
+        "path": "/test-files/images/flowers/dandelion/7308600792_27cff2f73f_jpg.rf.8b043e8895ff25b4b544ba3cf6747699.jpg",
+        "name": "7308600792_27cff2f73f_jpg.rf.8b043e8895ff25b4b544ba3cf6747699.jpg",
+        "type": "image",
+        "size": 31110,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 178,
+        "path": "/test-files/images/flowers/dandelion/7808545612_546cfca610_m_jpg.rf.74fadec9b60349f782876b714d9759b4.jpg",
+        "name": "7808545612_546cfca610_m_jpg.rf.74fadec9b60349f782876b714d9759b4.jpg",
+        "type": "image",
+        "size": 17165,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 179,
+        "path": "/test-files/images/flowers/dandelion/7884440256_91c033732d_jpg.rf.5d311d41a9bb1dbc7213b624fc28108b.jpg",
+        "name": "7884440256_91c033732d_jpg.rf.5d311d41a9bb1dbc7213b624fc28108b.jpg",
+        "type": "image",
+        "size": 34264,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 180,
+        "path": "/test-files/images/flowers/dandelion/7950892504_33142110c2_jpg.rf.59d55382dc6eb96075c104a22ba03f8a.jpg",
+        "name": "7950892504_33142110c2_jpg.rf.59d55382dc6eb96075c104a22ba03f8a.jpg",
+        "type": "image",
+        "size": 24541,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 181,
+        "path": "/test-files/images/flowers/dandelion/7950901292_2dea05f9a2_n_jpg.rf.392a93e8e7b567696858a15daeca8301.jpg",
+        "name": "7950901292_2dea05f9a2_n_jpg.rf.392a93e8e7b567696858a15daeca8301.jpg",
+        "type": "image",
+        "size": 30626,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 182,
+        "path": "/test-files/images/flowers/dandelion/80846315_d997645bea_n_jpg.rf.cb1b888d4f96eb49d094e649b93368fa.jpg",
+        "name": "80846315_d997645bea_n_jpg.rf.cb1b888d4f96eb49d094e649b93368fa.jpg",
+        "type": "image",
+        "size": 36474,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 183,
+        "path": "/test-files/images/flowers/dandelion/8181477_8cb77d2e0f_n_jpg.rf.2d73b401a455c849dcee08f4c74cad9d.jpg",
+        "name": "8181477_8cb77d2e0f_n_jpg.rf.2d73b401a455c849dcee08f4c74cad9d.jpg",
+        "type": "image",
+        "size": 46196,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 184,
+        "path": "/test-files/images/flowers/dandelion/8194560480_bfc1fb5801_jpg.rf.76f28c98939b260e0c9c6f46913f2524.jpg",
+        "name": "8194560480_bfc1fb5801_jpg.rf.76f28c98939b260e0c9c6f46913f2524.jpg",
+        "type": "image",
+        "size": 30155,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 185,
+        "path": "/test-files/images/flowers/dandelion/8209318399_ae72aefdb5_jpg.rf.fc1e6fd036286f5ea56c3314c556ccc0.jpg",
+        "name": "8209318399_ae72aefdb5_jpg.rf.fc1e6fd036286f5ea56c3314c556ccc0.jpg",
+        "type": "image",
+        "size": 30515,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 186,
+        "path": "/test-files/images/flowers/dandelion/8267315764_129f2e1d77_m_jpg.rf.5531f748ef7f27c30cd75cc7457b5f82.jpg",
+        "name": "8267315764_129f2e1d77_m_jpg.rf.5531f748ef7f27c30cd75cc7457b5f82.jpg",
+        "type": "image",
+        "size": 25538,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 187,
+        "path": "/test-files/images/flowers/dandelion/8270191872_61e47ae3b8_m_jpg.rf.46f2d3b1608731c9ad9c6540e210cede.jpg",
+        "name": "8270191872_61e47ae3b8_m_jpg.rf.46f2d3b1608731c9ad9c6540e210cede.jpg",
+        "type": "image",
+        "size": 53626,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 188,
+        "path": "/test-files/images/flowers/dandelion/8475758_4c861ab268_m_jpg.rf.cd47010af2b20ec74e3a3d09f8120472.jpg",
+        "name": "8475758_4c861ab268_m_jpg.rf.cd47010af2b20ec74e3a3d09f8120472.jpg",
+        "type": "image",
+        "size": 57243,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 189,
+        "path": "/test-files/images/flowers/dandelion/8647874151_aac8db2588_m_jpg.rf.607cc0a5c264b6fce2e8efd65d8a9dab.jpg",
+        "name": "8647874151_aac8db2588_m_jpg.rf.607cc0a5c264b6fce2e8efd65d8a9dab.jpg",
+        "type": "image",
+        "size": 27189,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 190,
+        "path": "/test-files/images/flowers/dandelion/8701999625_8d83138124_jpg.rf.c21e834fd11d66ed3cd8ab481237e8b6.jpg",
+        "name": "8701999625_8d83138124_jpg.rf.c21e834fd11d66ed3cd8ab481237e8b6.jpg",
+        "type": "image",
+        "size": 102746,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 191,
+        "path": "/test-files/images/flowers/dandelion/8717157979_05cbc10cc1_jpg.rf.4b7d0aa4b1d4df60cbba4879700292ad.jpg",
+        "name": "8717157979_05cbc10cc1_jpg.rf.4b7d0aa4b1d4df60cbba4879700292ad.jpg",
+        "type": "image",
+        "size": 33323,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 192,
+        "path": "/test-files/images/flowers/dandelion/8717161615_4c1e403083_jpg.rf.2e7be1d53869015506a888115f679517.jpg",
+        "name": "8717161615_4c1e403083_jpg.rf.2e7be1d53869015506a888115f679517.jpg",
+        "type": "image",
+        "size": 37183,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 193,
+        "path": "/test-files/images/flowers/dandelion/8738317694_eca2ce3bfc_n_jpg.rf.bd1c832bf41a1987bb46ed5ba05f3535.jpg",
+        "name": "8738317694_eca2ce3bfc_n_jpg.rf.bd1c832bf41a1987bb46ed5ba05f3535.jpg",
+        "type": "image",
+        "size": 20285,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 194,
+        "path": "/test-files/images/flowers/dandelion/8740218495_23858355d8_n_jpg.rf.17d7f264bf98f376c2e83bf5978bd0d1.jpg",
+        "name": "8740218495_23858355d8_n_jpg.rf.17d7f264bf98f376c2e83bf5978bd0d1.jpg",
+        "type": "image",
+        "size": 25620,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 195,
+        "path": "/test-files/images/flowers/dandelion/8740787470_67230d0609_jpg.rf.e978fda923673d20f193d524cf154d0e.jpg",
+        "name": "8740787470_67230d0609_jpg.rf.e978fda923673d20f193d524cf154d0e.jpg",
+        "type": "image",
+        "size": 27003,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 196,
+        "path": "/test-files/images/flowers/dandelion/8842482175_92a14b4934_m_jpg.rf.772f9c2dab1d84dc54da4666e2f24ec7.jpg",
+        "name": "8842482175_92a14b4934_m_jpg.rf.772f9c2dab1d84dc54da4666e2f24ec7.jpg",
+        "type": "image",
+        "size": 27008,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 197,
+        "path": "/test-files/images/flowers/dandelion/8979087213_28f572174c_jpg.rf.e5cb9f7085e91720784066241eda9b19.jpg",
+        "name": "8979087213_28f572174c_jpg.rf.e5cb9f7085e91720784066241eda9b19.jpg",
+        "type": "image",
+        "size": 33934,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 198,
+        "path": "/test-files/images/flowers/dandelion/9301891790_971dcfb35d_m_jpg.rf.760ea1ad8facbaaf93fcaa322f815419.jpg",
+        "name": "9301891790_971dcfb35d_m_jpg.rf.760ea1ad8facbaaf93fcaa322f815419.jpg",
+        "type": "image",
+        "size": 35288,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 199,
+        "path": "/test-files/images/flowers/dandelion/9726260379_4e8ee66875_m_jpg.rf.09135060240a38642adf636a27c78387.jpg",
+        "name": "9726260379_4e8ee66875_m_jpg.rf.09135060240a38642adf636a27c78387.jpg",
+        "type": "image",
+        "size": 31452,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 200,
+        "path": "/test-files/images/flowers/dandelion/9818247_e2eac18894_jpg.rf.4d3c4156e84e105433f528b712ff890f.jpg",
+        "name": "9818247_e2eac18894_jpg.rf.4d3c4156e84e105433f528b712ff890f.jpg",
+        "type": "image",
+        "size": 78421,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 201,
+        "path": "/test-files/images/flowers/dandelion/98992760_53ed1d26a9_jpg.rf.5cd74883ab997ec1c3fdf62fabc4de3e.jpg",
+        "name": "98992760_53ed1d26a9_jpg.rf.5cd74883ab997ec1c3fdf62fabc4de3e.jpg",
+        "type": "image",
+        "size": 27951,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/luka/Luka_Doncic_(51914951721)_(cropped1).jpg",
+        "name": "Luka_Doncic_(51914951721)_(cropped1).jpg",
+        "type": "image",
+        "size": 9025234,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/luka/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 10510,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/luka/download (10).jpeg",
+        "name": "download (10).jpeg",
+        "type": "image",
+        "size": 8934,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/luka/download (11).jpeg",
+        "name": "download (11).jpeg",
+        "type": "image",
+        "size": 10302,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/luka/download (12).jpeg",
+        "name": "download (12).jpeg",
+        "type": "image",
+        "size": 13539,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/luka/download (13).jpeg",
+        "name": "download (13).jpeg",
+        "type": "image",
+        "size": 8741,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/luka/download (14).jpeg",
+        "name": "download (14).jpeg",
+        "type": "image",
+        "size": 13853,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/luka/download (15).jpeg",
+        "name": "download (15).jpeg",
+        "type": "image",
+        "size": 8589,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/luka/download (16).jpeg",
+        "name": "download (16).jpeg",
+        "type": "image",
+        "size": 7198,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/luka/download (17).jpeg",
+        "name": "download (17).jpeg",
+        "type": "image",
+        "size": 12742,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/luka/download (18).jpeg",
+        "name": "download (18).jpeg",
+        "type": "image",
+        "size": 20317,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/luka/download (19).jpeg",
+        "name": "download (19).jpeg",
+        "type": "image",
+        "size": 6867,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 13,
+        "path": "/test-files/images/luka/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 10324,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 14,
+        "path": "/test-files/images/luka/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 11874,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 15,
+        "path": "/test-files/images/luka/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 8248,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 16,
+        "path": "/test-files/images/luka/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 10964,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 17,
+        "path": "/test-files/images/luka/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 12370,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 18,
+        "path": "/test-files/images/luka/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 9884,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 19,
+        "path": "/test-files/images/luka/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 9376,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 20,
+        "path": "/test-files/images/luka/download (9).jpeg",
+        "name": "download (9).jpeg",
+        "type": "image",
+        "size": 8215,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 21,
+        "path": "/test-files/images/luka/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 8066,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/sunset/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 6760,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/sunset/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 8188,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/sunset/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 8124,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/sunset/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 5974,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/sunset/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 4537,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/sunset/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 10164,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/sunset/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 9089,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/sunset/sunset.jpg",
+        "name": "sunset.jpg",
+        "type": "image",
+        "size": 747725,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/tito/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 5615,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/tito/download (10).jpeg",
+        "name": "download (10).jpeg",
+        "type": "image",
+        "size": 5821,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/tito/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 6257,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/tito/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 9504,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/tito/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 7064,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/tito/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 8798,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/tito/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 6940,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/tito/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 5489,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/tito/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 7005,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/tito/download (9).jpeg",
+        "name": "download (9).jpeg",
+        "type": "image",
+        "size": 7474,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/tito/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 5517,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/tito/titio.jpeg",
+        "name": "titio.jpeg",
+        "type": "image",
+        "size": 7501,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 1,
+        "path": "/test-files/images/walken/Christopher_Walken_2018.jpg",
+        "name": "Christopher_Walken_2018.jpg",
+        "type": "image",
+        "size": 1194300,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 2,
+        "path": "/test-files/images/walken/download (1).jpeg",
+        "name": "download (1).jpeg",
+        "type": "image",
+        "size": 8330,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 3,
+        "path": "/test-files/images/walken/download (10).jpeg",
+        "name": "download (10).jpeg",
+        "type": "image",
+        "size": 6183,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 4,
+        "path": "/test-files/images/walken/download (11).jpeg",
+        "name": "download (11).jpeg",
+        "type": "image",
+        "size": 4089,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 5,
+        "path": "/test-files/images/walken/download (2).jpeg",
+        "name": "download (2).jpeg",
+        "type": "image",
+        "size": 6844,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 6,
+        "path": "/test-files/images/walken/download (3).jpeg",
+        "name": "download (3).jpeg",
+        "type": "image",
+        "size": 5704,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 7,
+        "path": "/test-files/images/walken/download (4).jpeg",
+        "name": "download (4).jpeg",
+        "type": "image",
+        "size": 6081,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 8,
+        "path": "/test-files/images/walken/download (5).jpeg",
+        "name": "download (5).jpeg",
+        "type": "image",
+        "size": 6193,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 9,
+        "path": "/test-files/images/walken/download (6).jpeg",
+        "name": "download (6).jpeg",
+        "type": "image",
+        "size": 5353,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 10,
+        "path": "/test-files/images/walken/download (7).jpeg",
+        "name": "download (7).jpeg",
+        "type": "image",
+        "size": 6928,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 11,
+        "path": "/test-files/images/walken/download (8).jpeg",
+        "name": "download (8).jpeg",
+        "type": "image",
+        "size": 5730,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 12,
+        "path": "/test-files/images/walken/download (9).jpeg",
+        "name": "download (9).jpeg",
+        "type": "image",
+        "size": 6941,
+        "date_taken": "2025-12-31"
+      },
+      {
+        "id": 13,
+        "path": "/test-files/images/walken/download.jpeg",
+        "name": "download.jpeg",
+        "type": "image",
+        "size": 6660,
+        "date_taken": "2025-12-31"
+      }
+    ]
+  }
+]

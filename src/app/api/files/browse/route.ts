@@ -30,12 +30,26 @@ export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
   if (isDemoMode) {
-    // In demo mode, return empty directory structure
+    // In demo mode, return demo test-files structure
     return NextResponse.json({
-      path: '/',
-      name: 'demo',
+      path: '/test-files',
+      name: 'test-files',
       isDirectory: true,
-      children: []
+      children: [
+        {
+          path: '/test-files/images',
+          name: 'images',
+          isDirectory: true,
+          children: [
+            { path: '/test-files/images/flowers', name: 'flowers', isDirectory: true },
+            { path: '/test-files/images/cars', name: 'cars', isDirectory: true },
+            { path: '/test-files/images/sunset', name: 'sunset', isDirectory: true },
+            { path: '/test-files/images/bowie', name: 'bowie', isDirectory: true },
+            { path: '/test-files/images/abdul', name: 'abdul', isDirectory: true },
+            { path: '/test-files/images/luka', name: 'luka', isDirectory: true }
+          ]
+        }
+      ]
     });
   }
   
