@@ -1,190 +1,97 @@
-{
-  "indexingLogs": [
-    {
-      "timestamp": 1767262980000,
-      "progress": 0,
-      "message": "✅ Added source: /test-files"
-    },
-    {
-      "timestamp": 1767262981000,
-      "progress": 0,
-      "message": "🔄 Initializing indexing... scanning directories"
-    },
-    {
-      "timestamp": 1767262982000,
-      "progress": 5,
-      "message": "📁 Found 93 files to process"
-    },
-    {
-      "timestamp": 1767262983000,
-      "progress": 10,
-      "message": "🖼️  Processing images/bowie/01.jpg"
-    },
-    {
-      "timestamp": 1767262984000,
-      "progress": 15,
-      "message": "👤 Detected 1 face in images/bowie/01.jpg"
-    },
-    {
-      "timestamp": 1767262985000,
-      "progress": 20,
-      "message": "🖼️  Processing images/walken/01.jpg"
-    },
-    {
-      "timestamp": 1767262986000,
-      "progress": 25,
-      "message": "👤 Detected 1 face in images/walken/01.jpg"
-    },
-    {
-      "timestamp": 1767262987000,
-      "progress": 30,
-      "message": "🖼️  Processing images/abdul/01.jpg"
-    },
-    {
-      "timestamp": 1767262988000,
-      "progress": 35,
-      "message": "👤 Detected 1 face in images/abdul/01.jpg"
-    },
-    {
-      "timestamp": 1767262989000,
-      "progress": 40,
-      "message": "🖼️  Processing images/luka/01.jpg"
-    },
-    {
-      "timestamp": 1767262990000,
-      "progress": 45,
-      "message": "👤 Detected 1 face in images/luka/01.jpg"
-    },
-    {
-      "timestamp": 1767262991000,
-      "progress": 50,
-      "message": "🖼️  Processing images/tito/01.jpg"
-    },
-    {
-      "timestamp": 1767262992000,
-      "progress": 55,
-      "message": "👤 Detected 1 face in images/tito/01.jpg"
-    },
-    {
-      "timestamp": 1767262993000,
-      "progress": 60,
-      "message": "🖼️  Processing images/flowers/01.jpg"
-    },
-    {
-      "timestamp": 1767262994000,
-      "progress": 65,
-      "message": "🌸 Detected flowers and nature objects"
-    },
-    {
-      "timestamp": 1767262995000,
-      "progress": 70,
-      "message": "🖼️  Processing images/sunset/01.jpg"
-    },
-    {
-      "timestamp": 1767262996000,
-      "progress": 75,
-      "message": "🌅 Detected sunset and landscape"
-    },
-    {
-      "timestamp": 1767262997000,
-      "progress": 80,
-      "message": "🖼️  Processing images/cars/01.jpg"
-    },
-    {
-      "timestamp": 1767262998000,
-      "progress": 85,
-      "message": "🚗 Detected vehicles"
-    },
-    {
-      "timestamp": 1767262999000,
-      "progress": 90,
-      "message": "📄 Processing docs/declaration.txt"
-    },
-    {
-      "timestamp": 1767263000000,
-      "progress": 92,
-      "message": "📝 Extracted text via OCR"
-    },
-    {
-      "timestamp": 1767263001000,
-      "progress": 95,
-      "message": "🔍 Generating embeddings for semantic search"
-    },
-    {
-      "timestamp": 1767263002000,
-      "progress": 98,
-      "message": "💾 Building FAISS search index"
-    },
-    {
-      "timestamp": 1767263003000,
-      "progress": 100,
-      "message": "✅ Indexing complete! Processed 93 files"
-    },
-    {
-      "timestamp": 1767263004000,
-      "progress": 100,
-      "message": "📊 Total files: 93 | With faces: 75 | With animals: 0 | Text documents: 2"
-    }
-  ],
-  "faceDetectionLogs": [
-    {
-      "timestamp": 1767263005000,
-      "progress": 0,
-      "message": "🎯 Starting face detection on 93 images"
-    },
-    {
-      "timestamp": 1767263006000,
-      "progress": 20,
-      "message": "👤 Detected faces in 15 images"
-    },
-    {
-      "timestamp": 1767263007000,
-      "progress": 40,
-      "message": "👤 Detected faces in 30 images"
-    },
-    {
-      "timestamp": 1767263008000,
-      "progress": 60,
-      "message": "👤 Detected faces in 45 images"
-    },
-    {
-      "timestamp": 1767263009000,
-      "progress": 80,
-      "message": "👤 Detected faces in 60 images"
-    },
-    {
-      "timestamp": 1767263010000,
-      "progress": 100,
-      "message": "✅ Face detection complete! Found 75 faces total"
-    }
-  ],
-  "clusteringLogs": [
-    {
-      "timestamp": 1767263011000,
-      "progress": 0,
-      "message": "🔬 Starting face clustering with 75 face embeddings"
-    },
-    {
-      "timestamp": 1767263012000,
-      "progress": 25,
-      "message": "📊 Computing similarity matrix"
-    },
-    {
-      "timestamp": 1767263013000,
-      "progress": 50,
-      "message": "🎯 Running DBSCAN clustering algorithm"
-    },
-    {
-      "timestamp": 1767263014000,
-      "progress": 75,
-      "message": "👥 Identified 5 distinct people"
-    },
-    {
-      "timestamp": 1767263015000,
-      "progress": 100,
-      "message": "✅ Clustering complete! Generated 5 person clusters"
-    }
-  ],
-  "generatedAt": 1767263015000,
-  "source": "/test-files"
-}
+[
+  {
+    "timestamp": "2026-01-01T20:18:52.083333",
+    "level": "info",
+    "message": "Starting indexing of /Users/tanny/Documents/github/dudlefotos/public/test-files"
+  },
+  {
+    "timestamp": "2026-01-01T20:19:07.083333",
+    "level": "info",
+    "message": "Scanning directories..."
+  },
+  {
+    "timestamp": "2026-01-01T20:19:22.083333",
+    "level": "info",
+    "message": "Found 459 files to process"
+  },
+  {
+    "timestamp": "2026-01-01T20:19:37.083333",
+    "level": "info",
+    "message": "Loading CLIP model..."
+  },
+  {
+    "timestamp": "2026-01-01T20:19:52.083333",
+    "level": "info",
+    "message": "Processing images/abdul/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:20:07.083333",
+    "level": "info",
+    "message": "Processing images/bowie/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:20:22.083333",
+    "level": "info",
+    "message": "Processing images/flowers/daisy/*.jpg"
+  },
+  {
+    "timestamp": "2026-01-01T20:20:37.083333",
+    "level": "info",
+    "message": "Processing images/flowers/dandelion/*.jpg"
+  },
+  {
+    "timestamp": "2026-01-01T20:20:52.083333",
+    "level": "info",
+    "message": "Processing images/sunset/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:21:07.083333",
+    "level": "info",
+    "message": "Processing images/luka/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:21:22.083333",
+    "level": "info",
+    "message": "Processing images/tito/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:21:37.083333",
+    "level": "info",
+    "message": "Processing images/walken/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:21:52.083333",
+    "level": "info",
+    "message": "Processing images/cars/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:22:07.083333",
+    "level": "info",
+    "message": "Processing docs/*.jpeg"
+  },
+  {
+    "timestamp": "2026-01-01T20:22:22.083333",
+    "level": "info",
+    "message": "Generating CLIP embeddings..."
+  },
+  {
+    "timestamp": "2026-01-01T20:22:37.083333",
+    "level": "info",
+    "message": "Building FAISS index..."
+  },
+  {
+    "timestamp": "2026-01-01T20:22:52.083333",
+    "level": "info",
+    "message": "Indexing complete: 459 files processed"
+  },
+  {
+    "timestamp": "2026-01-01T20:23:07.083333",
+    "level": "info",
+    "message": "CLIP embeddings saved to database"
+  },
+  {
+    "timestamp": "2026-01-01T20:23:22.083333",
+    "level": "info",
+    "message": "Search index ready"
+  }
+]

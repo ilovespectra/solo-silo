@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demo Mode Debug</title>
+</head>
+<body>
+  <h1>Demo Mode Debug</h1>
+  <div id="results"></div>
+  <script>
+    async function check() {
+      const results = document.getElementById('results');
+      
+      const apiResponse = await fetch('/api/system/mode');
+      const apiData = await apiResponse.json();
+      
+      results.innerHTML = `
+        <h2>API Response:</h2>
+        <pre>${JSON.stringify(apiData, null, 2)}</pre>
+        
+        <h2>Environment Variable (as seen by browser):</h2>
+        <pre>NEXT_PUBLIC_DEMO_MODE: ${process.env.NEXT_PUBLIC_DEMO_MODE || 'undefined'}</pre>
+        
+        <h2>Instructions:</h2>
+        <p>1. Clear browser cache completely (Application tab > Clear Storage)</p>
+        <p>2. Hard refresh (Cmd+Shift+R)</p>
+        <p>3. If still showing demo mode, close browser completely and reopen</p>
+      `;
+    }
+    check();
+  </script>
+</body>
+</html>

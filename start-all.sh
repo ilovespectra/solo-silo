@@ -116,6 +116,13 @@ sleep 3
 
 echo -e "${ORANGE}starting frontend...${NC}"
 cd "$SCRIPT_DIR"
+
+# Ensure .env.local is loaded by Next.js
+if [ -f ".env.local" ]; then
+  echo -e "${ORANGE}loading .env.local configuration...${NC}"
+  export $(cat .env.local | grep -v '^#' | xargs)
+fi
+
 (
   npm run dev > frontend.log 2>&1
 ) > /dev/null 2>&1 &

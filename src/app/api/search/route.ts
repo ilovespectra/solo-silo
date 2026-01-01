@@ -26,11 +26,42 @@ export async function GET(req: NextRequest) {
       const queryTerms = queryLower.split(/\s+/).filter(t => t.length > 0);
       
       const semanticMap: Record<string, string[]> = {
+        // People
         'person': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait', 'face'],
         'people': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait', 'face'],
         'face': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait'],
-        'document': ['docs', 'bible', 'declaration', 'text', 'pdf'],
-        'text': ['docs', 'bible', 'declaration', 'document'],
+        'man': ['bowie', 'tito', 'walken', 'luka'],
+        'woman': ['abdul'],
+        
+        // Documents
+        'document': ['docs', 'bible', 'declaration', 'text', 'nda'],
+        'text': ['docs', 'bible', 'declaration', 'document', 'nda'],
+        'paper': ['docs', 'bible', 'declaration', 'nda'],
+        
+        // Nature/Flowers
+        'flower': ['daisy', 'dandelion', 'flowers'],
+        'flowers': ['daisy', 'dandelion'],
+        'daisy': ['daisy', 'flowers'],
+        'dandelion': ['dandelion', 'flowers'],
+        'nature': ['daisy', 'dandelion', 'flowers', 'sunset'],
+        'plant': ['daisy', 'dandelion', 'flowers'],
+        'garden': ['daisy', 'dandelion', 'flowers'],
+        
+        // Scenery
+        'sunset': ['sunset'],
+        'sky': ['sunset'],
+        'landscape': ['sunset'],
+        'scenery': ['sunset'],
+        'beach': ['sunset'],
+        
+        // Vehicles
+        'car': ['cars'],
+        'cars': ['cars'],
+        'vehicle': ['cars'],
+        'automobile': ['cars'],
+        'basketball': ['luka'],
+        'sport': ['luka'],
+        'athlete': ['luka'],
       };
       
       const results = allItems
