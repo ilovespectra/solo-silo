@@ -752,12 +752,9 @@ export default function SetupWizard() {
                 </>
               ) : (
                 <FolderPicker
-                  initialPath="/"
-                  onSelect={(path) => {
-                    if (path) {
-                      addSelectedPath(path);
-                      setShowFolderPicker(false);
-                    }
+                  onPathSelected={(path) => {
+                    addSelectedPath(path);
+                    setShowFolderPicker(false);
                   }}
                   onCancel={() => setShowFolderPicker(false)}
                   theme={theme}
