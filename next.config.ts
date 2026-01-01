@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ['backend'],
   turbopack: {},
+  env: {
+    NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV || 'development',
+  },
 };
 
 export default nextConfig;
