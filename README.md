@@ -18,20 +18,43 @@ ai-powered photo management and search for your local files. everything runs on 
 this application supports two deployment modes:
 
 ### 🔒 local mode (full features)
-for personal use with full read/write access to your photo collections. requires local setup with `backend/silos.json` configuration file.
+**Default when running locally.** Full read/write access to your photo collections.
 
-### 🎯 demo mode (read-only)
-for public deployments and demonstrations. automatically activates when `backend/silos.json` is not present. uses read-only demo data from `public/demo-silo/`.
+**How it works:**
+- Frontend Next.js API routes proxy requests to local backend at `http://127.0.0.1:8000`
+- Backend processes all AI operations (face detection, search, clustering)
+- All data stays on your machine
 
-**demo mode features:**
-- ✅ browse sample photos and documents
-- ✅ test semantic search and ai features
-- ✅ explore face/animal detection
-- ❌ no data modification (read-only)
-- ❌ no silo creation or management
-- ❌ no file uploads or deletions
+**To run locally:**
+```bash
+./start-all.sh
+# Opens http://localhost:3000 with full backend features
+```
 
-see [demo mode deployment](#demo-mode-deployment) for public deployment instructions.
+### 🎯 demo mode (static frontend only)
+**Automatically activates on Vercel deployments.** Read-only demonstration using pre-built data.
+
+**How it works:**
+- Detects Vercel environment via `process.env.VERCEL === '1'`
+- Frontend API routes return mock data instead of proxying to backend
+- Uses celebrity face clusters (David Bowie, Paula Abdul, Luka Dončić, etc.)
+- Media files served from `public/test-files/images/`
+
+**Demo mode features:**
+- ✅ Browse sample celebrity photos
+- ✅ View face clusters and photos
+- ✅ UI fully functional for demonstration
+- ❌ No real search (browse/search use existing indexed files)
+- ❌ No data modification (read-only)
+- ❌ No AI processing (uses pre-computed results)
+
+**To disable demo mode on Vercel:**
+Set up a real backend and configure `NEXT_PUBLIC_API_BASE` environment variable to point to it.
+
+**Demo mode is NOT active when:**
+- Running `./start-all.sh` locally (uses real backend)
+- `process.env.VERCEL` is not set (local development)
+- Backend is running on port 8000 (local mode takes priority)
 
 ---
 
