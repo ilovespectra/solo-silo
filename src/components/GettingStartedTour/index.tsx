@@ -197,7 +197,7 @@ export const GettingStartedTour: React.FC = () => {
   }, [showGettingStartedTour, gettingStartedStep, currentView, setCurrentView, dismissed, TOUR_STEPS]);
 
   useEffect(() => {
-    if (showGettingStartedTour && gettingStartedStep === 1 && currentView === 'settings') {
+    if (showGettingStartedTour && gettingStartedStep === 2 && currentView === 'settings') {
       setTourAutoOpenDebugLog(true);
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog]);
