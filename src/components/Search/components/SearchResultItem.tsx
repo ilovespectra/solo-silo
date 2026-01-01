@@ -57,7 +57,7 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
   const devModeBgClass = theme === 'dark' ? 'bg-gray-900/80' : 'bg-gray-900/80';
 
   const BACKEND_URL = '';
-  const imgSrc = `${BACKEND_URL}/api/media/file/${result.id}`;
+  const imgSrc = `${BACKEND_URL}/api/media/thumbnail/${result.id}?size=300&square=true`;
   
   const formattedDate = result.date_taken
     ? new Date(result.date_taken * 1000).toLocaleDateString()
