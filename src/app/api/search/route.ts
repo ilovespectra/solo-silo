@@ -23,20 +23,54 @@ export async function GET(req: NextRequest) {
       });
       
       const queryLower = query.toLowerCase();
-      const results = allItems.filter(item => {
-        const name = (item.name || '').toLowerCase();
-        const path = (item.path || '').toLowerCase();
-        return name.includes(queryLower) || path.includes(queryLower);
-      }).slice(0, limit);
+      const queryTerms = queryLower.split(/\s+/).filter(t => t.length > 0);
       
-      return NextResponse.json({
-        results: results,
-        query: query,
-        total: results.length
-      });
+      const semanticMap: Record<string, string[]> = {
+        'person': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait', 'face'],
+        'people': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait', 'face'],
+        'face': ['bowie', 'abdul', 'tito', 'walken', 'luka', 'portrait'],
+        'document': ['docs', 'bible', 'declaration', 'text', 'pdf'],
+        'text': ['docs', 'bible', 'declaration', 'document'],
+      };
+      
+      const results = allItems
+        .map(item => {
+          const name = (item.name || '').toLowerCase();
+          const itemPath = (item.path || '').toLowerCase();
+          const fullText = `${name} ${itemPath}`;
+          
+          let score = 0;
+          
+          queryTerms.forEach(term => {
+            if (name.includes(term)) score += 5;
+            if (itemPath.includes(term)) score += 3;
+          });
+          
+          queryTerms.forEach(term => {
+            const synonyms = semanticMap[term] || [];
+            synonyms.forEach(syn => {
+              if (fullText.includes(syn)) score += 2;
+            });
+          });
+          
+          if (queryLower.match(/person|people|face|portrait|man|woman/)) {
+            if (itemPath.includes('/images/')) score += 10;
+          }
+          
+          if (queryLower.match(/document|text|bible|declaration|paper/)) {
+            if (itemPath.includes('/docs/')) score += 10;
+          }
+          
+          return { ...item, score };
+        })
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
+      
+      return NextResponse.json(results);
     } catch (error) {
       console.error('[search] Error in demo mode:', error);
-      return NextResponse.json({ results: [], query: query, total: 0 });
+      return NextResponse.json([]);
     }
   }
   
