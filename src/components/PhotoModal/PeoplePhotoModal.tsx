@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -145,7 +146,7 @@ export default function PeoplePhotoModal({
         const createdClusterIds: string[] = [];
         for (const name of newPersonNames) {
           console.log(`[PeoplePhotoModal] Creating new cluster: ${name}`);
-          const response = await fetch('/api/faces/create-cluster', {
+          const response = await fetch(apiUrl('/api/faces/create-cluster', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name }),

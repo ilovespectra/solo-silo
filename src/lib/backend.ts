@@ -1,5 +1,7 @@
 import { MediaFile } from '@/types/backend';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+
 let backendReady: Promise<void> | null = null;
 
 async function ensureBackendRunning(): Promise<void> {
@@ -7,7 +9,7 @@ async function ensureBackendRunning(): Promise<void> {
   backendReady = (async () => {
     for (let i = 0; i < 10; i++) {
       try {
-        const res = await fetch('/api/health', { method: 'GET', signal: AbortSignal.timeout(2000) });
+        const res = await fetch(`${API_BASE}/api/health`, { method: 'GET', signal: AbortSignal.timeout(2000) });
         if (res.ok) return;
       } catch {
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -21,8 +23,9 @@ async function request(path: string, init?: RequestInit, siloName?: string) {
   await ensureBackendRunning();
   const separator = path.includes('?') ? '&' : '?';
   const finalPath = siloName ? `${path}${separator}silo_name=${encodeURIComponent(siloName)}` : path;
+  const fullUrl = `${API_BASE}${finalPath}`;
   
-  const res = await fetch(finalPath, init);
+  const res = await fetch(fullUrl, init);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || 'Request failed');
@@ -331,4 +334,11 @@ export async function getReclusterStatus(siloName?: string): Promise<{is_running
   return request('/api/faces/recluster/status', {
     method: 'GET',
   }, siloName);
+}
+
+// Export API_BASE and helper for constructing API URLs
+export { API_BASE };
+export function apiUrl(path: string): string {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE}${normalizedPath}`;
 }

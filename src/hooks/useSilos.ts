@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { apiUrl } from '@/lib/api';
 
 interface Silo {
   name: string;
@@ -37,7 +38,7 @@ export function useSilos(): UseSilosReturn {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/silos/list');
+      const response = await fetch(apiUrl('/api/silos/list');
       if (!response.ok) throw new Error('Failed to load silos');
 
       const siloList: Silo[] = await response.json();
@@ -57,7 +58,7 @@ export function useSilos(): UseSilosReturn {
   const createSilo = useCallback(async (name: string, password?: string, passwordMode?: string) => {
     try {
       setError(null);
-      const response = await fetch('/api/silos/create', {
+      const response = await fetch(apiUrl('/api/silos/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,7 +88,7 @@ export function useSilos(): UseSilosReturn {
   const switchSilo = useCallback(async (name: string, password?: string) => {
     try {
       setError(null);
-      const response = await fetch('/api/silos/switch', {
+      const response = await fetch(apiUrl('/api/silos/switch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -116,7 +117,7 @@ export function useSilos(): UseSilosReturn {
   const saveSilo = useCallback(async (name: string, password?: string, passwordMode?: string) => {
     try {
       setError(null);
-      const response = await fetch('/api/silos/save-current', {
+      const response = await fetch(apiUrl('/api/silos/save-current', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,7 +193,7 @@ export function useSilos(): UseSilosReturn {
       formData.append('file', file);
       if (siloName) formData.append('silo_name', siloName);
 
-      const response = await fetch('/api/silos/upload', {
+      const response = await fetch(apiUrl('/api/silos/upload', {
         method: 'POST',
         body: formData
       });
@@ -234,7 +235,7 @@ export function useSilos(): UseSilosReturn {
   const renameSilo = useCallback(async (oldName: string, newName: string, password?: string) => {
     try {
       setError(null);
-      const response = await fetch('/api/silos/rename', {
+      const response = await fetch(apiUrl('/api/silos/rename', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -260,7 +261,7 @@ export function useSilos(): UseSilosReturn {
   const updatePassword = useCallback(async (siloName: string, currentPassword?: string, newPassword?: string, passwordMode?: string) => {
     try {
       setError(null);
-      const response = await fetch('/api/silos/update-password', {
+      const response = await fetch(apiUrl('/api/silos/update-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

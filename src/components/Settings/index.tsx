@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -78,7 +79,7 @@ export default function Settings() {
   useEffect(() => {
     const checkFaceDetectionStatus = async () => {
       try {
-        const res = await fetch('/api/system/health-extended');
+        const res = await fetch(apiUrl('/api/system/health-extended');
         if (res.ok) {
           const health = await res.json();
           
@@ -426,7 +427,7 @@ export default function Settings() {
 
     const fetchProgress = async () => {
       try {
-        const res = await fetch('/api/retraining/progress');
+        const res = await fetch(apiUrl('/api/retraining/progress');
         if (res.ok) {
           const data = await res.json();
           setRetrainingProgress(data);
@@ -466,7 +467,7 @@ export default function Settings() {
 
     const fetchProgress = async () => {
       try {
-        const progressRes = await fetch('/api/indexing');
+        const progressRes = await fetch(apiUrl('/api/indexing');
         if (progressRes.ok) {
           const progressData = await progressRes.json();
           const progress = progressData.progress || {};
@@ -550,7 +551,7 @@ export default function Settings() {
               
 
               try {
-                await fetch('/api/cache/clear-face-clusters', {
+                await fetch(apiUrl('/api/cache/clear-face-clusters', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                 });
@@ -561,7 +562,7 @@ export default function Settings() {
 
 
               try {
-                const clusterRes = await fetch('/api/faces/clusters?force_cluster=true');
+                const clusterRes = await fetch(apiUrl('/api/faces/clusters?force_cluster=true');
                 if (clusterRes.ok) {
                   const clusters = await clusterRes.json();
                   const clusterCount = clusters.length;
@@ -694,7 +695,7 @@ export default function Settings() {
     setRetrainingLogs([]);
     setShowDebugLogs(true);
     try {
-      const res = await fetch('/api/retraining/full', {
+      const res = await fetch(apiUrl('/api/retraining/full', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -703,7 +704,7 @@ export default function Settings() {
         throw new Error(data.detail || data.message || 'Failed to start retraining');
       }
 
-      const progressRes = await fetch('/api/retraining/progress');
+      const progressRes = await fetch(apiUrl('/api/retraining/progress');
       if (progressRes.ok) {
         const initialData = await progressRes.json();
         setRetrainingProgress(initialData);
@@ -722,7 +723,7 @@ export default function Settings() {
   const fetchDebugLogs = async (addLog: (msg: string, progress: number) => void) => {
     try {
       addLog('📋 Fetching backend debug logs...', 0);
-      const response = await fetch('/api/debug/worker-logs');
+      const response = await fetch(apiUrl('/api/debug/worker-logs');
       if (!response.ok) {
         addLog(`❌ failed to fetch debug logs: ${response.status}`, 0);
         return;
@@ -862,7 +863,7 @@ export default function Settings() {
       
       while (isRunning) {
         try {
-          const progressRes = await fetch('/api/indexing');
+          const progressRes = await fetch(apiUrl('/api/indexing');
           if (progressRes.ok) {
             const progressData = await progressRes.json();
             const progress = progressData.progress || {};
@@ -959,7 +960,7 @@ export default function Settings() {
             
 
             try {
-              const healthRes = await fetch('/api/system/health-extended').catch(() => null);
+              const healthRes = await fetch(apiUrl('/api/system/health-extended').catch(() => null);
               if (healthRes && healthRes.ok) {
                 const health = await healthRes.json();
                 if (health.has_crash_logs && health.recent_crash) {

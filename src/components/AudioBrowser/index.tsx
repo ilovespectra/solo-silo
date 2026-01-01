@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
@@ -114,7 +115,7 @@ export default function AudioBrowser() {
   useEffect(() => {
     const pollIndexingProgress = async () => {
       try {
-        const response = await fetch('/api/indexing');
+        const response = await fetch(apiUrl('/api/indexing');
         if (!response.ok) return;
         const data = await response.json();
         

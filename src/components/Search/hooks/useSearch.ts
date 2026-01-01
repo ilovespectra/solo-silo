@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 /**
  * useSearch Hook - Main search logic with feedback integration
  */
@@ -47,7 +48,7 @@ export const useSearch = (): UseSearchReturn => {
   useEffect(() => {
     feedbackQueue.init().catch(console.error);
 
-    fetch('/api/health', { method: 'GET', mode: 'cors' })
+    fetch(apiUrl('/api/health', { method: 'GET', mode: 'cors' })
       .then(r => {
         if (r.ok) {
           console.log('[useSearch] Backend is healthy');

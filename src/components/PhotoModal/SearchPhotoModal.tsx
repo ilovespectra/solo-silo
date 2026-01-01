@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -48,7 +49,7 @@ export default function SearchPhotoModal({
       const loadClusters = async () => {
         setIsLoadingClusters(true);
         try {
-          const response = await fetch('/api/faces/clusters');
+          const response = await fetch(apiUrl('/api/faces/clusters');
           if (response.ok) {
             const data = await response.json();
             console.log('[SearchPhotoModal] Loaded clusters:', data);
@@ -150,7 +151,7 @@ export default function SearchPhotoModal({
       try {
         const createdClusterIds: string[] = [];
         for (const name of newPersonNames) {
-          const checkResponse = await fetch('/api/faces/check-duplicate-name', {
+          const checkResponse = await fetch(apiUrl('/api/faces/check-duplicate-name', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name.trim() }),
@@ -169,7 +170,7 @@ export default function SearchPhotoModal({
             return;
           }
 
-          const response = await fetch('/api/faces/create-cluster', {
+          const response = await fetch(apiUrl('/api/faces/create-cluster', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name }),
@@ -186,7 +187,7 @@ export default function SearchPhotoModal({
     }
 
     try {
-      const response = await fetch('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -213,7 +214,7 @@ export default function SearchPhotoModal({
     if (!media) return;
 
     try {
-      const response = await fetch('/api/faces/add-to-multiple-clusters', {
+      const response = await fetch(apiUrl('/api/faces/add-to-multiple-clusters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

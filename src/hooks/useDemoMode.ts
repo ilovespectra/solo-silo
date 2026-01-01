@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 import { useState, useEffect } from 'react';
 
 interface DemoModeStatus {
@@ -14,7 +15,7 @@ export function useDemoMode() {
   useEffect(() => {
     async function checkDemoMode() {
       try {
-        const response = await fetch('/api/system/mode');
+        const response = await fetch(apiUrl('/api/system/mode');
         if (!response.ok) {
           throw new Error('Failed to check demo mode');
         }

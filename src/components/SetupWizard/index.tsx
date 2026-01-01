@@ -1,3 +1,4 @@
+import { apiUrl } from '@/lib/api';
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -188,7 +189,7 @@ export default function SetupWizard() {
           setBackendStartTime(startTime);
         }
 
-        const res = await fetch('/api/system/backend/start', { method: 'POST' });
+        const res = await fetch(apiUrl('/api/system/backend/start', { method: 'POST' });
         
 
         if (res.status === 404) {
