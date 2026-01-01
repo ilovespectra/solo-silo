@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const isVercel = process.env.VERCEL === '1';
+  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true' || !!process.env.VERCEL;
   const forceDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
+  console.log('[Mode API] Vercel env:', process.env.VERCEL, 'isVercel:', isVercel);
+  
   if (isVercel || forceDemoMode) {
+    console.log('[Mode API] Returning demo mode (Vercel deployment)');
     return NextResponse.json({
       demo_mode: true,
       read_only: true,
@@ -20,12 +23,14 @@ export async function GET(req: NextRequest) {
     
     if (response.ok) {
       const data = await response.json();
+      console.log('[mode api] backend response:', data);
       return NextResponse.json(data);
     }
   } catch (error) {
-    console.log('Backend not available, defaulting to demo mode');
+    console.log('[mode api] backend not available, defaulting to demo mode');
   }
   
+  console.log('[mode api] fallback to demo mode');
   return NextResponse.json({
     demo_mode: true,
     read_only: true,

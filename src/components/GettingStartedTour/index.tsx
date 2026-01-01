@@ -123,12 +123,18 @@ export const GettingStartedTour: React.FC = () => {
   const [dismissed, setDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   
-  // Determine which tour to use based on demo mode - must use useMemo to react to demoMode changes
   const TOUR_STEPS = useMemo(() => {
     const isDemo = demoMode === true;
     console.log('[GettingStartedTour] Demo mode:', demoMode, 'Using tour:', isDemo ? 'DEMO' : 'LOCAL');
     return isDemo ? DEMO_TOUR_STEPS : LOCAL_TOUR_STEPS;
   }, [demoMode]);
+
+  useEffect(() => {
+    if (demoMode !== null) {
+      console.log('[GettingStartedTour] Mode determined, resetting to step 0');
+      setGettingStartedStep(0);
+    }
+  }, [demoMode, setGettingStartedStep]);
 
   useEffect(() => {
     const currentStep = TOUR_STEPS[gettingStartedStep];
@@ -174,7 +180,8 @@ export const GettingStartedTour: React.FC = () => {
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog]);
 
-  if (demoModeLoading) {
+  if (demoModeLoading || demoMode === null) {
+    console.log('[GettingStartedTour] Waiting for mode detection...', { demoModeLoading, demoMode });
     return null;
   }
 
