@@ -3,18 +3,18 @@ import fs from 'fs';
 import path from 'path';
 
 export async function GET(req: NextRequest) {
-  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
+                     process.env.VERCEL || 
+                     process.env.VERCEL_ENV;
   const { searchParams } = new URL(req.url);
   const query = searchParams.get('q') || '';
   const limit = parseInt(searchParams.get('limit') || '20');
   
   if (isDemoMode) {
     try {
-      // Load demo media and search through it
       const mediaPath = path.join(process.cwd(), 'public/demo-media.json');
       const mediaData = JSON.parse(fs.readFileSync(mediaPath, 'utf-8'));
       
-      // Flatten media items
       const allItems: any[] = [];
       mediaData.forEach((day: any) => {
         if (day.items && Array.isArray(day.items)) {
@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
         }
       });
       
-      // Simple search: match query against file name or path
       const queryLower = query.toLowerCase();
       const results = allItems.filter(item => {
         const name = (item.name || '').toLowerCase();
@@ -41,7 +40,6 @@ export async function GET(req: NextRequest) {
     }
   }
   
-  // In local mode, proxy to backend
   try {
     const backendUrl = `http://127.0.0.1:8000/api/search?${searchParams.toString()}`;
     const response = await fetch(backendUrl, {
