@@ -51,7 +51,20 @@ fi
 
 echo -e "${ORANGE}using python: $PYTHON_CMD${NC}"
 
-# Check if venv exists, if not create it and install dependencies
+if [ ! -f "$SCRIPT_DIR/.env.local" ]; then
+  echo -e "${ORANGE}creating .env.local for local development...${NC}"
+  cat > "$SCRIPT_DIR/.env.local" << 'EOF'
+# Local development environment variables
+NEXT_PUBLIC_DEMO_MODE=false
+NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
+
+# Prevent Vercel-specific errors in local dev
+VERCEL=0
+NEXT_PUBLIC_VERCEL_ENV=development
+EOF
+  echo -e "${GREEN}✓ .env.local created${NC}"
+fi
+
 if [ ! -d ".venv" ]; then
   echo -e "${ORANGE}creating virtual environment...${NC}"
   $PYTHON_CMD -m venv .venv
