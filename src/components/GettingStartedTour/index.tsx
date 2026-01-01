@@ -17,12 +17,12 @@ const DEMO_TOUR_STEPS: TourStep[] = [
   {
     id: 'welcome',
     title: '🎬 welcome to silo demo',
-    description: 'you\'re viewing a read-only demo with pre-loaded celebrity photos. all the features work—you just can\'t modify data. this shows what silo can do with your own photo collection!',
+    description: 'you\'re viewing a read-only demo with pre-loaded photos. all the features work—you just can\'t modify data. this shows what silo can do with your own photo collection!',
   },
   {
     id: 'demo-files',
     title: '📁 demo files already indexed',
-    description: 'we\'ve already indexed celebrity photos for you:\n• david bowie\n• christopher walken\n• paula abdul\n• luka dončić\n• tito\n\nno setup needed—just explore!',
+    description: 'we\'ve already indexed photos for you:\n• david bowie\n• christopher walken\n• paula abdul\n• luka dončić\n• tito\n\nno setup needed—just explore!',
     targetView: 'browser',
   },
   {
@@ -137,7 +137,6 @@ export const GettingStartedTour: React.FC = () => {
           console.log('[GettingStartedTour] Failed to detect mode, defaulting to local');
         }
       } catch (error) {
-        // If we can't reach the API, check hostname
         const isVercel = window.location.hostname.includes('vercel.app');
         setDemoMode(isVercel);
         console.log('[GettingStartedTour] API failed,', isVercel ? 'demo mode (vercel)' : 'local mode');

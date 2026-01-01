@@ -4,6 +4,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { useDemoMode } from './useDemoMode';
 
 interface IndexingStatusResponse {
   progress: {
@@ -24,6 +25,7 @@ interface IndexingStatusResponse {
 
 export const useIndexingStatus = () => {
   const { setIndexingComplete, setIndexingProgress, setIsIndexing } = useAppStore();
+  const isDemoMode = useDemoMode();
   const lastStateRef = useRef<{
     status: string;
     isComplete: boolean;
@@ -31,6 +33,20 @@ export const useIndexingStatus = () => {
   } | null>(null);
 
   useEffect(() => {
+    // In demo mode, set indexing as complete and skip polling
+    if (isDemoMode) {
+      setIndexingComplete(true);
+      setIsIndexing(false);
+      setIndexingProgress({
+        currentFile: '',
+        processed: 458,
+        total: 458,
+        percentage: 100,
+        status: 'complete',
+      });
+      return;
+    }
+
     const checkIndexingStatus = async () => {
       try {
         const response = await fetch(`/api/indexing`, {
@@ -97,5 +113,5 @@ export const useIndexingStatus = () => {
     const interval = setInterval(checkIndexingStatus, 2000);
 
     return () => clearInterval(interval);
-  }, [setIndexingComplete, setIndexingProgress, setIsIndexing]);
+  }, [setIndexingComplete, setIndexingProgress, setIsIndexing, isDemoMode]);
 };

@@ -56,7 +56,11 @@ const DEMO_CLUSTERS = [
 ];
 
 function isDemoMode() {
-  return process.env.VERCEL === '1';
+  return !!(
+    process.env.VERCEL || 
+    process.env.VERCEL_ENV ||
+    process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+  );
 }
 
 export async function GET(request: Request) {

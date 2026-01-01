@@ -166,7 +166,7 @@ export default function MediaGallery() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parsed = data.map((g: any) => ({
         date_taken: g.date_taken,
-        items: JSON.parse(g.items || '[]'),
+        items: typeof g.items === 'string' ? JSON.parse(g.items || '[]') : (g.items || []),
       }));
       setGroups(parsed);
       console.log(`[MediaGallery] Loaded ${parsed.length} date groups, rotations now included in media items`);

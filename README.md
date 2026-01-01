@@ -41,7 +41,7 @@ this application supports two deployment modes:
 - media files served from `public/test-files/images/`
 
 **demo mode features:**
-- ✅ browse sample celebrity photos
+- ✅ browse sample photos
 - ✅ view face clusters and photos
 - ✅ ui fully functional for demonstration
 - ✅ search functionality (browse/search use existing indexed files)
