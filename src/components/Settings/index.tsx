@@ -88,8 +88,14 @@ export default function Settings() {
             setIndexingLogs(data.indexingLogs || []);
             setFaceDetectionLogs(data.faceDetectionLogs || []);
             setClusteringLogs(data.clusteringLogs || []);
-            setShowDebugLogs(true);
-            console.log('[demo mode] loaded demo processing logs');
+            console.log('[demo mode] loaded demo processing logs', {
+              indexing: data.indexingLogs?.length || 0,
+              faceDetection: data.faceDetectionLogs?.length || 0,
+              clustering: data.clusteringLogs?.length || 0
+            });
+            if (showDebugLogs || tourAutoOpenDebugLog) {
+              setShowDebugLogs(true);
+            }
           }
         } catch (error) {
           console.error('[demo mode] failed to load demo logs:', error);
@@ -269,10 +275,18 @@ export default function Settings() {
 
   useEffect(() => {
     if (tourAutoOpenDebugLog) {
-      setShowDebugLogs(true);
-      setTourAutoOpenDebugLog(false);
+      if (demoMode && (indexingLogs.length === 0 && faceDetectionLogs.length === 0 && clusteringLogs.length === 0)) {
+        const timer = setTimeout(() => {
+          setShowDebugLogs(true);
+          setTourAutoOpenDebugLog(false);
+        }, 300);
+        return () => clearTimeout(timer);
+      } else {
+        setShowDebugLogs(true);
+        setTourAutoOpenDebugLog(false);
+      }
     }
-  }, [tourAutoOpenDebugLog, setTourAutoOpenDebugLog]);
+  }, [tourAutoOpenDebugLog, setTourAutoOpenDebugLog, demoMode, indexingLogs.length, faceDetectionLogs.length, clusteringLogs.length]);
 
   useEffect(() => {
     const shouldPoll = shouldPollIndexing || isIndexing;
