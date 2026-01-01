@@ -1,17 +1,21 @@
 const DEMO_CLUSTERS = [
   { 
-    cluster_id: 'person_1', 
+    id: 'person_1', 
     name: 'Luka', 
-    count: 12, 
-    sample_paths: ['/demo-silo/thumbnails/person_1_1.jpg', '/demo-silo/thumbnails/person_1_2.jpg'], 
-    all_photo_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    primary_thumbnail: '/demo-silo/thumbnails/person_1_1.jpg',
+    photo_count: 12, 
+    confidence_score: 0.95,
+    is_hidden: false,
+    last_updated: Date.now()
   },
   { 
-    cluster_id: 'person_2', 
+    id: 'person_2', 
     name: '', 
-    count: 8, 
-    sample_paths: ['/demo-silo/thumbnails/person_2_1.jpg'], 
-    all_photo_ids: [14, 15, 16, 17, 18, 19, 20, 21]
+    primary_thumbnail: '/demo-silo/thumbnails/person_2_1.jpg',
+    photo_count: 8,
+    confidence_score: 0.89,
+    is_hidden: false,
+    last_updated: Date.now()
   }
 ];
 

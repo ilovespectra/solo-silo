@@ -3,10 +3,26 @@ import { isDemoMode } from './demoApi';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 
-// Demo mode mock data
+// Demo mode mock data - matches FaceCluster interface
 const DEMO_PEOPLE = [
-  { cluster_id: 'person_1', name: 'Luka', count: 12, sample_paths: [], all_photo_ids: [] },
-  { cluster_id: 'person_2', name: '', count: 8, sample_paths: [], all_photo_ids: [] }
+  { 
+    id: 'person_1', 
+    name: 'Luka', 
+    primary_thumbnail: '/demo-silo/thumbnails/person_1_1.jpg',
+    photo_count: 12, 
+    confidence_score: 0.95,
+    is_hidden: false,
+    last_updated: Date.now()
+  },
+  { 
+    id: 'person_2', 
+    name: '', 
+    primary_thumbnail: '/demo-silo/thumbnails/person_2_1.jpg',
+    photo_count: 8,
+    confidence_score: 0.89,
+    is_hidden: false,
+    last_updated: Date.now()
+  }
 ];
 
 let backendReady: Promise<void> | null = null;
