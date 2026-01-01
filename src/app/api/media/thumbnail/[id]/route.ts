@@ -4,8 +4,9 @@ import path from 'path';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
                      process.env.VERCEL || 
                      process.env.VERCEL_ENV;
@@ -17,7 +18,7 @@ export async function GET(
       
       let item: any = null;
       for (const dateGroup of mediaData) {
-        const found = dateGroup.items?.find((i: any) => i.id === parseInt(params.id));
+        const found = dateGroup.items?.find((i: any) => i.id === parseInt(id));
         if (found) {
           item = found;
           break;
@@ -25,7 +26,7 @@ export async function GET(
       }
       
       if (!item) {
-        console.error('[thumbnail] Media not found:', params.id);
+        console.error('[thumbnail] Media not found:', id);
         return new NextResponse('Not found', { status: 404 });
       }
       
