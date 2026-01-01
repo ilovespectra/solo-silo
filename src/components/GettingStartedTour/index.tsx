@@ -125,15 +125,22 @@ export const GettingStartedTour: React.FC = () => {
   useEffect(() => {
     async function detectMode() {
       try {
-        const response = await fetch('/api/health', {
-          signal: AbortSignal.timeout(1000),
+        const response = await fetch('/api/system/mode', {
+          signal: AbortSignal.timeout(3000),
         });
-        setDemoMode(false);
-        console.log('[GettingStartedTour] Backend available, local mode');
+        if (response.ok) {
+          const data = await response.json();
+          setDemoMode(data.demo_mode || false);
+          console.log('[GettingStartedTour] Mode detected:', data.demo_mode ? 'DEMO' : 'LOCAL');
+        } else {
+          setDemoMode(false);
+          console.log('[GettingStartedTour] Failed to detect mode, defaulting to local');
+        }
       } catch (error) {
+        // If we can't reach the API, check hostname
         const isVercel = window.location.hostname.includes('vercel.app');
         setDemoMode(isVercel);
-        console.log('[GettingStartedTour] No backend,', isVercel ? 'demo mode (vercel)' : 'local mode (backend starting)');
+        console.log('[GettingStartedTour] API failed,', isVercel ? 'demo mode (vercel)' : 'local mode');
       }
     }
     detectMode();
