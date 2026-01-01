@@ -20,11 +20,13 @@ export function useDemoMode() {
           throw new Error('Failed to check demo mode');
         }
         const data: DemoModeStatus = await response.json();
+        console.log('[useDemoMode] api response:', data);
+        console.log('[useDemoMode] setting demoMode to:', data.demo_mode);
         setDemoMode(data.demo_mode);
         setError(null);
       } catch (err) {
-        console.error('Failed to detect demo mode:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        console.error('failed to detect demo mode:', err);
+        setError(err instanceof Error ? err.message : 'unknown error');
         setDemoMode(false);
       } finally {
         setIsLoading(false);
