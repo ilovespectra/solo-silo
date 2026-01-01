@@ -25,7 +25,7 @@ interface IndexingStatusResponse {
 
 export const useIndexingStatus = () => {
   const { setIndexingComplete, setIndexingProgress, setIsIndexing } = useAppStore();
-  const isDemoMode = useDemoMode();
+  const { demoMode } = useDemoMode();
   const lastStateRef = useRef<{
     status: string;
     isComplete: boolean;
@@ -33,8 +33,7 @@ export const useIndexingStatus = () => {
   } | null>(null);
 
   useEffect(() => {
-    // In demo mode, set indexing as complete and skip polling
-    if (isDemoMode) {
+    if (demoMode) {
       setIndexingComplete(true);
       setIsIndexing(false);
       setIndexingProgress({
@@ -113,5 +112,5 @@ export const useIndexingStatus = () => {
     const interval = setInterval(checkIndexingStatus, 2000);
 
     return () => clearInterval(interval);
-  }, [setIndexingComplete, setIndexingProgress, setIsIndexing, isDemoMode]);
+  }, [setIndexingComplete, setIndexingProgress, setIsIndexing, demoMode]);
 };
