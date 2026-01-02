@@ -1,17 +1,45 @@
 import { MediaFile } from '@/types/backend';
+import { isDemoMode } from './demoApi';
 
-// In demo mode, we call Next.js API routes which return mock data
-// In local mode, API routes proxy to backend on port 8000
 const API_BASE = '';
+
+let backendReady: Promise<void> | null = null;
+let clipModel: any = null;
+let demoEmbeddings: any[] | null = null;
+
+async function loadDemoEmbeddings() {
+  if (demoEmbeddings) return demoEmbeddings;
+  const response = await fetch('/demo-embeddings.json');
+  demoEmbeddings = await response.json();
+  return demoEmbeddings;
+}
+
+async function loadCLIPModel() {
+  if (clipModel) return clipModel;
+  const { pipeline } = await import('@xenova/transformers');
+  clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32');
+  return clipModel;
+}
+
+function cosineSimilarity(a: number[], b: number[]): number {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  
+  for (let i = 0; i < a.length; i++) {
+    dotProduct += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
 
 let backendReady: Promise<void> | null = null;
 
 async function ensureBackendRunning(): Promise<void> {
   if (backendReady) return backendReady;
   backendReady = (async () => {
-    // Check if backend is available via Next.js API route
-    // This will work in both demo mode and local mode since
-    // /api/health returns OK immediately in demo mode
     try {
       const res = await fetch(`/api/health`, { 
         method: 'GET', 
@@ -52,6 +80,33 @@ export async function fetchSearch(
   confidence?: number,
   offset?: number
 ) {
+  if (isDemoMode()) {
+    try {
+      const embeddings = await loadDemoEmbeddings();
+      const model = await loadCLIPModel();
+      
+      const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
+      const queryVector = Array.from(queryEmbedding.data) as number[];
+      
+      const results = embeddings.map((item: any) => {
+        const similarity = cosineSimilarity(queryVector, item.embedding);
+        return {
+          id: item.id,
+          path: item.path,
+          score: similarity,
+          similarity: similarity
+        };
+      })
+      .sort((a: any, b: any) => b.similarity - a.similarity)
+      .slice(offset || 0, (offset || 0) + limit);
+      
+      return { results, total: results.length, offset: offset || 0, limit, has_more: false };
+    } catch (error) {
+      console.error('[fetchSearch] Client-side search error:', error);
+      throw error;
+    }
+  }
+  
   const cappedLimit = Math.max(1, Math.min(limit, 100));
   let searchUrl = `/api/search?q=${encodeURIComponent(query)}&limit=${cappedLimit}`;
   
