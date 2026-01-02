@@ -2111,6 +2111,14 @@ async def search_media(
 
     # Load rotation data - no longer needed from cache since reading from database
     query_vec = get_text_embedding(q)
+    
+    # If CLIP model failed to load (e.g. OOM on low-memory deployments), return error
+    if query_vec is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Search temporarily unavailable - CLIP model could not be loaded (insufficient memory). This is a known limitation of free-tier deployments."
+        )
+    
     confirmed_results = []
     semantic_results = []
     keyword_results = []
