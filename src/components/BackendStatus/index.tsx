@@ -8,11 +8,6 @@ export function BackendStatus() {
   const [isConnected, setIsConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
-  
-  // Only show in demo mode (Vercel deployment)
-  if (!demoMode) {
-    return null;
-  }
 
   const checkBackendHealth = async (): Promise<boolean> => {
     try {
@@ -26,6 +21,8 @@ export function BackendStatus() {
   };
 
   useEffect(() => {
+    if (!demoMode) return;
+    
     const checkStatus = async () => {
       setCheckingStatus(true);
       const connected = await checkBackendHealth();
@@ -36,7 +33,11 @@ export function BackendStatus() {
     checkStatus();
     const interval = setInterval(checkStatus, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [demoMode]);
+  
+  if (!demoMode) {
+    return null;
+  }
 
   const handleInitialize = async () => {
     setIsInitializing(true);
