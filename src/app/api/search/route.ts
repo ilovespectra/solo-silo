@@ -38,11 +38,11 @@ export async function GET(req: NextRequest) {
       console.log('[search] CLIP model ready');
       
       const queryEmbedding = await clipModelCache(query, { pooling: 'mean', normalize: true });
-      const queryVector = Array.from(queryEmbedding.data);
+      const queryVector = Array.from(queryEmbedding.data) as number[];
       console.log('[search] Query embedding generated, dimensions:', queryVector.length);
       
       const results = embeddings.map((item: any) => {
-        const similarity = cosineSimilarity(queryVector, item.embedding);
+        const similarity = cosineSimilarity(queryVector, item.embedding as number[]);
         return {
           id: item.id,
           path: item.path,
