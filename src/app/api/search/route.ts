@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { pipeline, env } from '@xenova/transformers';
+import fs from 'fs';
+import path from 'path';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 env.allowLocalModels = false;
 
@@ -18,15 +20,9 @@ export async function GET(req: NextRequest) {
       
       console.log('[search] Vercel mode - query:', query);
       
-      const baseUrl = req.nextUrl.origin;
-      const embeddingsUrl = `${baseUrl}/demo-embeddings.json`;
-      
-      console.log('[search] Fetching embeddings from:', embeddingsUrl);
-      const embeddingsResponse = await fetch(embeddingsUrl, { cache: 'force-cache' });
-      if (!embeddingsResponse.ok) {
-        throw new Error(`Failed to load embeddings: ${embeddingsResponse.status}`);
-      }
-      const embeddings = await embeddingsResponse.json();
+      const embeddingsPath = path.join(process.cwd(), 'public/demo-embeddings.json');
+      console.log('[search] Reading embeddings from:', embeddingsPath);
+      const embeddings = JSON.parse(fs.readFileSync(embeddingsPath, 'utf-8'));
       console.log('[search] Loaded', embeddings.length, 'embeddings');
       
       console.log('[search] Loading CLIP model...');
