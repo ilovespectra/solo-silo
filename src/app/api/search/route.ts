@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { pipeline } from '@xenova/transformers';
+import { pipeline, env } from '@xenova/transformers';
+
+export const runtime = 'edge';
+
+env.allowLocalModels = false;
+
+let clipModelCache: any = null;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -10,20 +16,30 @@ export async function GET(req: NextRequest) {
       const query = searchParams.get('q') || '';
       const limit = parseInt(searchParams.get('limit') || '20');
       
-      const baseUrl = process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}` 
-        : 'http://localhost:3000';
+      console.log('[search] Vercel mode - query:', query);
+      
+      const baseUrl = req.nextUrl.origin;
       const embeddingsUrl = `${baseUrl}/demo-embeddings.json`;
       
-      const embeddingsResponse = await fetch(embeddingsUrl);
+      console.log('[search] Fetching embeddings from:', embeddingsUrl);
+      const embeddingsResponse = await fetch(embeddingsUrl, { cache: 'force-cache' });
       if (!embeddingsResponse.ok) {
         throw new Error(`Failed to load embeddings: ${embeddingsResponse.status}`);
       }
       const embeddings = await embeddingsResponse.json();
+      console.log('[search] Loaded', embeddings.length, 'embeddings');
       
-      const clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32');
-      const queryEmbedding = await clipModel(query, { pooling: 'mean', normalize: true });
+      console.log('[search] Loading CLIP model...');
+      if (!clipModelCache) {
+        clipModelCache = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32', {
+          quantized: true,
+        });
+      }
+      console.log('[search] CLIP model ready');
+      
+      const queryEmbedding = await clipModelCache(query, { pooling: 'mean', normalize: true });
       const queryVector = Array.from(queryEmbedding.data);
+      console.log('[search] Query embedding generated, dimensions:', queryVector.length);
       
       const results = embeddings.map((item: any) => {
         const similarity = cosineSimilarity(queryVector, item.embedding);
@@ -37,10 +53,15 @@ export async function GET(req: NextRequest) {
       .sort((a: any, b: any) => b.similarity - a.similarity)
       .slice(0, limit);
       
+      console.log('[search] Returning', results.length, 'results');
       return NextResponse.json({ results, total: results.length, offset: 0, limit, has_more: false });
-    } catch (error) {
+    } catch (error: any) {
       console.error('[search] Error in Vercel mode:', error);
-      return NextResponse.json({ error: String(error) }, { status: 500 });
+      console.error('[search] Error stack:', error.stack);
+      return NextResponse.json({ 
+        error: error.message || String(error),
+        stack: error.stack 
+      }, { status: 500 });
     }
   }
   
