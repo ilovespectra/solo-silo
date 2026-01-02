@@ -3,6 +3,7 @@ uvicorn[standard]==0.30.6
 pydantic==2.9.2
 pillow==11.0.0
 pyyaml==6.0.2
+watchdog==4.0.0
 cryptography>=42.0.0
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.1.0+cpu
