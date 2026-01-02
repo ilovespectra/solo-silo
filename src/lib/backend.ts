@@ -79,34 +79,37 @@ export async function fetchSearch(
   offset?: number
 ) {
   if (isDemoMode()) {
-    try {
-      const embeddings = await loadDemoEmbeddings();
-      if (!embeddings) {
-        throw new Error('Failed to load demo embeddings');
-      }
-      
-      const model = await loadCLIPModel();
-      
-      const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
-      const queryVector = Array.from(queryEmbedding.data) as number[];
-      
-      const results = embeddings.map((item: any) => {
-        const similarity = cosineSimilarity(queryVector, item.embedding);
-        return {
-          id: item.id,
-          path: item.path,
-          score: similarity,
-          similarity: similarity
-        };
-      })
-      .sort((a: any, b: any) => b.similarity - a.similarity)
-      .slice(offset || 0, (offset || 0) + limit);
-      
-      return { results, total: results.length, offset: offset || 0, limit, has_more: false };
-    } catch (error) {
-      console.error('[fetchSearch] Client-side search error:', error);
-      throw error;
+    console.log('[fetchSearch] Demo mode - doing client-side CLIP search');
+    console.log('[fetchSearch] Loading embeddings...');
+    const embeddings = await loadDemoEmbeddings();
+    if (!embeddings || embeddings.length === 0) {
+      throw new Error('Failed to load demo embeddings or embeddings are empty');
     }
+    console.log('[fetchSearch] Loaded', embeddings.length, 'embeddings');
+    
+    console.log('[fetchSearch] Loading CLIP model...');
+    const model = await loadCLIPModel();
+    console.log('[fetchSearch] CLIP model loaded');
+    
+    console.log('[fetchSearch] Generating query embedding for:', query);
+    const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
+    const queryVector = Array.from(queryEmbedding.data) as number[];
+    console.log('[fetchSearch] Query vector length:', queryVector.length);
+    
+    const results = embeddings.map((item: any) => {
+      const similarity = cosineSimilarity(queryVector, item.embedding);
+      return {
+        id: item.id,
+        path: item.path,
+        score: similarity,
+        similarity: similarity
+      };
+    })
+    .sort((a: any, b: any) => b.similarity - a.similarity)
+    .slice(offset || 0, (offset || 0) + limit);
+    
+    console.log('[fetchSearch] Returning', results.length, 'results');
+    return { results, total: results.length, offset: offset || 0, limit, has_more: false };
   }
   
   const cappedLimit = Math.max(1, Math.min(limit, 100));
