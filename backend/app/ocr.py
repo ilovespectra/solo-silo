@@ -4,7 +4,11 @@ import os
 from dataclasses import dataclass
 from typing import List
 
-import easyocr
+try:
+    import easyocr
+    EASYOCR_AVAILABLE = True
+except ImportError:
+    EASYOCR_AVAILABLE = False
 
 
 @dataclass
@@ -17,8 +21,10 @@ class OCRResult:
 _READER = None
 
 
-def get_reader() -> easyocr.Reader:
+def get_reader():
     global _READER
+    if not EASYOCR_AVAILABLE:
+        raise ImportError("EasyOCR is not installed. This feature is not available in demo mode.")
     if _READER is None:
         langs = os.environ.get("PAI_OCR_LANGS", "en").split(",")
         _READER = easyocr.Reader(langs, gpu=os.environ.get("PAI_USE_GPU", "1") == "1")
@@ -26,6 +32,8 @@ def get_reader() -> easyocr.Reader:
 
 
 def run_ocr(path: str, min_confidence: float = 0.4) -> List[OCRResult]:
+    if not EASYOCR_AVAILABLE:
+        return []
     reader = get_reader()
     results = []
     try:

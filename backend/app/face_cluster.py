@@ -3,9 +3,16 @@ import os
 from dataclasses import dataclass
 from typing import List, Optional
 
-import hdbscan
 import numpy as np
-from deepface import DeepFace
+
+try:
+    import hdbscan
+    from deepface import DeepFace
+    FACE_DETECTION_AVAILABLE = True
+except ImportError:
+    FACE_DETECTION_AVAILABLE = False
+    hdbscan = None
+    DeepFace = None
 
 from .db import get_db
 from .config import get_cache_dir

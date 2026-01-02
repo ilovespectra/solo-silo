@@ -21,8 +21,15 @@ import tempfile
 import gc
 
 from PIL import Image
-import cv2
-from deepface import DeepFace
+
+try:
+    import cv2
+    from deepface import DeepFace
+    FACE_FEATURES_AVAILABLE = True
+except ImportError:
+    FACE_FEATURES_AVAILABLE = False
+    cv2 = None
+    DeepFace = None
 
 from .db import get_db
 from .face_cluster import (
