@@ -1,11 +1,10 @@
-import { MediaFile } from '@/types/backend';
 import { isDemoMode } from './demoApi';
 
 const API_BASE = '';
 
 let backendReady: Promise<void> | null = null;
+let demoEmbeddings: Array<{id: number; path: string; embedding: number[]}> | null = null;
 let clipModel: any = null;
-let demoEmbeddings: any[] | null = null;
 
 async function loadDemoEmbeddings() {
   if (demoEmbeddings) return demoEmbeddings;
@@ -97,7 +96,7 @@ export async function fetchSearch(
     console.log('[fetchSearch] Query embedding generated, dim:', queryVector.length);
     
     const results = embeddings
-      .map((item: any) => {
+      .map((item) => {
         const similarity = cosineSimilarity(queryVector, item.embedding);
         return {
           id: item.id,
@@ -106,7 +105,7 @@ export async function fetchSearch(
           similarity: similarity
         };
       })
-      .sort((a: any, b: any) => b.similarity - a.similarity)
+      .sort((a, b) => b.similarity - a.similarity)
       .slice(offset || 0, (offset || 0) + limit);
     
     console.log('[fetchSearch] Returning', results.length, 'results');
