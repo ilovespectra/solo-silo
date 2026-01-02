@@ -6,8 +6,8 @@ pyyaml==6.0.2
 watchdog==4.0.0
 cryptography>=42.0.0
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.1.0+cpu
-torchvision==0.16.0+cpu
+torch==2.5.1+cpu
+torchvision==0.20.1+cpu
 open-clip-torch==2.24.0
 sentence-transformers==3.2.1
 faiss-cpu==1.10.0
