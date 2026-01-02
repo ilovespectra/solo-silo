@@ -1,26 +1,6 @@
-import { isDemoMode } from './demoApi';
-
 const API_BASE = '';
 
 let backendReady: Promise<void> | null = null;
-let demoEmbeddings: Array<{id: number; path: string; embedding: number[]}> | null = null;
-let clipModel: any = null;
-
-async function loadDemoEmbeddings() {
-  if (demoEmbeddings) return demoEmbeddings;
-  const response = await fetch('/demo-embeddings.json');
-  demoEmbeddings = await response.json();
-  return demoEmbeddings;
-}
-
-async function loadCLIPModel() {
-  if (clipModel) return clipModel;
-  const { pipeline } = await import('@xenova/transformers');
-  clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32', {
-    quantized: false,
-  });
-  return clipModel;
-}
 
 function cosineSimilarity(a: number[], b: number[]): number {
   let dotProduct = 0;
@@ -79,39 +59,6 @@ export async function fetchSearch(
   confidence?: number,
   offset?: number
 ) {
-  if (isDemoMode()) {
-    console.log('[fetchSearch] Demo mode - client-side CLIP search');
-    
-    const embeddings = await loadDemoEmbeddings();
-    if (!embeddings || embeddings.length === 0) {
-      throw new Error('Failed to load demo embeddings');
-    }
-    console.log('[fetchSearch] Loaded', embeddings.length, 'embeddings');
-    
-    const model = await loadCLIPModel();
-    console.log('[fetchSearch] CLIP model loaded');
-    
-    const output = await model(query, { pooling: 'mean', normalize: true });
-    const queryVector = Array.from(output.data) as number[];
-    console.log('[fetchSearch] Query embedding generated, dim:', queryVector.length);
-    
-    const results = embeddings
-      .map((item) => {
-        const similarity = cosineSimilarity(queryVector, item.embedding);
-        return {
-          id: item.id,
-          path: item.path,
-          score: similarity,
-          similarity: similarity
-        };
-      })
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(offset || 0, (offset || 0) + limit);
-    
-    console.log('[fetchSearch] Returning', results.length, 'results');
-    return { results, total: results.length, offset: offset || 0, limit, has_more: false };
-  }
-  
   const cappedLimit = Math.max(1, Math.min(limit, 100));
   let searchUrl = `/api/search?q=${encodeURIComponent(query)}&limit=${cappedLimit}`;
   
