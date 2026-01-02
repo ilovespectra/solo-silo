@@ -89,10 +89,19 @@ export async function fetchSearch(
     
     console.log('[fetchSearch] Loading CLIP model...');
     const model = await loadCLIPModel();
+    if (!model) {
+      throw new Error('Failed to load CLIP model');
+    }
     console.log('[fetchSearch] CLIP model loaded');
     
     console.log('[fetchSearch] Generating query embedding for:', query);
     const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
+    console.log('[fetchSearch] Query embedding result:', queryEmbedding);
+    
+    if (!queryEmbedding || !queryEmbedding.data) {
+      throw new Error('CLIP model returned invalid embedding: ' + JSON.stringify(queryEmbedding));
+    }
+    
     const queryVector = Array.from(queryEmbedding.data) as number[];
     console.log('[fetchSearch] Query vector length:', queryVector.length);
     
