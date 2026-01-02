@@ -16,6 +16,6 @@ COPY backend/config.yaml ./config.yaml
 COPY backend/silos-demo.json ./silos.json
 COPY backend/start.sh ./start.sh
 
-RUN chmod +x start.sh && mkdir -p cache
+RUN chmod +x start.sh && mkdir -p cache/silos/demo && cp demo-silo/faiss.index cache/silos/demo/ && cp demo-silo/faiss_ids.npy cache/silos/demo/
 
 EXPOSE 8000

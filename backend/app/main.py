@@ -255,18 +255,6 @@ async def startup_event():
     
     # Background watcher disabled - user should manually trigger indexing via UI
     # asyncio.create_task(watch_directories(process_single))
-    
-    # In demo mode, ensure FAISS index is built from database
-    if SiloManager.is_demo_mode():
-        print("[STARTUP] Demo mode detected - building FAISS index from database...", flush=True)
-        try:
-            from .indexer import rebuild_faiss_index_from_db
-            total = await rebuild_faiss_index_from_db(silo_name='demo')
-            print(f"[STARTUP] ✓ Built FAISS index with {total} vectors for demo silo", flush=True)
-        except Exception as e:
-            print(f"[STARTUP] ERROR building FAISS index: {e}", flush=True)
-            import traceback
-            traceback.print_exc()
 
 
 @app.get("/health")
