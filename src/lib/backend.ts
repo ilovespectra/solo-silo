@@ -16,12 +16,10 @@ async function loadDemoEmbeddings() {
 
 async function loadCLIPModel() {
   if (clipModel) return clipModel;
-  const { AutoTokenizer, CLIPTextModelWithProjection } = await import('@xenova/transformers');
-  
-  const tokenizer = await AutoTokenizer.from_pretrained('Xenova/clip-vit-base-patch32');
-  const textModel = await CLIPTextModelWithProjection.from_pretrained('Xenova/clip-vit-base-patch32');
-  
-  clipModel = { tokenizer, textModel };
+  const { pipeline } = await import('@xenova/transformers');
+  clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32', {
+    quantized: false,
+  });
   return clipModel;
 }
 
@@ -83,50 +81,33 @@ export async function fetchSearch(
   offset?: number
 ) {
   if (isDemoMode()) {
-    console.log('[fetchSearch] Demo mode - doing client-side CLIP search');
-    console.log('[fetchSearch] Loading embeddings...');
+    console.log('[fetchSearch] Demo mode - client-side CLIP search');
+    
     const embeddings = await loadDemoEmbeddings();
     if (!embeddings || embeddings.length === 0) {
-      throw new Error('Failed to load demo embeddings or embeddings are empty');
+      throw new Error('Failed to load demo embeddings');
     }
     console.log('[fetchSearch] Loaded', embeddings.length, 'embeddings');
     
-    console.log('[fetchSearch] Loading CLIP model...');
-    const { tokenizer, textModel } = await loadCLIPModel();
-    if (!tokenizer || !textModel) {
-      throw new Error('Failed to load CLIP model');
-    }
+    const model = await loadCLIPModel();
     console.log('[fetchSearch] CLIP model loaded');
     
-    console.log('[fetchSearch] Generating query embedding for:', query);
-    const textInputs = await tokenizer(query, { padding: true, truncation: true });
-    const { text_embeds } = await textModel(textInputs);
+    const output = await model(query, { pooling: 'mean', normalize: true });
+    const queryVector = Array.from(output.data) as number[];
+    console.log('[fetchSearch] Query embedding generated, dim:', queryVector.length);
     
-    const embedding = text_embeds.data;
-    let norm = 0;
-    for (let i = 0; i < embedding.length; i++) {
-      norm += embedding[i] * embedding[i];
-    }
-    norm = Math.sqrt(norm);
-    
-    const queryVector: number[] = [];
-    for (let i = 0; i < embedding.length; i++) {
-      queryVector.push(embedding[i] / norm);
-    }
-    
-    console.log('[fetchSearch] Query vector length:', queryVector.length);
-    
-    const results = embeddings.map((item: any) => {
-      const similarity = cosineSimilarity(queryVector, item.embedding);
-      return {
-        id: item.id,
-        path: item.path,
-        score: similarity,
-        similarity: similarity
-      };
-    })
-    .sort((a: any, b: any) => b.similarity - a.similarity)
-    .slice(offset || 0, (offset || 0) + limit);
+    const results = embeddings
+      .map((item: any) => {
+        const similarity = cosineSimilarity(queryVector, item.embedding);
+        return {
+          id: item.id,
+          path: item.path,
+          score: similarity,
+          similarity: similarity
+        };
+      })
+      .sort((a: any, b: any) => b.similarity - a.similarity)
+      .slice(offset || 0, (offset || 0) + limit);
     
     console.log('[fetchSearch] Returning', results.length, 'results');
     return { results, total: results.length, offset: offset || 0, limit, has_more: false };
