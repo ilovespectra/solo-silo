@@ -16,8 +16,12 @@ async function loadDemoEmbeddings() {
 
 async function loadCLIPModel() {
   if (clipModel) return clipModel;
-  const { pipeline } = await import('@xenova/transformers');
-  clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32');
+  const { AutoTokenizer, CLIPTextModelWithProjection } = await import('@xenova/transformers');
+  
+  const tokenizer = await AutoTokenizer.from_pretrained('Xenova/clip-vit-base-patch32');
+  const textModel = await CLIPTextModelWithProjection.from_pretrained('Xenova/clip-vit-base-patch32');
+  
+  clipModel = { tokenizer, textModel };
   return clipModel;
 }
 
@@ -88,21 +92,28 @@ export async function fetchSearch(
     console.log('[fetchSearch] Loaded', embeddings.length, 'embeddings');
     
     console.log('[fetchSearch] Loading CLIP model...');
-    const model = await loadCLIPModel();
-    if (!model) {
+    const { tokenizer, textModel } = await loadCLIPModel();
+    if (!tokenizer || !textModel) {
       throw new Error('Failed to load CLIP model');
     }
     console.log('[fetchSearch] CLIP model loaded');
     
     console.log('[fetchSearch] Generating query embedding for:', query);
-    const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
-    console.log('[fetchSearch] Query embedding result:', queryEmbedding);
+    const textInputs = await tokenizer(query, { padding: true, truncation: true });
+    const { text_embeds } = await textModel(textInputs);
     
-    if (!queryEmbedding || !queryEmbedding.data) {
-      throw new Error('CLIP model returned invalid embedding: ' + JSON.stringify(queryEmbedding));
+    const embedding = text_embeds.data;
+    let norm = 0;
+    for (let i = 0; i < embedding.length; i++) {
+      norm += embedding[i] * embedding[i];
+    }
+    norm = Math.sqrt(norm);
+    
+    const queryVector: number[] = [];
+    for (let i = 0; i < embedding.length; i++) {
+      queryVector.push(embedding[i] / norm);
     }
     
-    const queryVector = Array.from(queryEmbedding.data) as number[];
     console.log('[fetchSearch] Query vector length:', queryVector.length);
     
     const results = embeddings.map((item: any) => {
