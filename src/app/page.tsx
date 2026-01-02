@@ -10,7 +10,7 @@ import Settings from '@/components/Settings';
 import PeoplePane from '@/components/PeoplePane';
 import AnimalPane from '@/components/AnimalPane';
 import Retraining from '@/components/Retraining';
-import BackendStatus from '@/components/BackendStatus';
+import { BackendStatus } from '@/components/BackendStatus';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
