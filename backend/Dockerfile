@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python packages (minimal for Railway)
-COPY requirements-minimal.txt .
+COPY backend/requirements-minimal.txt .
 RUN pip install --no-cache-dir -r requirements-minimal.txt
 
 # Copy the rest of the backend
-COPY . .
+COPY backend/ .
 
 # Expose port
 EXPOSE 8000
