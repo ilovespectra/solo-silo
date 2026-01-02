@@ -10,7 +10,6 @@ import Settings from '@/components/Settings';
 import PeoplePane from '@/components/PeoplePane';
 import AnimalPane from '@/components/AnimalPane';
 import Retraining from '@/components/Retraining';
-import { BackendStatus } from '@/components/BackendStatus';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
@@ -114,7 +113,7 @@ export default function Home() {
       {demoMode && <DemoBanner />}
       
       {/* Backend Status Bar - hide in demo mode */}
-      {!demoMode && <BackendStatus />}
+
 
       {/* Header */}
       <header className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm`}>
