@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements-minimal.txt
 COPY backend/app ./app
 COPY backend/demo-silo ./demo-silo
 COPY backend/config.yaml ./config.yaml
-COPY backend/silos.json ./silos.json
+COPY backend/silos-demo.json ./silos.json
 
 # Create cache directory
 RUN mkdir -p cache
