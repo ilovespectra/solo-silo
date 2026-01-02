@@ -2,10 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies (minimal)
 RUN apt-get update && apt-get install -y \
-    libgl1 \
-    libglib2.0-0 \
     gcc \
     g++ \
     && rm -rf /var/lib/apt/lists/*
@@ -14,8 +12,9 @@ RUN apt-get update && apt-get install -y \
 COPY backend/requirements-minimal.txt .
 RUN pip install --no-cache-dir -r requirements-minimal.txt
 
-# Copy the rest of the backend
-COPY backend/ .
+# Copy only necessary backend files
+COPY backend/app ./app
+COPY backend/demo-silo ./demo-silo
 
 # Expose port
 EXPOSE 8000
