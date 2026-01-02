@@ -14,7 +14,8 @@ COPY backend/app ./app
 COPY backend/demo-silo ./demo-silo
 COPY backend/config.yaml ./config.yaml
 COPY backend/silos-demo.json ./silos.json
+COPY backend/start.sh ./start.sh
 
-RUN mkdir -p cache
+RUN chmod +x start.sh && mkdir -p cache
 
 EXPOSE 8000
