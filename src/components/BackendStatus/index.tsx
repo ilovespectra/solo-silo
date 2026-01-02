@@ -42,7 +42,7 @@ export function BackendStatus() {
     setIsInitializing(true);
     try {
       console.log('🚀 Requesting backend start...');
-      const startRes = await fetch(apiUrl('/api/system/backend/start'), { method: 'POST' });
+      const startRes = await fetch('/api/system/backend/start', { method: 'POST' });
       const startData = await startRes.json();
       console.log('📡 backend start response:', startData);
 
