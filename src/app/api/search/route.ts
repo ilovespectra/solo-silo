@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   
   const isVercel = !!(process.env.VERCEL || process.env.VERCEL_ENV);
   const backendUrl = isVercel 
-    ? process.env.RAILWAY_BACKEND_URL || 'https://your-railway-url.railway.app'
+    ? process.env.RAILWAY_BACKEND_URL || 'https://silo-backend-production.up.railway.app'
     : 'http://127.0.0.1:8000';
   
   try {

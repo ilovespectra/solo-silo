@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "./ThemeProvider";
+import { BackendStatus } from "@/components/BackendStatus";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           {children}
+          <BackendStatus />
         </ThemeProvider>
       </body>
     </html>
