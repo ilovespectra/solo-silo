@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { pipeline } from '@xenova/transformers';
 
 export async function GET(req: NextRequest) {
@@ -12,8 +10,16 @@ export async function GET(req: NextRequest) {
       const query = searchParams.get('q') || '';
       const limit = parseInt(searchParams.get('limit') || '20');
       
-      const embeddingsPath = path.join(process.cwd(), 'public/demo-embeddings.json');
-      const embeddings = JSON.parse(fs.readFileSync(embeddingsPath, 'utf-8'));
+      const baseUrl = process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}` 
+        : 'http://localhost:3000';
+      const embeddingsUrl = `${baseUrl}/demo-embeddings.json`;
+      
+      const embeddingsResponse = await fetch(embeddingsUrl);
+      if (!embeddingsResponse.ok) {
+        throw new Error(`Failed to load embeddings: ${embeddingsResponse.status}`);
+      }
+      const embeddings = await embeddingsResponse.json();
       
       const clipModel = await pipeline('feature-extraction', 'Xenova/clip-vit-base-patch32');
       const queryEmbedding = await clipModel(query, { pooling: 'mean', normalize: true });
@@ -34,7 +40,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ results, total: results.length, offset: 0, limit, has_more: false });
     } catch (error) {
       console.error('[search] Error in Vercel mode:', error);
-      return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+      return NextResponse.json({ error: String(error) }, { status: 500 });
     }
   }
   
