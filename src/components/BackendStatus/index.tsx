@@ -1,12 +1,18 @@
 'use client';
-import { apiUrl } from '@/lib/api';
 
 import { useState, useEffect } from 'react';
+import { useDemoMode } from '@/hooks/useDemoMode';
 
 export function BackendStatus() {
+  const { demoMode } = useDemoMode();
   const [isConnected, setIsConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
+  
+  // Only show in demo mode (Vercel deployment)
+  if (!demoMode) {
+    return null;
+  }
 
   const checkBackendHealth = async (): Promise<boolean> => {
     try {
