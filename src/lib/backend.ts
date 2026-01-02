@@ -35,8 +35,6 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-let backendReady: Promise<void> | null = null;
-
 async function ensureBackendRunning(): Promise<void> {
   if (backendReady) return backendReady;
   backendReady = (async () => {
