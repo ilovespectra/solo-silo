@@ -19,12 +19,16 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 @lru_cache(maxsize=1)
 def get_clip_components():
     """Load CLIP model + preprocessors once."""
-    model, _, preprocess = open_clip.create_model_and_transforms(
-        CLIP_MODEL_NAME, pretrained=CLIP_PRETRAINED, device=DEVICE
-    )
-    tokenizer = open_clip.get_tokenizer(CLIP_MODEL_NAME)
-    model.eval()
-    return model, preprocess, tokenizer
+    try:
+        model, _, preprocess = open_clip.create_model_and_transforms(
+            CLIP_MODEL_NAME, pretrained=CLIP_PRETRAINED, device=DEVICE
+        )
+        tokenizer = open_clip.get_tokenizer(CLIP_MODEL_NAME)
+        model.eval()
+        return model, preprocess, tokenizer
+    except Exception as e:
+        print(f"[CLIP] Failed to load model (possibly OOM): {e}")
+        return None, None, None
 
 
 @lru_cache(maxsize=1)
@@ -43,6 +47,9 @@ def get_clip_text_embedding(text: str) -> Optional[list[float]]:
     if not text.strip():
         return None
     model, _, tokenizer = get_clip_components()
+    if model is None:
+        print("[CLIP] Model not available, cannot encode text")
+        return None
     tokens = tokenizer([text])
     with torch.no_grad():
         feats = model.encode_text(tokens.to(DEVICE))
