@@ -3,7 +3,7 @@ import { apiUrl } from '@/lib/api';
 
 import { useState, useEffect } from 'react';
 
-export default function BackendStatus() {
+export function BackendStatus() {
   const [isConnected, setIsConnected] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
