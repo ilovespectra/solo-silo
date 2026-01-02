@@ -3,9 +3,11 @@ import { pipeline, env } from '@xenova/transformers';
 import fs from 'fs';
 import path from 'path';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
+export const maxDuration = 60;
 
 env.allowLocalModels = false;
+env.backends.onnx.wasm.proxy = false;
 
 let clipModelCache: any = null;
 
