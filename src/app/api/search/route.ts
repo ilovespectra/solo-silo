@@ -4,9 +4,14 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   
   const isVercel = !!(process.env.VERCEL || process.env.VERCEL_ENV);
-  const backendUrl = isVercel 
+  let backendUrl = isVercel 
     ? process.env.RAILWAY_BACKEND_URL || 'https://silo-backend-production.up.railway.app'
     : 'http://127.0.0.1:8000';
+  
+  // Ensure Railway URL has protocol
+  if (isVercel && !backendUrl.startsWith('http')) {
+    backendUrl = `https://${backendUrl}`;
+  }
   
   try {
     const searchUrl = `${backendUrl}/api/search?${searchParams.toString()}`;
