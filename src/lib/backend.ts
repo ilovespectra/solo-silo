@@ -81,6 +81,10 @@ export async function fetchSearch(
   if (isDemoMode()) {
     try {
       const embeddings = await loadDemoEmbeddings();
+      if (!embeddings) {
+        throw new Error('Failed to load demo embeddings');
+      }
+      
       const model = await loadCLIPModel();
       
       const queryEmbedding = await model(query, { pooling: 'mean', normalize: true });
