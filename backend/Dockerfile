@@ -15,6 +15,11 @@ RUN pip install --no-cache-dir -r requirements-minimal.txt
 # Copy only necessary backend files
 COPY backend/app ./app
 COPY backend/demo-silo ./demo-silo
+COPY backend/config.yaml ./config.yaml
+COPY backend/silos.json ./silos.json
+
+# Create cache directory
+RUN mkdir -p cache
 
 # Expose port
 EXPOSE 8000
