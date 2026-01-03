@@ -4,9 +4,9 @@ export async function GET(req: NextRequest) {
   // Check if demo mode is explicitly enabled
   const forceDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
   
-  // Check if running on Vercel
+  // Check if running on Vercel (must be '1' or truthy non-zero value, not '0')
   const isVercel = !!(
-    process.env.VERCEL || 
+    (process.env.VERCEL && process.env.VERCEL !== '0') || 
     process.env.VERCEL_ENV ||
     process.env.VERCEL_URL ||
     req.headers.get('x-vercel-deployment-url')
