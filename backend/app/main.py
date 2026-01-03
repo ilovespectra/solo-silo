@@ -2224,35 +2224,35 @@ async def search_media(
                         continue
                     
                     if mid in rows_map:
-                    r = rows_map[mid]
-                    is_confirmed = mid in confirmed_ids
-                    result_obj = {
-                        "id": r[0],
-                        "path": r[1],
-                        "type": r[2],
-                        "date_taken": r[3],
-                        "size": r[4],
-                        "width": r[5],
-                        "height": r[6],
-                        "camera": r[7],
-                        "lens": r[8],
-                        "score": score,
-                        "similarity": score,
-                        "confirmed_for_query": is_confirmed,
-                        "rotation": r[9] or 0,
-                    }
-                    
-                    # Apply file type filter
-                    if file_type_filter and r[2].lower() not in file_type_filter:
-                        continue
-                    
-                    # Separate confirmed results to show first
-                    if is_confirmed:
-                        confirmed_results.append(result_obj)
-                    else:
-                        semantic_results.append(result_obj)
-                    
-                    seen_ids.add(mid)
+                        r = rows_map[mid]
+                        is_confirmed = mid in confirmed_ids
+                        result_obj = {
+                            "id": r[0],
+                            "path": r[1],
+                            "type": r[2],
+                            "date_taken": r[3],
+                            "size": r[4],
+                            "width": r[5],
+                            "height": r[6],
+                            "camera": r[7],
+                            "lens": r[8],
+                            "score": score,
+                            "similarity": score,
+                            "confirmed_for_query": is_confirmed,
+                            "rotation": r[9] or 0,
+                        }
+                        
+                        # Apply file type filter
+                        if file_type_filter and r[2].lower() not in file_type_filter:
+                            continue
+                        
+                        # Separate confirmed results to show first
+                        if is_confirmed:
+                            confirmed_results.append(result_obj)
+                        else:
+                            semantic_results.append(result_obj)
+                        
+                        seen_ids.add(mid)
 
     # PHASE 2: Fallback / hybrid search via SQL (objects, OCR, filename, document text content)
     like_term = f"%{q}%"
