@@ -73,28 +73,76 @@ def _normalize(vec) -> np.ndarray:
 
 
 def get_clip_text_embedding_remote(text: str) -> Optional[list[float]]:
-    """Encode text using Hugging Face Inference API (free tier)."""
+    """
+    Encode text using Hugging Face Inference API.
+    Requires HF_API_TOKEN environment variable for authentication.
+    """
     import requests
     
-    API_URL = "https://router.huggingface.co/models/openai/clip-vit-base-patch32"
-    headers = {}
-    if HF_API_TOKEN:
-        headers["Authorization"] = f"Bearer {HF_API_TOKEN}"
+    if not HF_API_TOKEN:
+        print("[CLIP] HF_API_TOKEN not set, cannot use remote inference")
+        return None
     
-    payload = {"inputs": text}
+    API_URL = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/clip-ViT-B-32-multilingual-v1"
+    headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+    payload = {
+        "inputs": text,
+        "options": {"wait_for_model": True}
+    }
     
     try:
-        response = requests.post(API_URL, headers=headers, json=payload, timeout=10)
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
         
-        embedding = response.json()
+        result = response.json()
         
-        embedding_array = np.array(embedding, dtype=np.float32)
-        normalized = _normalize_numpy(embedding_array)
-        return normalized.tolist()
+        # Response format: list of floats
+        if isinstance(result, list) and len(result) > 0:
+            if isinstance(result[0], list):
+                embedding_array = np.array(result[0], dtype=np.float32)
+            else:
+                embedding_array = np.array(result, dtype=np.float32)
+            
+            # Normalize to match CLIP format
+            normalized = _normalize_numpy(embedding_array)
+            return normalized.tolist()
+        
+        print(f"[CLIP] Unexpected response format: {type(result)}")
+        return None
+        
     except Exception as e:
         print(f"[CLIP] Remote inference failed: {e}")
         return None
+
+
+def get_clip_text_embedding_fallback(text: str) -> list[float]:
+    """
+    Generate a simple embedding for demo mode when ML models are unavailable.
+    Uses basic word hashing to create consistent 512-dim vectors.
+    This allows demo search to work without requiring API keys or PyTorch.
+    """
+    import hashlib
+    
+    text = text.lower().strip()
+    words = text.split()
+    
+    embedding = np.zeros(512, dtype=np.float32)
+    
+    for word in words:
+        word_hash = int(hashlib.md5(word.encode()).hexdigest(), 16)
+        
+        for i in range(8):
+            idx = (word_hash + i * 7919) % 512
+            weight = ((word_hash >> (i * 4)) & 0xF) / 15.0
+            embedding[idx] += weight
+    
+    text_hash = int(hashlib.md5(text.encode()).hexdigest(), 16)
+    for i in range(0, 512, 64):
+        embedding[i] += (text_hash % 100) / 100.0
+        text_hash = text_hash // 100
+    
+    normalized = _normalize_numpy(embedding)
+    return normalized.tolist()
 
 
 def get_clip_text_embedding(text: str) -> Optional[list[float]]:
@@ -110,8 +158,14 @@ def get_clip_text_embedding(text: str) -> Optional[list[float]]:
             feats = _normalize(feats)
         return feats[0].float().cpu().numpy().tolist()
     
-    print("[CLIP] Using remote inference for text encoding")
-    return get_clip_text_embedding_remote(text)
+    if HF_API_TOKEN:
+        print("[CLIP] Using remote inference for text encoding")
+        result = get_clip_text_embedding_remote(text)
+        if result is not None:
+            return result
+    
+    print("[CLIP] Using fallback embedding generation (demo mode)")
+    return get_clip_text_embedding_fallback(text)
 
 def get_clip_image_embedding(path: str) -> Optional[list[float]]:
     """Encode an image with CLIP image encoder."""
