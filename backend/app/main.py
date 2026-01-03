@@ -2218,12 +2218,12 @@ async def search_media(
                         continue
                     
                     if score < confidence:
-                    continue
+                        continue
                     
-                if mid in seen_ids:
-                    continue
-                
-                if mid in rows_map:
+                    if mid in seen_ids:
+                        continue
+                    
+                    if mid in rows_map:
                     r = rows_map[mid]
                     is_confirmed = mid in confirmed_ids
                     result_obj = {
