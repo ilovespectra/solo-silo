@@ -54,8 +54,15 @@ rm -f "$SCRIPT_DIR/public/demo-media.json" 2>/dev/null || true
 rm -f "$SCRIPT_DIR/backend/silos-demo.json" 2>/dev/null || true
 rm -rf "$SCRIPT_DIR/backend/demo-silo" 2>/dev/null || true
 
-# Create blank silos.json if it doesn't exist
-if [ ! -f "$SCRIPT_DIR/backend/silos.json" ]; then
+# Reset silos.json to blank state (remove any demo silo config)
+if [ -f "$SCRIPT_DIR/backend/silos.json" ]; then
+  # Check if it contains demo silo
+  if grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null; then
+    echo -e "${ORANGE}removing demo silo from silos.json...${NC}"
+    echo '{"silos": {}}' > "$SCRIPT_DIR/backend/silos.json"
+    echo -e "${GREEN}✓ silos.json reset to blank state${NC}"
+  fi
+else
   echo -e "${ORANGE}creating blank silos.json...${NC}"
   echo '{"silos": {}}' > "$SCRIPT_DIR/backend/silos.json"
   echo -e "${GREEN}✓ blank silos.json created${NC}"
