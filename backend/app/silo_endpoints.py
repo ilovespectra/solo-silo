@@ -55,7 +55,7 @@ class SaveSiloRequest(BaseModel):
 
 class SiloInfo(BaseModel):
     name: str
-    created_at: str
+    created_at: Optional[str] = None
     has_password: bool
     password_mode: Optional[str]
     is_active: bool

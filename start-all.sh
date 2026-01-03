@@ -63,13 +63,15 @@ if [ -f "$SCRIPT_DIR/backend/silos.json" ]; then
   # Check if it contains demo silo or is empty
   if grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null || [ "$(cat "$SCRIPT_DIR/backend/silos.json" | tr -d '[:space:]')" = '{"silos":{}}' ]; then
     echo -e "${ORANGE}creating default silo in silos.json...${NC}"
-    echo '{"silos": {"default": {"paths": []}}}' > "$SCRIPT_DIR/backend/silos.json"
+    CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%S")
+    echo "{\"silos\": {\"default\": {\"paths\": [], \"created_at\": \"$CREATED_AT\"}}}" > "$SCRIPT_DIR/backend/silos.json"
     echo -e "${GREEN}✓ default silo created${NC}"
   fi
 else
   echo -e "${ORANGE}creating silos.json with default silo...${NC}"
   mkdir -p "$SCRIPT_DIR/backend"
-  echo '{"silos": {"default": {"paths": []}}}' > "$SCRIPT_DIR/backend/silos.json"
+  CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%S")
+  echo "{\"silos\": {\"default\": {\"paths\": [], \"created_at\": \"$CREATED_AT\"}}}" > "$SCRIPT_DIR/backend/silos.json"
   echo -e "${GREEN}✓ silos.json created with default silo${NC}"
 fi
 
