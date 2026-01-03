@@ -60,16 +60,17 @@ rm -rf "$SCRIPT_DIR/backend/demo-silo" 2>/dev/null || true
 
 # Reset silos.json to blank state (remove any demo silo config)
 if [ -f "$SCRIPT_DIR/backend/silos.json" ]; then
-  # Check if it contains demo silo
-  if grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null; then
-    echo -e "${ORANGE}removing demo silo from silos.json...${NC}"
-    echo '{"silos": {}}' > "$SCRIPT_DIR/backend/silos.json"
-    echo -e "${GREEN}✓ silos.json reset to blank state${NC}"
+  # Check if it contains demo silo or is empty
+  if grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null || [ "$(cat "$SCRIPT_DIR/backend/silos.json" | tr -d '[:space:]')" = '{"silos":{}}' ]; then
+    echo -e "${ORANGE}creating default silo in silos.json...${NC}"
+    echo '{"silos": {"default": {"paths": []}}}' > "$SCRIPT_DIR/backend/silos.json"
+    echo -e "${GREEN}✓ default silo created${NC}"
   fi
 else
-  echo -e "${ORANGE}creating blank silos.json...${NC}"
-  echo '{"silos": {}}' > "$SCRIPT_DIR/backend/silos.json"
-  echo -e "${GREEN}✓ blank silos.json created${NC}"
+  echo -e "${ORANGE}creating silos.json with default silo...${NC}"
+  mkdir -p "$SCRIPT_DIR/backend"
+  echo '{"silos": {"default": {"paths": []}}}' > "$SCRIPT_DIR/backend/silos.json"
+  echo -e "${GREEN}✓ silos.json created with default silo${NC}"
 fi
 
 # Ensure cache directory exists
