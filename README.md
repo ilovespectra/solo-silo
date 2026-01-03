@@ -1,37 +1,53 @@
-# solo: silo
+# solo: silo (demo)
 
-ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
+ai-powered photo management and search. everything runs locally—no cloud, no tracking, no internet required.
 
-## 🚀 quick start
+> **you're on the `main` branch** - this is the demo version deployed at [solo-silo.vercel.app](https://solo-silo.vercel.app). For local development with full features, switch to the [`local` branch](https://github.com/ilovespectra/solo-silo/tree/local).
 
-### try the live demo
-Visit [solo-silo.vercel.app](https://solo-silo.vercel.app) - no installation required!
+---
 
-### run locally with full features
+## 🎭 try the live demo
+
+**visit [solo-silo.vercel.app](https://solo-silo.vercel.app)**
+
+explore a read-only demo with pre-indexed celebrity photos:
+- ✅ browse face clusters (david bowie, paula abdul, luka dončić, christopher walken, tito)
+- ✅ view detection statistics and processing logs
+- ✅ see the full ui and features in action
+- ❌ search disabled (requires local ai models)
+- ❌ no data modification (read-only demo)
+
+---
+
+## 💻 for local development
+
+**switch to the `local` branch for full features:**
+
 ```bash
-# Clone the local branch for full read/write features
 git clone -b local https://github.com/ilovespectra/solo-silo
 cd solo-silo
 ./start-all.sh
 ```
 
+**local mode includes:**
+- ✅ full semantic clip search
+- ✅ face detection & clustering
+- ✅ animal detection
+- ✅ ocr text extraction
+- ✅ audio transcription
+- ✅ your own photo collections
+- ✅ full read/write capabilities
+
 ---
 
 ## branches
 
-⚠️ **important:** this repository has two branches:
-
-- **`main`** - demo mode (read-only, deployed to vercel) - you are here
-- **`local`** - local development (full features, blank slate)
-
-**to develop or use locally, clone the `local` branch:**
-```bash
-git clone -b local https://github.com/ilovespectra/solo-silo
-```
+- **`main`** (you are here) - demo version, deployed to vercel
+- **`local`** - development version, full features, local-only
 
 ---
 
-## features
+## features (local mode only)
 
 - **local ai search**: semantic search across photos, videos, and audio using open-source models
 - **face detection & clustering**: automatically detect and organize faces in your photos
