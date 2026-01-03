@@ -37,6 +37,34 @@ rm -f *.log 2>/dev/null || true
 
 echo -e "${ORANGE}cleanup complete. starting services...${NC}"
 
+# === LOCAL MODE SETUP: Remove demo data and configuration ===
+echo -e "${ORANGE}configuring for local mode...${NC}"
+
+# Remove demo mode flag from .env.local if it exists
+if [ -f "$SCRIPT_DIR/.env.local" ]; then
+  sed -i.bak '/NEXT_PUBLIC_DEMO_MODE/d' "$SCRIPT_DIR/.env.local"
+  rm -f "$SCRIPT_DIR/.env.local.bak"
+fi
+
+# Remove demo-specific files
+echo -e "${ORANGE}removing demo data...${NC}"
+rm -rf "$SCRIPT_DIR/public/demo-silo" 2>/dev/null || true
+rm -f "$SCRIPT_DIR/public/demo-logs.json" 2>/dev/null || true
+rm -f "$SCRIPT_DIR/public/demo-media.json" 2>/dev/null || true
+rm -f "$SCRIPT_DIR/backend/silos-demo.json" 2>/dev/null || true
+rm -rf "$SCRIPT_DIR/backend/demo-silo" 2>/dev/null || true
+
+# Create blank silos.json if it doesn't exist
+if [ ! -f "$SCRIPT_DIR/backend/silos.json" ]; then
+  echo -e "${ORANGE}creating blank silos.json...${NC}"
+  echo '{"silos": {}}' > "$SCRIPT_DIR/backend/silos.json"
+  echo -e "${GREEN}✓ blank silos.json created${NC}"
+fi
+
+# Ensure cache directory exists
+mkdir -p "$SCRIPT_DIR/backend/cache/silos"
+echo -e "${GREEN}✓ local mode configured${NC}"
+
 echo -e "${ORANGE}starting backend...${NC}"
 cd "$SCRIPT_DIR"
 

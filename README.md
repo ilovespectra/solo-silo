@@ -2,6 +2,36 @@
 
 ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
 
+## 🚀 quick start
+
+### for local development (full features)
+
+```bash
+# Clone the local branch
+git clone -b local https://github.com/ilovespectra/solo-silo
+cd solo-silo
+
+# Start everything
+./start-all.sh
+
+# Opens at http://localhost:3000 with full AI features
+```
+
+### to try the live demo
+
+Visit [solo-silo.vercel.app](https://solo-silo.vercel.app) - no installation required!
+
+---
+
+## branches
+
+- **`main`** - production demo branch (read-only, deployed to vercel)
+- **`local`** - local development branch (full read/write features)
+
+**important:** Always use the `local` branch for development and personal use. The `main` branch is configured for demo mode only.
+
+---
+
 ## features
 
 - **local ai search**: semantic search across photos, videos, and audio using open-source models
@@ -69,11 +99,13 @@ this application supports two deployment modes:
 
 ### installation
 
-1. **clone the repository**
+1. **clone the local branch**
    ```bash
-   git clone https://github.com/ilovespectra/solo-silo
-   cd silo
+   git clone -b local https://github.com/ilovespectra/solo-silo
+   cd solo-silo
    ```
+   
+   **important:** Use the `local` branch for development. The `main` branch is demo-only.
 
 2. **start the application**
    ```bash
@@ -81,6 +113,8 @@ this application supports two deployment modes:
    ```
    
    this script automatically:
+   - removes any demo data/configuration
+   - creates a blank local silo setup
    - detects your python installation (python3/python)
    - creates a virtual environment if needed
    - installs all dependencies (first run takes 10-15 minutes)
@@ -485,12 +519,56 @@ MIT License - see LICENSE file
 
 ## contributing
 
-contributions welcome! please:
-1. fork the repository
-2. create a feature branch
-3. commit your changes
-4. push to the branch
-5. create a pull request
+contributions welcome! please follow the branch workflow:
+
+### for features and bug fixes (local development)
+
+1. **fork and clone the local branch**
+   ```bash
+   git clone -b local https://github.com/YOUR-USERNAME/solo-silo
+   cd solo-silo
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **make your changes**
+   - test with `./start-all.sh` to verify local mode works
+   - ensure no demo mode residuals in your changes
+
+3. **commit and push**
+   ```bash
+   git add .
+   git commit -m "Add: your feature description"
+   git push origin feature/your-feature-name
+   ```
+
+4. **create pull request to `local` branch**
+   - pr should target the `local` branch
+   - include screenshots/videos of changes
+   - describe what was added/fixed
+
+### for demo mode improvements
+
+1. **fork and clone the main branch**
+   ```bash
+   git clone -b main https://github.com/YOUR-USERNAME/solo-silo
+   cd solo-silo
+   git checkout -b demo/your-improvement
+   ```
+
+2. **test on vercel**
+   - ensure demo data is preserved
+   - verify no backend dependencies
+   - test with `NEXT_PUBLIC_DEMO_MODE=true`
+
+3. **create pull request to `main` branch**
+   - pr should target the `main` branch
+   - verify changes work on vercel deployment
+
+### branch workflow summary
+
+- **`local` → `local`**: features, bug fixes, local development
+- **`main` → `main`**: demo improvements, static assets, frontend-only changes
+- changes from `local` branch are periodically merged to `main` (maintainer only)
 
 ---
 
