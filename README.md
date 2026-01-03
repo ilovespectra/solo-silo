@@ -47,6 +47,33 @@ cd solo-silo
 
 ---
 
+## how it works: offline ai
+
+**silo runs 100% locally** - all ai processing happens on your machine. no data is sent to the cloud.
+
+### search & embeddings
+- **local processing:** clip models generate embeddings for all your media files on your device
+- **semantic search:** understand concepts like "sunset over mountains" or "dogs playing in snow"
+- **vector similarity:** faiss indexes embeddings for instant similarity search
+- **completely offline:** once models are downloaded, no internet required for searching your indexed media
+
+### face recognition
+- **face detection:** yolo and deepface models scan photos/videos for faces
+- **clustering:** hdbscan groups similar faces without needing names upfront  
+- **biometric embeddings:** face recognition models create unique signatures for each face
+- **local database:** all face data stored in sqlite on your machine
+
+### other ai features
+- **ocr (optical character recognition):** easyocr extracts text from images locally
+- **object detection:** yolo identifies animals, objects in photos/videos
+- **audio transcription:** whisper transcribes audio/video content locally
+
+**internet only used for:**
+- downloading open-source ai models on first use (~2gb total)
+- checking for software updates (optional)
+
+---
+
 ## tech stack
 
 **frontend:** next.js 16, react 19, typescript, tailwind  
