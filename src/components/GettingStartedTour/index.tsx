@@ -39,14 +39,14 @@ const DEMO_TOUR_STEPS: TourStep[] = [
   },
   {
     id: 'semantic-search',
-    title: '🔍 try AI-powered search',
-    description: 'silo uses AI to understand your searches. try these:\n• "bible" or "declaration" (finds text via OCR)\n• "david bowie" or "christopher walken" (finds faces)\n• "sunset" or "flowers" (finds objects/scenes)\n\nno tags, no manual organization—just describe what you want!',
+    title: '🔍 search feature',
+    description: '**search is disabled in demo mode** and only works in local mode.\n\n**why?** semantic search requires AI models (CLIP) that can\'t run in the browser. the demo is static HTML/JS deployed on vercel.\n\n**local mode:** full semantic CLIP search understands concepts, visual similarity, and natural language queries—finds content even without exact matches!',
     targetView: 'search',
   },
   {
     id: 'demo-limitations',
     title: '⚠️ demo mode limitations',
-    description: 'this demo is read-only, so you can\'t:\n• add new photo sources\n• rename or organize clusters\n• retrain models\n• modify any data\n\nto use silo with your own photos, clone the repo and run ./start-all.sh locally!',
+    description: 'this demo is read-only, so you can\'t:\n• search (requires local AI models)\n• add new photo sources\n• rename or organize clusters\n• retrain models\n• modify any data\n\nto use silo with full features and your own photos, clone the local branch and run ./start-all.sh!',
   },
   {
     id: 'complete',
