@@ -134,20 +134,18 @@ if [ ! -d "node_modules" ]; then
   echo -e "${GREEN}✓ frontend dependencies installed${NC}"
 fi
 
-(
-  source .venv/bin/activate 
-  cd backend 
-  $PYTHON_CMD -m uvicorn app.main:app --port 8000 --reload > ../backend.log 2>&1
-) > /dev/null 2>&1 &
+# Start backend with auto-restart wrapper
+./backend-wrapper.sh > /dev/null 2>&1 &
 BACKEND_PID=$!
 disown $BACKEND_PID 2>/dev/null || true
-echo -e "${GREEN}backend started (PID: $BACKEND_PID)${NC}"
+echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
 sleep 3
 if ps -p $BACKEND_PID > /dev/null 2>&1; then
-  echo -e "${GREEN}✓ backend process verified running${NC}"
+  echo -e "${GREEN}✓ backend wrapper process verified running${NC}"
 else
-  echo -e "${RED}❌ backend process check failed. check logs:${NC}"
+  echo -e "${RED}❌ backend wrapper failed to start. check logs:${NC}"
   tail -20 backend.log 2>/dev/null || echo "No logs yet"
+  tail -20 backend-wrapper.log 2>/dev/null || echo "No wrapper logs yet"
   exit 1
 fi
 
@@ -177,8 +175,9 @@ echo ""
 echo -e "${GREEN}🌐 Frontend:${NC} http://localhost:3000"
 echo -e "${GREEN}🔧 Backend:${NC}  http://localhost:8000"
 echo ""
-echo "backend logs:  tail -f $SCRIPT_DIR/backend.log"
-echo "frontend logs: tail -f $SCRIPT_DIR/frontend.log"
+echo "backend logs:        tail -f $SCRIPT_DIR/backend.log"
+echo "backend restarts:    tail -f $SCRIPT_DIR/backend-wrapper.log"
+echo "frontend logs:       tail -f $SCRIPT_DIR/frontend.log"
 echo ""
 echo "To stop all services, run: ./stop-all.sh"
 echo "Services are running as independent daemons and won't crash when you use this terminal."
