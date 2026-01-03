@@ -2202,22 +2202,22 @@ async def search_media(
             # Use FAISS index
             results = search(index, ids, query_vec, top_k=len(ids))
             if results:
-            id_set = tuple(r[0] for r in results)
-            with get_db() as conn:
-                placeholders = ','.join('?' * len(id_set))
-                cur = conn.execute(
-                    f"SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation FROM media_files WHERE id IN ({placeholders})",
-                    id_set,
-                )
-                rows = cur.fetchall()
-                rows_map = {r[0]: r for r in rows}
-            
-            for mid, score in results:
-                # Skip if rejected for THIS query
-                if mid in rejected_ids:
-                    continue
+                id_set = tuple(r[0] for r in results)
+                with get_db() as conn:
+                    placeholders = ','.join('?' * len(id_set))
+                    cur = conn.execute(
+                        f"SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation FROM media_files WHERE id IN ({placeholders})",
+                        id_set,
+                    )
+                    rows = cur.fetchall()
+                    rows_map = {r[0]: r for r in rows}
                 
-                if score < confidence:
+                for mid, score in results:
+                    # Skip if rejected for THIS query
+                    if mid in rejected_ids:
+                        continue
+                    
+                    if score < confidence:
                     continue
                     
                 if mid in seen_ids:

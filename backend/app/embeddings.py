@@ -18,11 +18,10 @@ except ImportError:
     Image = None
     SentenceTransformer = None
 
-# Model choices are environment overridable to stay local-first while allowing swaps.
 CLIP_MODEL_NAME = os.environ.get("PAI_CLIP_MODEL", "ViT-B-32")
 CLIP_PRETRAINED = os.environ.get("PAI_CLIP_PRETRAINED", "laion2b_s34b_b79k")
 SBERT_MODEL_NAME = os.environ.get("PAI_SBERT_MODEL", "all-MiniLM-L6-v2")
-HF_API_TOKEN = os.environ.get("HF_API_TOKEN")  # Optional Hugging Face API token
+HF_API_TOKEN = os.environ.get("HF_API_TOKEN")
 
 if PYTORCH_AVAILABLE:
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -77,7 +76,6 @@ def get_clip_text_embedding_remote(text: str) -> Optional[list[float]]:
     """Encode text using Hugging Face Inference API (free tier)."""
     import requests
     
-    # Using the CLIP text encoder on HF
     API_URL = "https://api-inference.huggingface.co/models/openai/clip-vit-base-patch32"
     headers = {}
     if HF_API_TOKEN:
@@ -89,10 +87,8 @@ def get_clip_text_embedding_remote(text: str) -> Optional[list[float]]:
         response = requests.post(API_URL, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
         
-        # The API returns the embedding directly
         embedding = response.json()
         
-        # Normalize the embedding
         embedding_array = np.array(embedding, dtype=np.float32)
         normalized = _normalize_numpy(embedding_array)
         return normalized.tolist()
@@ -106,7 +102,6 @@ def get_clip_text_embedding(text: str) -> Optional[list[float]]:
     if not text.strip():
         return None
     
-    # Try local model first if PyTorch is available
     model, _, tokenizer = get_clip_components()
     if model is not None and PYTORCH_AVAILABLE:
         tokens = tokenizer([text])
@@ -115,7 +110,6 @@ def get_clip_text_embedding(text: str) -> Optional[list[float]]:
             feats = _normalize(feats)
         return feats[0].float().cpu().numpy().tolist()
     
-    # Fall back to remote inference (for Railway demo mode)
     print("[CLIP] Using remote inference for text encoding")
     return get_clip_text_embedding_remote(text)
 
@@ -153,7 +147,6 @@ def get_sbert_embedding(text: str) -> Optional[list[float]]:
     return vec.astype(np.float32).tolist()
 
 
-# Backward-compatible helpers
 def get_text_embedding(text: str) -> Optional[list[float]]:
     return get_clip_text_embedding(text)
 
