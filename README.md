@@ -1,53 +1,42 @@
-# solo: silo
+# solo: silo (local development)
 
 ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
 
+> **you're on the `local` branch** - for local development with full features. For the demo version, see the [`main` branch](https://github.com/ilovespectra/solo-silo/tree/main).
+
+---
+
 ## 🚀 quick start
 
-### for local development (full features)
-
 ```bash
-# Clone the local branch
+# Clone this branch
 git clone -b local https://github.com/ilovespectra/solo-silo
 cd solo-silo
 
-# Start everything
+# Start everything (automatically removes any demo data)
 ./start-all.sh
 
 # Opens at http://localhost:3000 with full AI features
 ```
 
-### to try the live demo
-
-Visit [solo-silo.vercel.app](https://solo-silo.vercel.app) - no installation required!
-
----
-
-## branches
-
-- **`main`** - production demo branch (read-only, deployed to vercel)
-- **`local`** - local development branch (full read/write features)
-
-**important:** Always use the `local` branch for development and personal use. The `main` branch is configured for demo mode only.
+**first run takes 10-15 minutes** to download AI models and dependencies.
 
 ---
 
 ## features
 
-- **local ai search**: semantic search across photos, videos, and audio using open-source models
-- **face detection & clustering**: automatically detect and organize faces in your photos
-- **animal detection**: identify and catalog pets and animals in your media
-- **multi-silo support**: organize separate photo collections with isolated data
-- **audio transcription & search**: search spoken content in audio/video files
-- **favorites & virtual folders**: organize media without moving files
-- **ocr text extraction**: search text found in images
-- **privacy-first**: all processing happens locally, no data leaves your device
+- **🔍 semantic ai search**: clip-based search understands concepts, not just keywords
+- **👥 face detection & clustering**: automatically group similar faces
+- **🐾 animal detection**: identify and catalog pets and animals
+- **📁 multi-silo support**: organize separate collections with isolated data
+- **🎤 audio transcription**: search spoken content in audio/video files
+- **⭐ favorites & virtual folders**: organize without moving files
+- **📄 ocr text extraction**: search text found in images
+- **🔒 privacy-first**: all processing happens locally, no data leaves your device
 
-## deployment modes
+---
 
-this application supports two deployment modes:
-
-### 🔒 local mode (full features)
+## installation requirements
 **default when running locally.** full read/write access to your photo collections.
 
 **how it works:**
@@ -58,98 +47,77 @@ this application supports two deployment modes:
 **to run locally:**
 ```bash
 ./start-all.sh
-# opens http://localhost:3000 with full backend features
-```
+## installation requirements
 
-### 🎯 demo mode (static frontend only)
-**read-only demonstration using pre-built data.** designed for public deployments like vercel.
-
-**how it works:**
-- controlled by `NEXT_PUBLIC_DEMO_MODE` environment variable
-- frontend api routes return mock data instead of proxying to backend
-- uses celebrity face clusters (david bowie, paula abdul, luka dončić, etc.)
-- media files served from `public/test-files/images/`
-
-**demo mode features:**
-- ✅ browse sample photos
-- ✅ view face clusters and photos
-- ✅ ui fully functional for demonstration
-- ✅ search functionality (browse/search use existing indexed files)
-- ❌ no data modification (read-only)
-- ❌ no ai processing (uses pre-computed results)
-
-**to enable demo mode on vercel:**
-1. go to your vercel project → settings → environment variables
-2. add: `NEXT_PUBLIC_DEMO_MODE=true`
-3. redeploy your application
-
-**to run in local mode:**
-- `.env.local` is automatically created by `./start-all.sh` with `NEXT_PUBLIC_DEMO_MODE=false`
-- or manually create `.env.local` from `.env.example` template
+- **node.js** 18+ 
+- **python** 3.10+
+- **~4gb free disk space** (for ai models)
+- **8gb+ ram recommended** (for face clustering and large collections)
 
 ---
 
-## quick start (local mode)
+## what happens on first run
 
-### prerequisites
+when you run `./start-all.sh` for the first time:
 
-- node.js 18+
-- python 3.10+
-- ~4gb free disk space (for ai models)
-
-### installation
-
-1. **clone the local branch**
-   ```bash
-   git clone -b local https://github.com/ilovespectra/solo-silo
-   cd solo-silo
-   ```
-   
-   **important:** Use the `local` branch for development. The `main` branch is demo-only.
-
-2. **start the application**
-   ```bash
-   ./start-all.sh
-   ```
-   
-   this script automatically:
+1. **environment setup** (~1 min)
+   - creates python virtual environment
+   - creates `.env.local` configuration
    - removes any demo data/configuration
-   - creates a blank local silo setup
-   - detects your python installation (python3/python)
-   - creates a virtual environment if needed
-   - installs all dependencies (first run takes 10-15 minutes)
-   - starts both backend (port 8000) and frontend (port 3000)
 
-3. **open in browser**
-   
-   the script will display:
-   ```
-   🌐 Frontend: http://localhost:3000
-   🔧 Backend:  http://localhost:8000
-   ```
-   
-   click the frontend url to get started!
+2. **dependency installation** (~10-15 min)
+   - python packages (pytorch, clip, faiss, etc.)
+   - node packages (next.js, react, etc.)
 
-### stopping services
+3. **services start**
+   - backend: http://localhost:8000 (fastapi)
+   - frontend: http://localhost:3000 (next.js)
+
+4. **first use**
+   - follow the getting started tour
+   - add your first photo directory
+   - ai models download as needed
+
+---
+
+## stopping services
 
 ```bash
 ./stop-all.sh
 ```
 
-### manual setup (alternative)
+---
 
-if you prefer to start services separately:
+## usage guide
 
-**backend**
-```bash
-cd backend
-python -m uvicorn app.main:app --reload --port 8000
-```
+### 1. add a photo source
 
-**frontend**
-```bash
-npm run dev
-```
+click **"add source"** in the file browser and select a directory containing your photos.
+
+### 2. indexing happens automatically
+
+the backend will:
+- scan for photos/videos
+- generate clip embeddings for semantic search
+- detect faces with yolo
+- extract text via ocr
+- detect animals
+
+monitor progress in **settings → statistics**
+
+### 3. cluster faces
+
+after indexing, go to **retraining → cluster faces** to group similar faces together.
+
+### 4. search your collection
+
+use natural language to search:
+- **"sunset over water"** - finds scenes semantically
+- **"person wearing glasses"** - finds visual features
+- **"documents with text"** - finds ocr content
+- **"john smith"** - finds named people (after labeling)
+
+---
 
 ## configuration
 
