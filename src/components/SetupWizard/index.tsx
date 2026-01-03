@@ -19,7 +19,7 @@ export default function SetupWizard() {
     setIndexingComplete,
     setActiveSiloName,
   } = useAppStore();
-  const { activeSilo } = useSilos();
+  const { activeSilo, silos, createSilo } = useSilos();
 
   const theme = useAppStore((state) => state.theme) as 'light' | 'dark';
 
@@ -704,7 +704,19 @@ export default function SetupWizard() {
               ) : (
                 <div className={`p-4 rounded-lg border ${theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'}`}>
                   <FolderPicker
-                    onPathSelected={(path) => {
+                    onPathSelected={async (path) => {
+                      // Auto-create default silo if none exists
+                      if (!activeSilo && (!silos || silos.length === 0)) {
+                        console.log('[SetupWizard] No silo exists, creating default silo...');
+                        try {
+                          await createSilo('default');
+                          console.log('[SetupWizard] Default silo created');
+                        } catch (err) {
+                          console.error('[SetupWizard] Failed to create default silo:', err);
+                          setErrorMsg('Failed to create default silo. Please try again.');
+                          return;
+                        }
+                      }
                       addSelectedPath(path);
                       setShowFolderPicker(false);
                     }}
@@ -750,7 +762,19 @@ export default function SetupWizard() {
                 </>
               ) : (
                 <FolderPicker
-                  onPathSelected={(path) => {
+                  onPathSelected={async (path) => {
+                    // Auto-create default silo if none exists
+                    if (!activeSilo && (!silos || silos.length === 0)) {
+                      console.log('[SetupWizard] No silo exists, creating default silo...');
+                      try {
+                        await createSilo('default');
+                        console.log('[SetupWizard] Default silo created');
+                      } catch (err) {
+                        console.error('[SetupWizard] Failed to create default silo:', err);
+                        setErrorMsg('Failed to create default silo. Please try again.');
+                        return;
+                      }
+                    }
                     addSelectedPath(path);
                     setShowFolderPicker(false);
                   }}
