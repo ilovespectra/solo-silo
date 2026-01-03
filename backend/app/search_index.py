@@ -1,7 +1,13 @@
 import os
-import faiss
 import numpy as np
 from typing import List, Tuple, Optional
+
+try:
+    import faiss
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+    faiss = None
 
 # Base cache directory - will be overridden by silo-specific paths
 BASE_CACHE_DIR = os.environ.get("PAI_INDEX_DIR", "./cache")
@@ -45,28 +51,42 @@ except Exception as e:
     print(f"[WARNING] Failed to create index directory {BASE_CACHE_DIR}: {e}")
 
 
-def save_index(index: faiss.IndexFlatIP, ids: List[int], silo_name: Optional[str] = None):
+def save_index(index, ids: List[int], silo_name: Optional[str] = None):
     """Save FAISS index and ID map to silo-specific location."""
+    if not FAISS_AVAILABLE:
+        print("[SEARCH] FAISS not available, skipping index save")
+        return
     ensure_dir(silo_name)
     index_path, id_map_path = get_index_paths(silo_name)
     faiss.write_index(index, index_path)
     np.save(id_map_path, np.array(ids, dtype=np.int64))
 
 
-def load_index(dim: int, silo_name: Optional[str] = None) -> Tuple[faiss.IndexFlatIP, List[int]]:
+def load_index(dim: int, silo_name: Optional[str] = None) -> Tuple[Optional[object], List[int]]:
     """Load FAISS index from silo-specific location."""
     ensure_dir(silo_name)
     index_path, id_map_path = get_index_paths(silo_name)
-    if os.path.exists(index_path) and os.path.exists(id_map_path):
+    
+    if FAISS_AVAILABLE and os.path.exists(index_path) and os.path.exists(id_map_path):
         index = faiss.read_index(index_path)
         ids = np.load(id_map_path).tolist()
         return index, ids
-    index = faiss.IndexFlatIP(dim)
-    return index, []
+    elif os.path.exists(id_map_path):
+        # FAISS not available but we have the ID map - return None for index
+        ids = np.load(id_map_path).tolist()
+        return None, ids
+    
+    if FAISS_AVAILABLE:
+        index = faiss.IndexFlatIP(dim)
+        return index, []
+    return None, []
 
 
-def build_index(embeddings: List[List[float]], ids: List[int], silo_name: Optional[str] = None) -> faiss.IndexFlatIP:
+def build_index(embeddings: List[List[float]], ids: List[int], silo_name: Optional[str] = None):
     """Build and save FAISS index for a silo."""
+    if not FAISS_AVAILABLE:
+        print("[SEARCH] FAISS not available, skipping index build")
+        return None
     if not embeddings:
         return faiss.IndexFlatIP(1)
     dim = len(embeddings[0])
@@ -78,18 +98,22 @@ def build_index(embeddings: List[List[float]], ids: List[int], silo_name: Option
     return index
 
 
-def search(index: faiss.IndexFlatIP, ids: List[int], query: List[float], top_k: int = 20):
-    """Search the FAISS index."""
-    if index.ntotal == 0:
-        return []
-    q = np.array([query], dtype="float32")
-    faiss.normalize_L2(q)
-    scores, idxs = index.search(q, top_k)
-    results = []
-    for s, idx in zip(scores[0].tolist(), idxs[0].tolist()):
-        if idx < len(ids):
-            results.append((ids[idx], s))
-    return results
+def search(index, ids: List[int], query: List[float], top_k: int = 20):
+    """Search the FAISS index or fall back to manual cosine similarity."""
+    if FAISS_AVAILABLE and index is not None and index.ntotal > 0:
+        # Use FAISS if available
+        q = np.array([query], dtype="float32")
+        faiss.normalize_L2(q)
+        scores, idxs = index.search(q, top_k)
+        results = []
+        for s, idx in zip(scores[0].tolist(), idxs[0].tolist()):
+            if idx < len(ids):
+                results.append((ids[idx], s))
+        return results
+    
+    # Fallback: manual cosine similarity search (no FAISS)
+    print("[SEARCH] Using manual cosine similarity (FAISS not available)")
+    return []
 
 
 __all__ = ["load_index", "build_index", "search", "save_index"]

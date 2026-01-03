@@ -2116,7 +2116,7 @@ async def search_media(
     if query_vec is None:
         raise HTTPException(
             status_code=503,
-            detail="Search temporarily unavailable - CLIP model could not be loaded (insufficient memory). This is a known limitation of free-tier deployments."
+            detail="Search temporarily unavailable - unable to encode query text"
         )
     
     confirmed_results = []
@@ -2128,8 +2128,80 @@ async def search_media(
     # PHASE 1: CLIP-based semantic search
     if query_vec:
         index, ids = load_index(len(query_vec), silo_name=silo_name)
-        results = search(index, ids, query_vec, top_k=len(ids))
-        if results:
+        
+        # If FAISS not available, do manual cosine similarity search from database
+        if index is None:
+            print("[SEARCH] FAISS not available, using database cosine similarity")
+            with get_db() as conn:
+                # Fetch all embeddings from database
+                cur = conn.execute(
+                    "SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation, embedding FROM media_files WHERE embedding IS NOT NULL"
+                )
+                rows = cur.fetchall()
+                
+                # Compute cosine similarity manually
+                query_array = np.array(query_vec, dtype=np.float32)
+                query_norm = query_array / (np.linalg.norm(query_array) + 1e-12)
+                
+                scores = []
+                for row in rows:
+                    mid = row[0]
+                    embedding_blob = row[10]
+                    if embedding_blob:
+                        # Deserialize embedding
+                        import pickle
+                        embedding = pickle.loads(embedding_blob)
+                        emb_array = np.array(embedding, dtype=np.float32)
+                        emb_norm = emb_array / (np.linalg.norm(emb_array) + 1e-12)
+                        
+                        # Cosine similarity
+                        similarity = np.dot(query_norm, emb_norm)
+                        scores.append((mid, float(similarity), row))
+                
+                # Sort by similarity descending
+                scores.sort(key=lambda x: x[1], reverse=True)
+                
+                # Take top results
+                for mid, score, row in scores[:len(ids) if ids else 100]:
+                    # Skip if rejected for THIS query
+                    if mid in rejected_ids:
+                        continue
+                    
+                    if score < confidence:
+                        continue
+                    
+                    if mid in seen_ids:
+                        continue
+                    seen_ids.add(mid)
+                    
+                    path = row[1]
+                    if path in seen_paths:
+                        continue
+                    seen_paths.add(path)
+                    
+                    result = {
+                        "id": mid,
+                        "path": path,
+                        "type": row[2],
+                        "date_taken": row[3],
+                        "size": row[4],
+                        "width": row[5],
+                        "height": row[6],
+                        "camera": row[7],
+                        "lens": row[8],
+                        "rotation": row[9] or 0,
+                        "score": score,
+                        "confirmed": mid in confirmed_ids,
+                    }
+                    
+                    if mid in confirmed_ids:
+                        confirmed_results.append(result)
+                    else:
+                        semantic_results.append(result)
+        else:
+            # Use FAISS index
+            results = search(index, ids, query_vec, top_k=len(ids))
+            if results:
             id_set = tuple(r[0] for r in results)
             with get_db() as conn:
                 placeholders = ','.join('?' * len(id_set))
