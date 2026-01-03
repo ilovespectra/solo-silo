@@ -76,7 +76,7 @@ def get_clip_text_embedding_remote(text: str) -> Optional[list[float]]:
     """Encode text using Hugging Face Inference API (free tier)."""
     import requests
     
-    API_URL = "https://api-inference.huggingface.co/models/openai/clip-vit-base-patch32"
+    API_URL = "https://router.huggingface.co/models/openai/clip-vit-base-patch32"
     headers = {}
     if HF_API_TOKEN:
         headers["Authorization"] = f"Bearer {HF_API_TOKEN}"
@@ -112,7 +112,6 @@ def get_clip_text_embedding(text: str) -> Optional[list[float]]:
     
     print("[CLIP] Using remote inference for text encoding")
     return get_clip_text_embedding_remote(text)
-
 
 def get_clip_image_embedding(path: str) -> Optional[list[float]]:
     """Encode an image with CLIP image encoder."""
