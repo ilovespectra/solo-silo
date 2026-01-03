@@ -35,6 +35,10 @@ echo -e "${ORANGE}final log cleanup...${NC}"
 rm -f backend/*.log 2>/dev/null || true
 rm -f *.log 2>/dev/null || true
 
+# Clear Next.js cache to ensure environment variables are reloaded
+echo -e "${ORANGE}clearing Next.js cache...${NC}"
+rm -rf "$SCRIPT_DIR/.next" 2>/dev/null || true
+
 echo -e "${ORANGE}cleanup complete. starting services...${NC}"
 
 # === LOCAL MODE SETUP: Remove demo data and configuration ===
