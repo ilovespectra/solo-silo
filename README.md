@@ -2,6 +2,35 @@
 
 ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
 
+## 🚀 quick start
+
+### try the live demo
+Visit [solo-silo.vercel.app](https://solo-silo.vercel.app) - no installation required!
+
+### run locally with full features
+```bash
+# Clone the local branch for full read/write features
+git clone -b local https://github.com/ilovespectra/solo-silo
+cd solo-silo
+./start-all.sh
+```
+
+---
+
+## branches
+
+⚠️ **important:** this repository has two branches:
+
+- **`main`** - demo mode (read-only, deployed to vercel) - you are here
+- **`local`** - local development (full features, blank slate)
+
+**to develop or use locally, clone the `local` branch:**
+```bash
+git clone -b local https://github.com/ilovespectra/solo-silo
+```
+
+---
+
 ## features
 
 - **local ai search**: semantic search across photos, videos, and audio using open-source models
