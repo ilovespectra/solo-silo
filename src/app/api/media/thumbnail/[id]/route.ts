@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { id } = await params;
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
-                     process.env.VERCEL || 
+                     (process.env.VERCEL && process.env.VERCEL !== '0') || 
                      process.env.VERCEL_ENV;
   
   if (isDemoMode) {

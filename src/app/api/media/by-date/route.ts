@@ -4,7 +4,7 @@ import path from 'path';
 
 export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
-                     process.env.VERCEL || 
+                     (process.env.VERCEL && process.env.VERCEL !== '0') || 
                      process.env.VERCEL_ENV;
   
   if (isDemoMode) {

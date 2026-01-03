@@ -9,7 +9,7 @@ export async function GET() {
   }
   
   // Check if we're on Vercel and should check Railway backend
-  const isVercel = !!(process.env.VERCEL || process.env.VERCEL_ENV);
+  const isVercel = !!((process.env.VERCEL && process.env.VERCEL !== '0') || process.env.VERCEL_ENV);
   let backendUrl = isVercel
     ? process.env.RAILWAY_BACKEND_URL || 'https://silo-backend-production.up.railway.app'
     : 'http://127.0.0.1:8000';

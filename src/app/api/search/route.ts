@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   
-  const isVercel = !!(process.env.VERCEL || process.env.VERCEL_ENV);
+  const isVercel = !!((process.env.VERCEL && process.env.VERCEL !== '0') || process.env.VERCEL_ENV);
   let backendUrl = isVercel 
     ? process.env.RAILWAY_BACKEND_URL || 'https://silo-backend-production.up.railway.app'
     : 'http://127.0.0.1:8000';

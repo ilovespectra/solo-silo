@@ -142,7 +142,7 @@ const DEMO_PHOTOS: Record<string, DemoPhoto[]> = {
 
 function isDemoMode() {
   return !!(
-    process.env.VERCEL || 
+    (process.env.VERCEL && process.env.VERCEL !== '0') || 
     process.env.VERCEL_ENV ||
     process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
   );
