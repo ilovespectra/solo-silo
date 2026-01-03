@@ -34,7 +34,7 @@ while true; do
   echo -e "${ORANGE}[$(date '+%H:%M:%S')] Starting backend (restart #$RESTART_COUNT)...${NC}" >> backend-wrapper.log
   
   cd backend
-  $PYTHON_CMD -m uvicorn app.main:app --port 8000 --reload >> ../backend.log 2>&1
+  $PYTHON_CMD -m uvicorn app.main:app --port 8000 >> ../backend.log 2>&1
   EXIT_CODE=$?
   cd ..
   
