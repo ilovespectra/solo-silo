@@ -10,11 +10,12 @@ export async function GET(request: Request) {
   if (forceDemoMode) {
     console.log('[Stats API] Returning demo stats (forced demo mode)');
     return NextResponse.json({
-      total_files: 93,
+      total_files: 94,
       by_type: {
-        image: 93
+        image: 93,
+        audio: 1
       },
-      total_size_bytes: 12500000,
+      total_size_bytes: 19796813,
       with_people: 45,
       with_animals: 8
     });

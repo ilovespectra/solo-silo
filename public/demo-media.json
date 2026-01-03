@@ -3665,6 +3665,14 @@
         "type": "image",
         "size": 6660,
         "date_taken": "2025-12-31"
+      },
+      {
+        "id": 459,
+        "path": "/test-files/audio/Oliver.mp3",
+        "name": "Oliver.mp3",
+        "type": "audio",
+        "size": 7296813,
+        "date_taken": "2025-12-31"
       }
     ]
   }
