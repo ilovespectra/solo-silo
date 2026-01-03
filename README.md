@@ -1,153 +1,86 @@
-# solo: silo (local development)
+# solo: silo
 
-ai-powered photo management and search for your local files. everything runs on your machine—no cloud, no tracking, no internet required.
+ai-powered media management and search. organize photos, videos, audio, and documents with local ai—no cloud, no tracking, no internet required.
 
-> **you're on the `local` branch** - for local development with full features. For the demo version, see the [`main` branch](https://github.com/ilovespectra/solo-silo/tree/main).
+> **📍 local development branch** - full features. For demo version, see [`main` branch](https://github.com/ilovespectra/solo-silo/tree/main).
 
 ---
 
 ## 🚀 quick start
 
 ```bash
-# Clone this branch
 git clone -b local https://github.com/ilovespectra/solo-silo
 cd solo-silo
-
-# Start everything (automatically removes any demo data)
 ./start-all.sh
-
-# Opens at http://localhost:3000 with full AI features
 ```
 
-**first run takes 10-15 minutes** to download AI models and dependencies.
+**requirements:** node.js 18+, python 3.10+, ~4gb disk space, 8gb+ ram recommended
+
+**first run takes 10-15 minutes** to install dependencies and download ai models.
+
+---
+
+## getting started
+
+1. **launch** - run `./start-all.sh` and open http://localhost:3000
+2. **follow the tour** - interactive guide walks you through setup
+3. **add media** - click "add source" and select a directory with photos/videos/audio/documents
+4. **indexing** - ai processes your media automatically (monitor in settings)
+5. **cluster faces** - go to retraining tab → "cluster faces"
+6. **search** - use natural language to find anything in your collection
+
+**stop services:** `./stop-all.sh`
 
 ---
 
 ## features
 
-- **🔍 semantic ai search**: clip-based search understands concepts, not just keywords
-- **👥 face detection & clustering**: automatically group similar faces
-- **🐾 animal detection**: identify and catalog pets and animals
-- **📁 multi-silo support**: organize separate collections with isolated data
-- **🎤 audio transcription**: search spoken content in audio/video files
-- **⭐ favorites & virtual folders**: organize without moving files
-- **📄 ocr text extraction**: search text found in images
-- **🔒 privacy-first**: all processing happens locally, no data leaves your device
+- **semantic search** - clip-based ai understands concepts and visual similarity across all media types
+- **face detection & clustering** - automatically group similar faces in photos/videos, name people
+- **animal detection** - identify and catalog pets and animals in photos/videos
+- **ocr text extraction** - search text found in images and documents (pdf, images with text)
+- **audio transcription** - search spoken content in audio/video files
+- **video support** - thumbnail generation, frame analysis, full video playback
+- **multi-silo support** - separate collections with isolated data (work, personal, etc)
+- **virtual folders** - organize media without moving files
+- **privacy-first** - all processing local, no cloud, no tracking
 
 ---
 
-## installation requirements
-**default when running locally.** full read/write access to your photo collections.
+## tech stack
 
-**how it works:**
-- frontend next.js api routes proxy requests to local backend at `http://127.0.0.1:8000`
-- backend processes all ai operations (face detection, search, clustering)
-- all data stays on your machine
-
-**to run locally:**
-```bash
-./start-all.sh
-## installation requirements
-
-- **node.js** 18+ 
-- **python** 3.10+
-- **~4gb free disk space** (for ai models)
-- **8gb+ ram recommended** (for face clustering and large collections)
+**frontend:** next.js 16, react 19, typescript, tailwind  
+**backend:** fastapi, pytorch, clip, faiss, yolo, deepface, easyocr  
+**ai models:** all open-source, downloaded on first use
 
 ---
 
-## what happens on first run
+## contributing
 
-when you run `./start-all.sh` for the first time:
-
-1. **environment setup** (~1 min)
-   - creates python virtual environment
-   - creates `.env.local` configuration
-   - removes any demo data/configuration
-
-2. **dependency installation** (~10-15 min)
-   - python packages (pytorch, clip, faiss, etc.)
-   - node packages (next.js, react, etc.)
-
-3. **services start**
-   - backend: http://localhost:8000 (fastapi)
-   - frontend: http://localhost:3000 (next.js)
-
-4. **first use**
-   - follow the getting started tour
-   - add your first photo directory
-   - ai models download as needed
-
----
-
-## stopping services
+**for features/bug fixes:**
 
 ```bash
-./stop-all.sh
+git clone -b local https://github.com/YOUR-USERNAME/solo-silo
+git checkout -b feature/your-feature
+# make changes, test with ./start-all.sh
+git commit -m "your changes"
+git push origin feature/your-feature
+# create PR to `local` branch
 ```
+
+**for demo improvements:**
+- clone `main` branch instead
+- PR to `main` branch
 
 ---
 
-## usage guide
+## license
 
-### 1. add a photo source
-
-click **"add source"** in the file browser and select a directory containing your photos.
-
-### 2. indexing happens automatically
-
-the backend will:
-- scan for photos/videos
-- generate clip embeddings for semantic search
-- detect faces with yolo
-- extract text via ocr
-- detect animals
-
-monitor progress in **settings → statistics**
-
-### 3. cluster faces
-
-after indexing, go to **retraining → cluster faces** to group similar faces together.
-
-### 4. search your collection
-
-use natural language to search:
-- **"sunset over water"** - finds scenes semantically
-- **"person wearing glasses"** - finds visual features
-- **"documents with text"** - finds ocr content
-- **"john smith"** - finds named people (after labeling)
+MIT License
 
 ---
 
-## configuration
-
-silo-specific configuration is managed through the ui settings panel. each silo has isolated:
-
-- media paths (directories to index)
-- database (personalai.db)
-- cache files (faiss indices, thumbnails, clusters)
-- user preferences (sort, display, confidence thresholds)
-
-global backend settings in `backend/config.yaml`:
-
-```yaml
-processing:
-  batch_size: 32
-  workers: 4
-  skip_videos: false
-  
-ai:
-  face_detection: true
-  animal_detection: true
-  ocr_enabled: true
-```
-
-## project structure
-
-```
-solo-silo/
-├── src/                    # next.js frontend
-│   ├── app/               # app router pages
+**built for privacy. powered by local ai. owned by you.**
 │   ├── components/        # react components
 │   ├── lib/              # utilities and helpers
 │   ├── store/            # zustand state management
