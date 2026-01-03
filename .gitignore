@@ -163,3 +163,18 @@ START_FRONTEND.sh
 *.tar.gz
 *.backup
 *.tmp
+
+# ===== LOCAL BRANCH: Ignore demo/deployment files =====
+# Demo data (only in main branch)
+public/demo-*
+public/test-files/
+public/faiss*
+backend/demo-silo/
+backend/silos-demo.json
+
+# Deployment files (only in main branch)
+railway.json
+render.yaml
+backend/Dockerfile
+backend/requirements-minimal.txt
+backend/start.sh
