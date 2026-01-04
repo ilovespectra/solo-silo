@@ -971,18 +971,13 @@ export default function SetupWizard() {
               onClick={() => {
                 if (currentStep === steps.length - 1) {
                   handleComplete();
-                } else if (currentStep === 2) {
-
-                  setCurrentStep(currentStep + 1);
-
-                  setTimeout(() => startTraining(), 100);
                 } else {
                   setCurrentStep(currentStep + 1);
                 }
               }}
               className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition lowercase"
             >
-              {currentStep === steps.length - 1 ? 'complete' : currentStep === 2 ? 'next & start indexing' : 'next'}
+              {currentStep === steps.length - 1 ? 'complete' : 'next'}
             </button>
           </div>
         </div>
