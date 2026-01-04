@@ -146,15 +146,20 @@ echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
 
 # Wait for backend to become healthy
 echo -e "${ORANGE}waiting for backend to become healthy...${NC}"
+sleep 2  # Give backend process time to actually start before health checks
 BACKEND_READY=false
-for i in {1..30}; do
+for i in {1..45}; do
   if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
     BACKEND_READY=true
     echo -e "${GREEN}backend is healthy!${NC}"
     break
   fi
   sleep 1
-  echo -n "."
+  if [ $((i % 5)) -eq 0 ]; then
+    echo -n " ${i}s"
+  else
+    echo -n "."
+  fi
 done
 echo ""
 
