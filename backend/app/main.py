@@ -259,18 +259,16 @@ async def startup_event():
     active_silo_name = silos.get("active_silo", "default")
     print(f"[STARTUP] Backend ready - active silo: {active_silo_name}", flush=True)
     
-    # DISABLED: Do not auto-discover media paths on startup
-    # This can cause silos to inherit paths from each other, breaking isolation
-    # Users must explicitly configure media paths per-silo via UI
-    # try:
-    #     for silo_info in silo_manager.list_silos():
-    #         silo_name = silo_info["name"]
-    #         existing_paths = silo_manager.get_silo_media_paths(silo_name)
-    #         if not existing_paths:
-    #             silo_manager.discover_and_set_silo_media_paths(silo_name)
-    #             print(f"[STARTUP] Discovered media paths for silo '{silo_name}'")
-    # except Exception as e:
-    #     print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}")
+    # Auto-discover media paths on startup by scanning database
+    try:
+        for silo_info in silo_manager.list_silos():
+            silo_name = silo_info["name"]
+            existing_paths = silo_manager.get_silo_media_paths(silo_name)
+            if not existing_paths:
+                silo_manager.discover_and_set_silo_media_paths(silo_name)
+                print(f"[STARTUP] Discovered media paths for silo '{silo_name}'")
+    except Exception as e:
+        print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}")
     
     # Background watcher disabled - user should manually trigger indexing via UI
     # asyncio.create_task(watch_directories(process_single))

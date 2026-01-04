@@ -61,6 +61,10 @@ class SiloInfo(BaseModel):
     is_active: bool
 
 
+class SetMediaPathsRequest(BaseModel):
+    paths: List[str]
+
+
 @router.get("/list", response_model=List[SiloInfo])
 async def list_silos():
     """Get list of all silos."""
@@ -185,6 +189,43 @@ async def delete_silo(silo_name: str):
         raise
     except Exception as e:
         print(f"[API_ERROR] Failed to delete silo: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{silo_name}/media-paths")
+async def set_silo_media_paths(silo_name: str, request: SetMediaPathsRequest = Body(...)):
+    """Set media paths for a silo. This persists the paths to silos.json."""
+    check_read_only()  # Prevent modifications in demo mode
+    try:
+        print(f"[SILO] Setting media paths for '{silo_name}': {request.paths}")
+        success = SiloManager.set_silo_media_paths(silo_name, request.paths)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail=f"Silo '{silo_name}' not found")
+        
+        return {
+            "success": True,
+            "message": f"Media paths updated for silo '{silo_name}'",
+            "paths": request.paths
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[API_ERROR] Failed to set media paths: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{silo_name}/media-paths")
+async def get_silo_media_paths(silo_name: str):
+    """Get media paths for a silo."""
+    try:
+        paths = SiloManager.get_silo_media_paths(silo_name)
+        return {
+            "silo_name": silo_name,
+            "paths": paths
+        }
+    except Exception as e:
+        print(f"[API_ERROR] Failed to get media paths: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
