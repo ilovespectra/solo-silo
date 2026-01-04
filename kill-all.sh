@@ -1,53 +1,38 @@
 #!/bin/bash
 
-# Emergency script to kill ALL processes
-# Comprehensive kill - ports, processes, everything
+echo "🛑 KILLING EVERYTHING..."
 
-echo "🛑 Killing ALL processes on ports 8000 and 3000..."
+# Kill ALL bash subshells running auto-restart loops
+ps aux | grep -E "bash.*while true" | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+ps aux | grep -E "sh.*while true" | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null || true
 
-# Round 1: Polite termination
-pkill -TERM -f "uvicorn" 2>/dev/null || true
-pkill -TERM -f "face_detection_worker" 2>/dev/null || true
-pkill -TERM -f "next" 2>/dev/null || true
-sleep 1
-
-# Round 2: Force kill ALL process patterns
-echo "  • Force killing all backend and frontend processes..."
+# Kill ALL uvicorn and python backend processes
 pkill -9 -f "uvicorn" 2>/dev/null || true
-pkill -9 -f "face_detection_worker" 2>/dev/null || true
-pkill -9 -f "app.main" 2>/dev/null || true
-pkill -9 -f "main:app" 2>/dev/null || true
-pkill -9 -f "fastapi" 2>/dev/null || true
+pkill -9 -f "python.*main:app" 2>/dev/null || true
+pkill -9 -f "python.*app.main" 2>/dev/null || true
 pkill -9 -f "python.*backend" 2>/dev/null || true
-pkill -9 -f "python.*app/main" 2>/dev/null || true
+pkill -9 -f "fastapi" 2>/dev/null || true
+pkill -9 -f "face_detection_worker" 2>/dev/null || true
+
+# Kill ALL node/npm/next processes
 pkill -9 -f "next.*dev" 2>/dev/null || true
 pkill -9 -f "npm run dev" 2>/dev/null || true
 pkill -9 -f "node.*next" 2>/dev/null || true
-sleep 1
+pkill -9 -f "node.*turbopack" 2>/dev/null || true
 
-# Round 3: Kill by port - multiple attempts
-echo "  • Killing processes on ports (3 attempts)..."
+# Kill by port - 3 attempts
 for i in {1..3}; do
   lsof -ti:8000 | xargs kill -9 2>/dev/null || true
   lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-  sleep 1
+  sleep 0.5
 done
 
-# Round 4: Verify ports are actually free
-if lsof -ti:8000 >/dev/null 2>&1; then
-  echo "⚠️  WARNING: Port 8000 still occupied:"
-  lsof -i:8000
-  echo "  Attempting final kill..."
-  lsof -ti:8000 | xargs kill -9 2>/dev/null || true
-  sleep 1
+# Final verification
+sleep 1
+if lsof -ti:8000 >/dev/null 2>&1 || lsof -ti:3000 >/dev/null 2>&1; then
+  echo "⚠️  WARNING: Ports still in use!"
+  lsof -i:8000 2>/dev/null
+  lsof -i:3000 2>/dev/null
+else
+  echo "✅ All processes killed, ports free"
 fi
-
-if lsof -ti:3000 >/dev/null 2>&1; then
-  echo "⚠️  WARNING: Port 3000 still occupied:"
-  lsof -i:3000
-  echo "  Attempting final kill..."
-  lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-  sleep 1
-fi
-
-echo "✅ All processes killed"
