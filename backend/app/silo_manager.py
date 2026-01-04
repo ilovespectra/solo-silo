@@ -411,11 +411,12 @@ class SiloManager:
             cur = conn.cursor()
             
             # Get all unique parent directories from media files in this silo
+            # Extract directory by removing filename (everything after last /)
             cur.execute("""
                 SELECT DISTINCT 
-                    SUBSTR(path, 1, INSTR(REVERSE(path), '/') - 1) as dir
+                    SUBSTR(path, 1, LENGTH(path) - LENGTH(SUBSTR(path, INSTR(path, '/', -1) + 1))) as dir
                 FROM media_files
-                WHERE path IS NOT NULL
+                WHERE path IS NOT NULL AND INSTR(path, '/') > 0
                 ORDER BY dir
             """)
             
@@ -423,8 +424,7 @@ class SiloManager:
             paths = set()
             for row in cur.fetchall():
                 if row[0]:
-                    dir_path = row[0]
-                    # Get the root media directory (parent of found dir)
+                    dir_path = row[0].rstrip('/')
                     paths.add(dir_path)
             
             conn.close()
