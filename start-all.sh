@@ -148,10 +148,11 @@ echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
 echo -e "${ORANGE}waiting for backend to become healthy...${NC}"
 sleep 2  # Give backend process time to actually start before health checks
 BACKEND_READY=false
-for i in {1..45}; do
+HEALTH_CHECK_TIMEOUT=45
+for i in $(seq 1 $HEALTH_CHECK_TIMEOUT); do
   if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
     BACKEND_READY=true
-    echo -e "${GREEN}backend is healthy!${NC}"
+    echo -e "\n${GREEN}✓ backend is healthy!${NC}"
     break
   fi
   sleep 1
@@ -164,8 +165,14 @@ done
 echo ""
 
 if [ "$BACKEND_READY" = false ]; then
-  echo -e "${RED}warning: backend did not become healthy within 30 seconds${NC}"
-  echo -e "${ORANGE}frontend will still start, but may experience connection issues initially${NC}"
+  echo -e "${RED}✗ CRITICAL ERROR: Backend failed to become healthy within ${HEALTH_CHECK_TIMEOUT} seconds${NC}"
+  echo -e "${RED}This usually means the backend crashed on startup.${NC}"
+  echo -e "${ORANGE}Check backend logs for errors:${NC}"
+  echo -e "${ORANGE}  tail -50 $SCRIPT_DIR/backend.log${NC}"
+  echo ""
+  echo -e "${RED}Stopping all services...${NC}"
+  bash "$SCRIPT_DIR/stop-all.sh"
+  exit 1
 fi
 
 echo -e "${ORANGE}starting frontend...${NC}"

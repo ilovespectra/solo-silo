@@ -21,8 +21,6 @@ export function BackendStatus() {
   };
 
   useEffect(() => {
-    if (!demoMode) return;
-    
     const checkStatus = async () => {
       setCheckingStatus(true);
       const connected = await checkBackendHealth();
@@ -33,11 +31,7 @@ export function BackendStatus() {
     checkStatus();
     const interval = setInterval(checkStatus, 5000);
     return () => clearInterval(interval);
-  }, [demoMode]);
-  
-  if (!demoMode) {
-    return null;
-  }
+  }, []);
 
   const handleInitialize = async () => {
     setIsInitializing(true);
