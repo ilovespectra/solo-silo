@@ -21,7 +21,7 @@ export async function GET() {
   
   // Check if backend is available
   try {
-    const backendResponse = await fetch(`${backendUrl}/api/health`, {
+    const backendResponse = await fetch(`${backendUrl}/health`, {
       signal: AbortSignal.timeout(2000),
     });
     
