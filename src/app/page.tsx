@@ -13,7 +13,7 @@ import Retraining from '@/components/Retraining';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
 import { useIndexingStatus } from '@/hooks/useIndexingStatus';
-import BackendStatus from '@/components/BackendStatus';
+import { BackendStatus } from '@/components/BackendStatus';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
