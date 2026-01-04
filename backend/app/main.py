@@ -255,7 +255,9 @@ async def startup_event():
             import traceback
             traceback.print_exc()
     
-    print(f"[STARTUP] Backend ready - active silo: {SiloManager.get_active_silo()['name']}", flush=True)
+    silos = SiloManager.load_silos()
+    active_silo_name = silos.get("active_silo", "default")
+    print(f"[STARTUP] Backend ready - active silo: {active_silo_name}", flush=True)
     
     # DISABLED: Do not auto-discover media paths on startup
     # This can cause silos to inherit paths from each other, breaking isolation
