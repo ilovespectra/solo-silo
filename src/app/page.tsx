@@ -10,7 +10,6 @@ import Settings from '@/components/Settings';
 import PeoplePane from '@/components/PeoplePane';
 import AnimalPane from '@/components/AnimalPane';
 import Retraining from '@/components/Retraining';
-import { DemoBanner } from '@/components/DemoBanner';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
 import { useIndexingStatus } from '@/hooks/useIndexingStatus';
@@ -23,28 +22,8 @@ export default function Home() {
   const [hasIndexedFiles, setHasIndexedFiles] = useState(false);
   const [showSiloManager, setShowSiloManager] = useState(false);
   const [siloSwitchKey, setSiloSwitchKey] = useState(0);
-  const { demoMode } = useDemoMode();
 
   useIndexingStatus();
-
-  useEffect(() => {
-    if (demoMode) {
-      console.log('[demo] Enabling all permissions for demo mode');
-      updatePermissions({
-        readFiles: true,
-        listDirectories: true,
-        indexContent: true,
-        recognizeFaces: true,
-        analyzeImages: true,
-        searchText: true,
-        moveFiles: false,
-        deleteFiles: false,
-        renameFiles: false,
-        createFolders: false,
-        modifyMetadata: false,
-      });
-    }
-  }, [demoMode, updatePermissions]);
 
   const handleRestartTour = () => {
     localStorage.removeItem('tour-dismissed');
@@ -87,12 +66,12 @@ export default function Home() {
 
   useEffect(() => {
     if (mounted) {
-      console.log('Wizard logic - hasIndexedFiles:', hasIndexedFiles, 'demoMode:', demoMode);
-      const shouldShowWizard = !demoMode && !hasIndexedFiles;
+      console.log('Wizard logic - hasIndexedFiles:', hasIndexedFiles);
+      const shouldShowWizard = !hasIndexedFiles;
       console.log('Setting showSetupWizard to:', shouldShowWizard);
       setShowSetupWizard(shouldShowWizard);
     }
-  }, [mounted, hasIndexedFiles, demoMode, setShowSetupWizard]);
+  }, [mounted, hasIndexedFiles, setShowSetupWizard]);
 
   if (!mounted) {
     return (
@@ -109,10 +88,8 @@ export default function Home() {
 
   return (
     <main className={`h-screen flex flex-col ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Demo Mode Banner */}
-      {demoMode && <DemoBanner />}
       
-      {/* Backend Status Bar - hide in demo mode */}
+      {/* Backend Status Bar */}
 
 
       {/* Header */}

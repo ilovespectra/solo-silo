@@ -27,15 +27,6 @@ from .silo_manager import SiloManager
 from .startup_cleanup import startup_cleanup
 from . import silo_endpoints
 
-# Demo mode helper
-def check_read_only():
-    """Check if system is in read-only demo mode."""
-    if SiloManager.is_demo_mode():
-        raise HTTPException(
-            status_code=403,
-            detail="Operation not allowed in demo mode. This is a read-only demo deployment."
-        )
-
 # Global lock to ensure only one indexing operation runs at a time
 # Will be properly initialized in startup_event
 _indexing_lock = None
@@ -280,12 +271,11 @@ async def health():
 
 @app.get("/api/system/mode")
 async def get_system_mode():
-    """Get current system mode (demo or full)."""
-    is_demo = SiloManager.is_demo_mode()
+    """Get current system mode - always local mode."""
     return {
-        "demo_mode": is_demo,
-        "read_only": is_demo,
-        "message": "Demo mode - read only" if is_demo else "Full mode - all features enabled"
+        "demo_mode": False,
+        "read_only": False,
+        "message": "Local mode - all features enabled"
     }
 
 @app.get("/api/system/health-extended")

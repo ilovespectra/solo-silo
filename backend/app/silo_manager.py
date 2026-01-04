@@ -27,51 +27,12 @@ DEFAULT_SILO_NAME = "default"
 
 # Demo mode configuration
 # Try backend/demo-silo first (for deployment), fallback to public/demo-silo (for local dev)
-DEMO_SILO_PATH_BACKEND = os.path.join(os.path.dirname(__file__), "..", "demo-silo")
-DEMO_SILO_PATH_PUBLIC = os.path.join(os.path.dirname(__file__), "..", "..", "public", "demo-silo")
-DEMO_SILO_PATH = DEMO_SILO_PATH_BACKEND if os.path.exists(DEMO_SILO_PATH_BACKEND) else DEMO_SILO_PATH_PUBLIC
-DEMO_MODE_ENABLED = not os.path.exists(SILOS_FILE)  # Auto-detect demo mode
-
-
 class SiloManager:
     """Manages silo creation, switching, and operations."""
     
     @staticmethod
-    def is_demo_mode() -> bool:
-        """Check if running in demo mode (no silos.json found)."""
-        return DEMO_MODE_ENABLED or not os.path.exists(SILOS_FILE)
-    
-    @staticmethod
-    def get_demo_silo_info() -> dict:
-        """Get demo silo configuration."""
-        return {
-            "name": "demo",
-            "created_at": "2025-01-01T00:00:00",
-            "password": None,
-            "password_mode": None,
-            "authenticated": True,
-            "db_path": os.path.join(DEMO_SILO_PATH, "personalai.db"),
-            "cache_dir": DEMO_SILO_PATH,
-            "media_paths": [os.path.join(os.path.dirname(__file__), "..", "..", "public", "test-files")],
-            "read_only": True,  # Demo mode is read-only
-        }
-    
-    @staticmethod
     def load_silos() -> dict:
-        """Load all silos metadata. Returns demo silo if in demo mode."""
-        # DEMO MODE: Return singleton demo silo
-        if SiloManager.is_demo_mode():
-            demo_silo = SiloManager.get_demo_silo_info()
-            print(f"[DEMO_MODE] Using demo silo from: {demo_silo['cache_dir']}")
-            return {
-                "active_silo": "demo",
-                "silos": {
-                    "demo": demo_silo
-                },
-                "demo_mode": True
-            }
-        
-        # NORMAL MODE: Load silos.json
+        """Load all silos metadata."""
         if not os.path.exists(SILOS_FILE):
             return SiloManager._create_default_silos()
         

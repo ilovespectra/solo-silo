@@ -27,15 +27,6 @@ from .silo_manager import SiloManager
 router = APIRouter(prefix="/api/silos", tags=["silos"])
 
 
-def check_read_only():
-    """Check if system is in read-only demo mode."""
-    if SiloManager.is_demo_mode():
-        raise HTTPException(
-            status_code=403,
-            detail="Operation not allowed in demo mode. This is a read-only demo deployment."
-        )
-
-
 class CreateSiloRequest(BaseModel):
     name: str
     password: Optional[str] = None
@@ -98,7 +89,6 @@ async def get_active_silo():
 @router.post("/create")
 async def create_silo(request: CreateSiloRequest = Body(...)):
     """Create a new silo."""
-    check_read_only()  # Prevent silo creation in demo mode
     try:
         success, message = SiloManager.create_silo(
             name=request.name,
@@ -148,7 +138,6 @@ async def switch_silo(request: SwitchSiloRequest = Body(...)):
 @router.post("/save-current")
 async def save_current_silo(request: SaveSiloRequest = Body(...)):
     """Save/name the current silo with optional password."""
-    check_read_only()  # Prevent silo modifications in demo mode
     try:
         success, message = SiloManager.save_silo_name(
             name=request.name,
@@ -174,7 +163,6 @@ async def save_current_silo(request: SaveSiloRequest = Body(...)):
 @router.delete("/{silo_name}")
 async def delete_silo(silo_name: str):
     """Delete a silo."""
-    check_read_only()  # Prevent silo deletion in demo mode
     try:
         success, message = SiloManager.delete_silo(silo_name)
         
@@ -195,7 +183,6 @@ async def delete_silo(silo_name: str):
 @router.post("/{silo_name}/media-paths")
 async def set_silo_media_paths(silo_name: str, request: SetMediaPathsRequest = Body(...)):
     """Set media paths for a silo. This persists the paths to silos.json."""
-    check_read_only()  # Prevent modifications in demo mode
     try:
         print(f"[SILO] Setting media paths for '{silo_name}': {request.paths}")
         success = SiloManager.set_silo_media_paths(silo_name, request.paths)
@@ -313,7 +300,6 @@ async def upload_database(file: UploadFile = File(...), silo_name: Optional[str]
     
     Handles deduplication based on file hash.
     """
-    check_read_only()  # Prevent database uploads in demo mode
     try:
         if not silo_name:
             silo = SiloManager.get_active_silo()
@@ -440,7 +426,6 @@ async def nuke_database(silo_name: Optional[str] = None):
     
     this cannot be undone!
     """
-    check_read_only()  # Prevent database nuking in demo mode
     try:
         if not silo_name:
             silo = SiloManager.get_active_silo()
@@ -483,7 +468,6 @@ async def rename_silo(old_name: str = Body(...), new_name: str = Body(...), pass
     """
     rename a silo. requires password if silo is password-protected.
     """
-    check_read_only()  # Prevent silo renaming in demo mode
     try:
         success, message = SiloManager.rename_silo(old_name, new_name, password)
         
@@ -505,7 +489,6 @@ async def update_password(silo_name: str = Body(...), current_password: Optional
     """
     update silo password. requires current password if silo is password-protected.
     """
-    check_read_only()  # Prevent password updates in demo mode
     try:
         success, message = SiloManager.update_silo_password(silo_name, current_password, new_password, password_mode)
         
