@@ -13,7 +13,7 @@ import Retraining from '@/components/Retraining';
 import { SiloSelector } from '@/components/SiloSelector';
 import { SiloManager } from '@/components/SiloManager';
 import { useIndexingStatus } from '@/hooks/useIndexingStatus';
-import { useDemoMode } from '@/hooks/useDemoMode';
+import BackendStatus from '@/components/BackendStatus';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
@@ -90,7 +90,7 @@ export default function Home() {
     <main className={`h-screen flex flex-col ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       
       {/* Backend Status Bar */}
-
+      <BackendStatus />
 
       {/* Header */}
       <header className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm`}>
