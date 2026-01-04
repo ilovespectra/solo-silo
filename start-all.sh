@@ -143,9 +143,25 @@ fi
 BACKEND_PID=$!
 disown $BACKEND_PID 2>/dev/null || true
 echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
-sleep 3
 
-sleep 3
+# Wait for backend to become healthy
+echo -e "${ORANGE}waiting for backend to become healthy...${NC}"
+BACKEND_READY=false
+for i in {1..30}; do
+  if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
+    BACKEND_READY=true
+    echo -e "${GREEN}backend is healthy!${NC}"
+    break
+  fi
+  sleep 1
+  echo -n "."
+done
+echo ""
+
+if [ "$BACKEND_READY" = false ]; then
+  echo -e "${RED}warning: backend did not become healthy within 30 seconds${NC}"
+  echo -e "${ORANGE}frontend will still start, but may experience connection issues initially${NC}"
+fi
 
 echo -e "${ORANGE}starting frontend...${NC}"
 cd "$SCRIPT_DIR"

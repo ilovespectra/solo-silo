@@ -711,14 +711,19 @@ export default function SetupWizard() {
                     onPathSelected={async (path) => {
                       // Auto-create default silo if none exists
                       if (!activeSilo && (!silos || silos.length === 0)) {
-                        console.log('[SetupWizard] No silo exists, creating default silo...');
+                        console.log('[SetupWizard] No active silo, creating default...');
                         try {
                           await createSilo('default');
                           console.log('[SetupWizard] Default silo created');
                         } catch (err) {
                           console.error('[SetupWizard] Failed to create default silo:', err);
-                          setErrorMsg('Failed to create default silo. Please try again.');
-                          return;
+                          // If error is "already exists", just continue - it's fine
+                          if (String(err).includes('already exists')) {
+                            console.log('[SetupWizard] Silo already exists, continuing...');
+                          } else {
+                            setErrorMsg('Failed to create default silo. Please try again.');
+                            return;
+                          }
                         }
                       }
                       addSelectedPath(path);
