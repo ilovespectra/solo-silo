@@ -275,6 +275,7 @@ export default function SetupWizard() {
     }
   };
   const startTraining = async () => {
+    console.log('[SetupWizard] startTraining CALLED - paths:', config.selectedPaths);
     setErrorMsg(null);
     setTrainingStatus('running');
     setProgress({ percentage: 0, processed: 0, total: 0, status: 'scanning' });
@@ -412,11 +413,14 @@ export default function SetupWizard() {
 
   useEffect(() => {
     if (currentStep === 3 && trainingStatus === 'idle' && config.selectedPaths.length > 0) {
-
+      console.log('[SetupWizard] Auto-triggering indexing for step 3 with paths:', config.selectedPaths);
       const timer = setTimeout(() => {
+        console.log('[SetupWizard] Calling startTraining()');
         startTraining();
       }, 200);
       return () => clearTimeout(timer);
+    } else {
+      console.log('[SetupWizard] Not triggering indexing - step:', currentStep, 'status:', trainingStatus, 'paths:', config.selectedPaths.length);
     }
 
   }, [currentStep, trainingStatus, config.selectedPaths]);
