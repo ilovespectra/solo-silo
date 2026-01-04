@@ -411,12 +411,19 @@ class SiloManager:
             cur = conn.cursor()
             
             # Get all unique parent directories from media files in this silo
-            # Extract directory by removing filename (everything after last /)
+            # SQLite-compatible: Find last / by reversing the string logic
+            # We get the directory by removing everything after the last /
             cur.execute("""
                 SELECT DISTINCT 
-                    SUBSTR(path, 1, LENGTH(path) - LENGTH(SUBSTR(path, INSTR(path, '/', -1) + 1))) as dir
+                    CASE 
+                        WHEN INSTR(path, '/') > 0 THEN
+                            SUBSTR(path, 1, 
+                                LENGTH(path) - INSTR(REPLACE(REVERSE(path), '/', CHAR(1)), CHAR(1))
+                            )
+                        ELSE ''
+                    END as dir
                 FROM media_files
-                WHERE path IS NOT NULL AND INSTR(path, '/') > 0
+                WHERE path IS NOT NULL AND path LIKE '%/%'
                 ORDER BY dir
             """)
             
