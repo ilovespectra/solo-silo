@@ -227,7 +227,22 @@ async def startup_event():
     from . import db
     
     silo_manager = SiloManager()
-    for silo_info in silo_manager.list_silos():
+    silos_list = silo_manager.list_silos()
+    
+    # CRITICAL: Ensure at least one silo exists and set it as active
+    if not silos_list:
+        print(f"[STARTUP] No silos found, creating default silo", flush=True)
+        silo_manager.create_silo("default")
+        silos_list = silo_manager.list_silos()
+    
+    # Set the first silo as active if no active silo is set
+    silos_data = SiloManager.load_silos()
+    if not silos_data.get("active_silo") and silos_list:
+        first_silo = silos_list[0]["name"]
+        print(f"[STARTUP] Setting '{first_silo}' as active silo", flush=True)
+        SiloManager.switch_silo(first_silo)
+    
+    for silo_info in silos_list:
         silo_name = silo_info["name"]
         try:
             # Get the db_path for this silo
@@ -239,6 +254,8 @@ async def startup_event():
             print(f"[STARTUP] ERROR initializing database for silo '{silo_name}': {e}", flush=True)
             import traceback
             traceback.print_exc()
+    
+    print(f"[STARTUP] Backend ready - active silo: {SiloManager.get_active_silo()['name']}", flush=True)
     
     # DISABLED: Do not auto-discover media paths on startup
     # This can cause silos to inherit paths from each other, breaking isolation

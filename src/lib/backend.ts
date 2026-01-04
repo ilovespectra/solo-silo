@@ -1,6 +1,7 @@
 const API_BASE = '';
 
 let backendReady: Promise<void> | null = null;
+let isBackendHealthy = false;
 
 function cosineSimilarity(a: number[], b: number[]): number {
   let dotProduct = 0;
@@ -17,18 +18,38 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 async function ensureBackendRunning(): Promise<void> {
+  if (isBackendHealthy) return;
+  
   if (backendReady) return backendReady;
+  
   backendReady = (async () => {
-    try {
-      const res = await fetch(`/api/health`, { 
-        method: 'GET', 
-        signal: AbortSignal.timeout(3000) 
-      });
-      if (res.ok) return;
-    } catch (error) {
-      console.error('[backend] Health check failed:', error);
+    const maxRetries = 30; // 30 seconds max wait (30 * 1 second)
+    const retryDelay = 1000; // 1 second between attempts
+    
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const res = await fetch(`/api/health`, { 
+          method: 'GET', 
+          signal: AbortSignal.timeout(2000) 
+        });
+        if (res.ok) {
+          isBackendHealthy = true;
+          console.log('[backend] Backend is ready');
+          return;
+        }
+      } catch (error) {
+        // Backend not ready yet, retry
+        if (i < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+        }
+      }
     }
+    
+    // If we get here, backend never became healthy
+    console.error('[backend] Backend failed to become healthy after 30 seconds');
+    throw new Error('Backend unavailable');
   })();
+  
   return backendReady;
 }
 
