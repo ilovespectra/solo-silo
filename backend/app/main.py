@@ -1272,12 +1272,19 @@ async def _index_path_with_progress(root_path: str, recursive: bool = True):
             indexing_state["faces_found"] = total_faces_detected
             
             # Now cluster the detected faces
-            print(f"[INDEXING] Clustering detected faces...")
-            faces = load_faces_from_db()
-            if faces:  # Only cluster if we have faces
-                clusters = cluster_faces(faces)
-                print(f"[INDEXING] ✓ Face clustering complete: {len(clusters)} person clusters found")
-            del faces  # Explicitly delete to free memory
+            if total_faces_detected > 0:
+                print(f"[INDEXING] 🧩 Starting face clustering on {total_faces_detected} detected faces...")
+                indexing_state["current_file"] = "Clustering faces..."
+                faces = load_faces_from_db()
+                if faces:  # Only cluster if we have faces
+                    clusters = cluster_faces(faces)
+                    print(f"[INDEXING] ✅ Face clustering complete: {len(clusters)} person clusters created")
+                    indexing_state["current_file"] = f"Clustered into {len(clusters)} people"
+                else:
+                    print(f"[INDEXING] ⚠️ No faces loaded from database for clustering")
+                del faces  # Explicitly delete to free memory
+            else:
+                print(f"[INDEXING] ℹ️ No faces detected - skipping clustering")
         except Exception as e:
             print(f"[INDEXING] ✗ face detection error: {e}")
             import traceback

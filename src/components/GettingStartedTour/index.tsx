@@ -8,7 +8,7 @@ interface TourStep {
   title: string;
   description: string;
   action?: () => void;
-  targetView?: 'browser' | 'search' | 'people' | 'animals' | 'audio' | 'settings' | 'retraining';
+  targetView?: 'browser' | 'search' | 'people' | 'animals' | 'audio' | 'settings';
   condition?: () => boolean;
   hideWizard?: boolean;
 }
@@ -71,19 +71,13 @@ const LOCAL_TOUR_STEPS: TourStep[] = [
   {
     id: 'indexing',
     title: 'indexing in progress',
-    description: 'your media is being indexed by the local backend. check the statistics tab to monitor progress. indexing time depends on your collection size and hardware.',
+    description: 'your media is being indexed by the local backend. check the statistics tab to monitor progress. indexing automatically includes:\n• face detection\n• face clustering\n• object recognition\n• text extraction (OCR)',
     targetView: 'settings',
-  },
-  {
-    id: 'face-clustering',
-    title: 'face detection complete',
-    description: 'faces have been detected! now cluster them by going to the retraining tab and clicking "cluster faces" to group similar faces together.',
-    targetView: 'retraining',
   },
   {
     id: 'view-people',
     title: 'view your face clusters',
-    description: 'clustering is done! check out the people tab to see all detected face clusters from your photos.',
+    description: 'once indexing completes, faces are automatically detected and clustered! check the people tab to see all detected face clusters from your photos.',
     targetView: 'people',
   },
   {
