@@ -13,23 +13,17 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo -e "${ORANGE}cleaning up old logs and cache...${NC}"
 bash "$SCRIPT_DIR/cleanup-startup.sh" 2>/dev/null || true
 
-echo -e "${RED}stopping any existing services...${NC}"
-
-pkill -TERM -f "uvicorn" 2>/dev/null || true
-pkill -TERM -f "face_detection_worker" 2>/dev/null || true
-sleep 1
-
-pkill -9 -f "uvicorn" 2>/dev/null || true
-pkill -9 -f "face_detection_worker" 2>/dev/null || true
-pkill -9 -f "app.main" 2>/dev/null || true
-
-pkill -9 -f "next.*dev" 2>/dev/null || true
-pkill -9 -f "npm run dev" 2>/dev/null || true
-sleep 1
-
-lsof -ti:8000 | xargs kill -9 2>/dev/null || true
-lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-sleep 2
+# Kill all existing processes using kill-all.sh
+if [ -f "$SCRIPT_DIR/kill-all.sh" ]; then
+  bash "$SCRIPT_DIR/kill-all.sh"
+else
+  echo -e "${RED}WARNING: kill-all.sh not found, using inline kill logic${NC}"
+  pkill -9 -f "uvicorn" 2>/dev/null || true
+  pkill -9 -f "next.*dev" 2>/dev/null || true
+  lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+  lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+  sleep 2
+fi
 
 echo -e "${ORANGE}final log cleanup...${NC}"
 rm -f backend/*.log 2>/dev/null || true
