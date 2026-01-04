@@ -71,6 +71,7 @@ next-env.d.ts
 # User data and caches (generated at runtime, not for production)
 /cache/
 /backend/cache/
+/backend/app/cache/
 *.db
 *.sqlite
 *.sqlite3

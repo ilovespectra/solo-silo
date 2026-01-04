@@ -412,15 +412,23 @@ export default function SetupWizard() {
 
 
   useEffect(() => {
+    console.log('[SetupWizard useEffect] Step:', currentStep, 'Status:', trainingStatus, 'Paths:', config.selectedPaths);
     if (currentStep === 3 && trainingStatus === 'idle' && config.selectedPaths.length > 0) {
-      console.log('[SetupWizard] Auto-triggering indexing for step 3 with paths:', config.selectedPaths);
+      console.log('[SetupWizard] ✅ Auto-triggering indexing for step 3 with paths:', config.selectedPaths);
       const timer = setTimeout(() => {
-        console.log('[SetupWizard] Calling startTraining()');
-        startTraining();
+        console.log('[SetupWizard] 🚀 Calling startTraining() now...');
+        startTraining().catch(err => {
+          console.error('[SetupWizard] ❌ startTraining() failed:', err);
+          setTrainingStatus('error');
+          setErrorMsg(String(err));
+        });
       }, 200);
-      return () => clearTimeout(timer);
+      return () => {
+        console.log('[SetupWizard] Cleanup: clearing auto-trigger timer');
+        clearTimeout(timer);
+      };
     } else {
-      console.log('[SetupWizard] Not triggering indexing - step:', currentStep, 'status:', trainingStatus, 'paths:', config.selectedPaths.length);
+      console.log('[SetupWizard] ⏸️ Not triggering indexing - step:', currentStep, 'status:', trainingStatus, 'paths:', config.selectedPaths.length);
     }
 
   }, [currentStep, trainingStatus, config.selectedPaths]);
