@@ -39,15 +39,14 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('[Stats] Backend unavailable, returning demo stats:', error);
+    console.error('[Stats] Backend unavailable, returning zeros (local mode):', error);
+    // LOCAL MODE: Never show demo data - return zeros
     return NextResponse.json({
-      total_files: 93,
-      by_type: {
-        image: 93
-      },
-      total_size_bytes: 12500000,
-      with_people: 45,
-      with_animals: 8
+      total_files: 0,
+      by_type: {},
+      total_size_bytes: 0,
+      with_people: 0,
+      with_animals: 0
     });
   }
 }

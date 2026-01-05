@@ -56,39 +56,9 @@ except Exception as e:
 FACE_MODEL = os.environ.get("PAI_FACE_MODEL", "Facenet512")
 FACE_DETECTOR = os.environ.get("PAI_FACE_DETECTOR", "mtcnn")
 
-# Pre-load models on module import to avoid slow first call
-def _preload_models():
-    """Pre-load DeepFace models to avoid slow first call timeout."""
-    try:
-        print(f"[FACE] Pre-loading models: detector={FACE_DETECTOR}, model={FACE_MODEL}", flush=True)
-        # Create a small dummy image for preloading
-        import numpy as np
-        from PIL import Image
-        import tempfile
-        
-        # Create a minimal valid image
-        dummy_img = Image.new('RGB', (100, 100), color='white')
-        with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as f:
-            dummy_img.save(f.name)
-            temp_path = f.name
-        
-        try:
-            # This loads the models into memory
-            DeepFace.represent(
-                img_path=temp_path,
-                model_name=FACE_MODEL,
-                detector_backend=FACE_DETECTOR,
-                enforce_detection=False,
-            )
-            print(f"[FACE] ✓ Models pre-loaded successfully", flush=True)
-        finally:
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
-    except Exception as e:
-        print(f"[FACE] Warning: Failed to pre-load models: {e}", flush=True)
-
-# Pre-load models when module loads
-_preload_models()
+# NOTE: Model preloading DISABLED - it was causing backend crashes with lz4 I/O errors
+# and multiprocessing semaphore leaks. Models will load lazily on first use.
+# This adds ~2-3 seconds to first face detection but prevents startup crashes.
 
 
 @dataclass

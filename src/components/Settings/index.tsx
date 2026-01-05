@@ -79,6 +79,12 @@ export default function Settings() {
   const isIndexing = indexingProgress?.is_indexing || false;
 
   useEffect(() => {
+    // Only load demo logs if in actual demo mode (not local deployment)
+    if (!demoMode) {
+      console.log('[Settings] Local mode - skipping demo logs');
+      return;
+    }
+    
     const loadDemoLogs = async () => {
       try {
         console.log('[Settings] Loading demo logs on mount...');
@@ -115,7 +121,7 @@ export default function Settings() {
     };
     
     loadDemoLogs();
-  }, []);
+  }, [demoMode]);
 
   useEffect(() => {
     const checkFaceDetectionStatus = async () => {
