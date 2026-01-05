@@ -410,29 +410,22 @@ class SiloManager:
             conn = sqlite3.connect(db_path)
             cur = conn.cursor()
             
-            # Get all unique parent directories from media files in this silo
-            # SQLite-compatible: Find last / by reversing the string logic
-            # We get the directory by removing everything after the last /
+            # Get all file paths from the database
+            # We'll extract directories in Python since SQLite lacks REVERSE() and proper string functions
             cur.execute("""
-                SELECT DISTINCT 
-                    CASE 
-                        WHEN INSTR(path, '/') > 0 THEN
-                            SUBSTR(path, 1, 
-                                LENGTH(path) - INSTR(REPLACE(REVERSE(path), '/', CHAR(1)), CHAR(1))
-                            )
-                        ELSE ''
-                    END as dir
+                SELECT DISTINCT path
                 FROM media_files
                 WHERE path IS NOT NULL AND path LIKE '%/%'
-                ORDER BY dir
             """)
             
-            # Convert file paths to their directory paths
+            # Extract parent directories using Python
             paths = set()
             for row in cur.fetchall():
-                if row[0]:
-                    dir_path = row[0].rstrip('/')
-                    paths.add(dir_path)
+                file_path = row[0]
+                if file_path and '/' in file_path:
+                    dir_path = file_path.rsplit('/', 1)[0]  # Split from right, take first part
+                    if dir_path:
+                        paths.add(dir_path)
             
             conn.close()
             
