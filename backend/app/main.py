@@ -208,61 +208,84 @@ class FolderContentsResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    global _indexing_lock
-    _indexing_lock = asyncio.Lock()  # Initialize the lock
-    cfg = load_config()
-    ensure_paths(cfg)
-    
-    # Initialize databases for all existing silos
-    from .silo_manager import SiloManager
-    from . import db
-    
-    silo_manager = SiloManager()
-    silos_list = silo_manager.list_silos()
-    
-    # CRITICAL: Ensure at least one silo exists and set it as active
-    if not silos_list:
-        print(f"[STARTUP] No silos found, creating default silo", flush=True)
-        silo_manager.create_silo("default")
+    try:
+        global _indexing_lock
+        _indexing_lock = asyncio.Lock()  # Initialize the lock
+        cfg = load_config()
+        ensure_paths(cfg)
+        
+        # Initialize databases for all existing silos
+        from .silo_manager import SiloManager
+        from . import db
+        
+        silo_manager = SiloManager()
         silos_list = silo_manager.list_silos()
-    
-    # Set the first silo as active if no active silo is set
-    silos_data = SiloManager.load_silos()
-    if not silos_data.get("active_silo") and silos_list:
-        first_silo = silos_list[0]["name"]
-        print(f"[STARTUP] Setting '{first_silo}' as active silo", flush=True)
-        SiloManager.switch_silo(first_silo)
-    
-    for silo_info in silos_list:
-        silo_name = silo_info["name"]
+        
+        # CRITICAL: Ensure at least one silo exists and set it as active
+        if not silos_list:
+            print(f"[STARTUP] No silos found, creating default silo", flush=True)
+            silo_manager.create_silo("default")
+            silos_list = silo_manager.list_silos()
+        
+        # Set the first silo as active if no active silo is set
+        silos_data = SiloManager.load_silos()
+        if not silos_data.get("active_silo") and silos_list:
+            first_silo = silos_list[0]["name"]
+            print(f"[STARTUP] Setting '{first_silo}' as active silo", flush=True)
+            SiloManager.switch_silo(first_silo)
+        
+        for silo_info in silos_list:
+            silo_name = silo_info["name"]
+            try:
+                # Get the db_path for this silo
+                db_path = SiloManager.get_silo_db_path(silo_name)
+                print(f"[STARTUP] Initializing database for silo '{silo_name}': {db_path}", flush=True)
+                db.init_db(db_path)
+                print(f"[STARTUP] ✓ Database initialized for silo '{silo_name}'", flush=True)
+            except Exception as e:
+                print(f"[STARTUP] ERROR initializing database for silo '{silo_name}': {e}", flush=True)
+                import traceback
+                traceback.print_exc()
+        
+        silos = SiloManager.load_silos()
+        active_silo_name = silos.get("active_silo", "default")
+        print(f"[STARTUP] Backend ready - active silo: {active_silo_name}", flush=True)
+        
+        # Auto-discover media paths on startup by scanning database
+        # Skip this on fresh installs - it will be populated when user adds paths via wizard
         try:
-            # Get the db_path for this silo
-            db_path = SiloManager.get_silo_db_path(silo_name)
-            print(f"[STARTUP] Initializing database for silo '{silo_name}': {db_path}", flush=True)
-            db.init_db(db_path)
-            print(f"[STARTUP] ✓ Database initialized for silo '{silo_name}'", flush=True)
+            for silo_info in silo_manager.list_silos():
+                silo_name = silo_info["name"]
+                existing_paths = silo_manager.get_silo_media_paths(silo_name)
+                if not existing_paths:
+                    # Only discover if database has files (not a fresh install)
+                    db_path = SiloManager.get_silo_db_path(silo_name)
+                    if os.path.exists(db_path):
+                        import sqlite3
+                        conn = sqlite3.connect(db_path)
+                        cur = conn.cursor()
+                        cur.execute("SELECT COUNT(*) FROM media_files")
+                        count = cur.fetchone()[0]
+                        conn.close()
+                        if count > 0:
+                            print(f"[STARTUP] Discovering media paths for silo '{silo_name}' ({count} files in DB)", flush=True)
+                            silo_manager.discover_and_set_silo_media_paths(silo_name)
+                            print(f"[STARTUP] ✓ Media path discovery complete for '{silo_name}'", flush=True)
+                        else:
+                            print(f"[STARTUP] Skipping media path discovery for '{silo_name}' (empty database)", flush=True)
         except Exception as e:
-            print(f"[STARTUP] ERROR initializing database for silo '{silo_name}': {e}", flush=True)
+            print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}", flush=True)
             import traceback
             traceback.print_exc()
-    
-    silos = SiloManager.load_silos()
-    active_silo_name = silos.get("active_silo", "default")
-    print(f"[STARTUP] Backend ready - active silo: {active_silo_name}", flush=True)
-    
-    # Auto-discover media paths on startup by scanning database
-    try:
-        for silo_info in silo_manager.list_silos():
-            silo_name = silo_info["name"]
-            existing_paths = silo_manager.get_silo_media_paths(silo_name)
-            if not existing_paths:
-                silo_manager.discover_and_set_silo_media_paths(silo_name)
-                print(f"[STARTUP] Discovered media paths for silo '{silo_name}'")
+        
+        print(f"[STARTUP] ✓ Startup complete successfully", flush=True)
+        # Background watcher disabled - user should manually trigger indexing via UI
+        # asyncio.create_task(watch_directories(process_single))
     except Exception as e:
-        print(f"[STARTUP] Warning: Could not discover media paths for silos: {e}")
-    
-    # Background watcher disabled - user should manually trigger indexing via UI
-    # asyncio.create_task(watch_directories(process_single))
+        print(f"[STARTUP] CRITICAL ERROR during startup: {e}", flush=True)
+        import traceback
+        traceback.print_exc()
+        raise  # Re-raise to prevent silent failures
 
 
 @app.get("/health")
