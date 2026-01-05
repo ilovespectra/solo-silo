@@ -38,6 +38,24 @@ export default function PeoplePane() {
   const logsEndRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
+  // Auto-refresh when indexing completes
+  useEffect(() => {
+    const handleIndexingComplete = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      console.log('[PeoplePane] Indexing complete event received:', customEvent.detail);
+      console.log('[PeoplePane] Refreshing face clusters...');
+      
+      // Force refresh to clear cache and get latest data
+      fetchClusters(showHidden, true);
+    };
+
+    window.addEventListener('indexing-complete', handleIndexingComplete);
+    
+    return () => {
+      window.removeEventListener('indexing-complete', handleIndexingComplete);
+    };
+  }, [fetchClusters, showHidden]);
+
   useEffect(() => {
     if (logsEndRef.current) {
       logsEndRef.current.scrollIntoView({ behavior: 'smooth' });

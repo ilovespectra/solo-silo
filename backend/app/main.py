@@ -1228,22 +1228,10 @@ async def _index_path_with_progress(root_path: str, recursive: bool = True):
                         traceback.print_exc()
                         processed_count += 1
                     
-                    # Throttle: Every 3 images, do aggressive memory cleanup
-                    if (processed_count % 3) == 0:
-                        print(f"[INDEXING] Memory cleanup checkpoint ({processed_count} images processed)...")
-                        gc.collect()
-                        # Try to clean CUDA cache if available
-                        try:
-                            import torch
-                            if torch.cuda.is_available():
-                                torch.cuda.empty_cache()
-                        except:
-                            pass
-                        # Minimal delay between batches
-                        await asyncio.sleep(0.5)
-                    else:
-                        # No delay between consecutive images to speed up
-                        pass
+                    # CRITICAL: Add delay between EVERY image to prevent DeepFace crashes
+                    # Face detection loads heavy models and can crash without sufficient delays
+                    gc.collect()
+                    await asyncio.sleep(2.0)  # 2 second delay between each image for stability
             
             print(f"[INDEXING] ✓ face detection phase complete: {total_faces_detected} total faces found")
             indexing_state["faces_found"] = total_faces_detected

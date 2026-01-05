@@ -31,6 +31,7 @@ export const useIndexingStatus = () => {
     isComplete: boolean;
     isActive: boolean;
   } | null>(null);
+  const hasTriggeredRefreshRef = useRef(false);
 
   useEffect(() => {
     if (demoMode) {
@@ -66,6 +67,9 @@ export const useIndexingStatus = () => {
         const newIsComplete = newStatus === 'complete' || newStatus === 'idle';
         const newIsActive = newStatus === 'running' || newStatus === 'processing';
 
+        const wasIndexing = lastStateRef.current?.isActive;
+        const justCompleted = wasIndexing && newIsComplete && !newIsActive;
+
         const stateChanged = !lastStateRef.current || 
           lastStateRef.current.status !== newStatus ||
           lastStateRef.current.isComplete !== newIsComplete ||
@@ -90,6 +94,27 @@ export const useIndexingStatus = () => {
           };
 
           console.log('[useIndexingStatus] State changed - Updated store - Complete:', newIsComplete, 'Active:', newIsActive);
+
+          // Trigger refresh when indexing just completed
+          if (justCompleted && !hasTriggeredRefreshRef.current) {
+            console.log('[useIndexingStatus] 🔄 Indexing completed! Triggering data refresh...');
+            hasTriggeredRefreshRef.current = true;
+            
+            // Broadcast a custom event that components can listen to
+            window.dispatchEvent(new CustomEvent('indexing-complete', {
+              detail: { 
+                processed: progress.processed,
+                total: progress.total,
+                faces_found: progress.faces_found,
+                animals_found: progress.animals_found
+              }
+            }));
+            
+            // Reset the flag after 5 seconds to allow for future re-indexing
+            setTimeout(() => {
+              hasTriggeredRefreshRef.current = false;
+            }, 5000);
+          }
         } else {
           console.log('[useIndexingStatus] State unchanged - skipping store update');
         }

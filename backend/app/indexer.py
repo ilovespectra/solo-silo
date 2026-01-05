@@ -390,26 +390,11 @@ def store_face_embeddings(conn: sqlite3.Connection, media_id: int, faces: list):
     print(f"[INDEXING] store_face_embeddings called with {len(faces)} faces for media_id={media_id}")
     conn.execute("DELETE FROM face_embeddings WHERE media_id = ?", (media_id,))
     if not faces:
-        # Mark image as "processed with no faces" by inserting a marker row
-        # Use a zero-length numpy array as placeholder embedding
-        import numpy as np
-        zero_embedding = np.array([], dtype=np.float32)
-        print(f"[INDEXING]   Inserting marker (0-byte embedding) for media_id={media_id}")
-        conn.execute(
-            """
-            INSERT INTO face_embeddings (media_id, embedding, bbox, confidence, label, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                media_id,
-                to_blob(zero_embedding),  # Empty embedding marks "no faces"
-                None,
-                0.0,  # 0 confidence for "no faces"
-                None,
-                now,
-                now,
-            ),
-        )
+        # IMPORTANT: Don't insert marker rows during initial indexing!
+        # The batch face detection phase checks for missing entries to know which files need processing.
+        # If we insert markers here, batch face detection will skip these files.
+        print(f"[INDEXING]   No faces to store for media_id={media_id} - skipping (batch face detection will process later)")
+        return
     else:
         for i, face in enumerate(faces):
             embedding = face.get("embedding")

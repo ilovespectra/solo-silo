@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useSilos } from '@/hooks/useSilos';
 import { fetchAnimals, nameAnimal, hideAnimal } from '@/lib/backend';
@@ -43,7 +43,7 @@ export default function AnimalPane() {
   const [sortBy, setSortBy] = useState<SortBy>('appearances');
   const [selectedAnimal, setSelectedAnimal] = useState<AnimalDetails | null>(null);
   
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -54,11 +54,27 @@ export default function AnimalPane() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeSilo?.name]);
 
   useEffect(() => {
     load();
-  }, [activeSilo?.name]);
+  }, [activeSilo?.name, load]);
+
+  // Auto-refresh when indexing completes
+  useEffect(() => {
+    const handleIndexingComplete = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      console.log('[AnimalPane] Indexing complete event received:', customEvent.detail);
+      console.log('[AnimalPane] Refreshing animals...');
+      load();
+    };
+
+    window.addEventListener('indexing-complete', handleIndexingComplete);
+    
+    return () => {
+      window.removeEventListener('indexing-complete', handleIndexingComplete);
+    };
+  }, [load]);
 
   const handleName = async (id: string) => {
     const name = prompt('Name this animal:');
