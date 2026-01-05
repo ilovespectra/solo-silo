@@ -8,18 +8,21 @@ NC='\033[0m' # No Color
 
 echo -e "${orange}Stopping Silo services...${NC}"
 
-# Kill all Python processes (backend)
-if pgrep -f "python.*uvicorn.*8000" > /dev/null; then
-  echo -e "${orange}Stopping backend...${NC}"
-  pkill -f "python.*uvicorn.*8000"
+# Kill by port FIRST (most direct)
+if lsof -ti:8000 >/dev/null 2>&1; then
+  echo -e "${orange}Stopping backend (port 8000)...${NC}"
+  lsof -ti:8000 | xargs kill -9 2>/dev/null || true
   echo -e "${GREEN}Backend stopped${NC}"
 fi
 
-# Kill all Node processes (frontend) - be careful here
-if pgrep -f "next.*dev" > /dev/null; then
-  echo -e "${orange}Stopping frontend...${NC}"
-  pkill -f "next.*dev"
+if lsof -ti:3000 >/dev/null 2>&1; then
+  echo -e "${orange}Stopping frontend (port 3000)...${NC}"
+  lsof -ti:3000 | xargs kill -9 2>/dev/null || true
   echo -e "${GREEN}Frontend stopped${NC}"
 fi
+
+# Also kill process patterns in case they're not bound yet
+pkill -f "python.*uvicorn.*8000" 2>/dev/null || true
+pkill -f "next.*dev" 2>/dev/null || true
 
 echo -e "${GREEN}✅ All services stopped!${NC}"
