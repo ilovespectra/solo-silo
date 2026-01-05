@@ -132,10 +132,11 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # Start backend with auto-restart
+# Redirect stdin from /dev/null to prevent terminal job control issues
 (
   cd backend
   while true; do
-    $PYTHON_CMD -m uvicorn app.main:app --port 8000 >> ../backend.log 2>&1
+    $PYTHON_CMD -m uvicorn app.main:app --port 8000 >> ../backend.log 2>&1 < /dev/null
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Backend crashed, restarting in 2 seconds..." >> ../backend.log
     sleep 2
   done
@@ -184,9 +185,10 @@ if [ -f ".env.local" ]; then
   export $(cat .env.local | grep -v '^#' | xargs)
 fi
 
+# Start frontend with stdin redirected to prevent terminal job control issues
 (
-  npm run dev > frontend.log 2>&1
-) > /dev/null 2>&1 &
+  npm run dev > frontend.log 2>&1 < /dev/null
+) &
 FRONTEND_PID=$!
 disown $FRONTEND_PID 2>/dev/null || true
 echo -e "${GREEN}frontend started (PID: $FRONTEND_PID)${NC}"
