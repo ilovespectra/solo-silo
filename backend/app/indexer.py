@@ -679,37 +679,10 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
             ])
             await asyncio.sleep(0.05)
 
-            # Face detection for images
-            print(f"[INDEXING]   Face detection...")
+            # Face detection will run AFTER indexing completes in batch mode
+            # Skip per-file face detection during indexing to improve performance
             face_instances = []
-            if ext in SUPPORTED_IMAGE_TYPES:
-                print(f"[INDEXING]     Image file detected, running face detection...")
-                from .face_cluster import detect_faces
-                try:
-                    print(f"[INDEXING]     Calling detect_faces(['{os.path.basename(full)}'])...")
-                    face_results = detect_faces([full])
-                    print(f"[INDEXING]     detect_faces returned: {type(face_results).__name__} with {len(face_results)} results")
-                    if face_results and len(face_results) > 0:
-                        print(f"[INDEXING]     Processing {len(face_results)} face result(s)...")
-                        for i, result in enumerate(face_results):
-                            print(f"[INDEXING]       Face {i}: embedding={len(result.embedding) if result.embedding else 0} floats, bbox={result.bbox}, score={result.score}")
-                            face_instances.append({
-                                "embedding": result.embedding,  # FaceInstance.embedding is a List[float]
-                                "bbox": result.bbox,  # FaceInstance.bbox is a List[float]
-                                "score": result.score,  # FaceInstance.score is a float
-                            })
-                        total_faces += len(face_instances)
-                        print(f"[INDEXING]   Found {len(face_instances)} face(s)")
-                    else:
-                        print(f"[INDEXING]     No faces detected in this image")
-                except Exception as e:
-                    print(f"[INDEXING]   Face detection error: {type(e).__name__}: {e}")
-                    import traceback
-                    traceback.print_exc()
-            else:
-                print(f"[INDEXING]     Not an image file ({ext}), skipping face detection")
-            
-            faces_json = json.dumps([{"bbox": f["bbox"], "confidence": f["score"]} for f in face_instances])
+            faces_json = json.dumps([])
 
             print(f"[INDEXING]   Text extraction and embedding...")
             # Extract text from document files
