@@ -218,6 +218,11 @@ async def startup_event():
         from .silo_manager import SiloManager
         from . import db
         
+        # Ensure default silo exists on startup
+        silos_data = SiloManager.load_silos()  # This creates default silo if needed
+        print(f"[STARTUP] Active silo: {silos_data.get('active_silo', 'none')}", flush=True)
+        print(f"[STARTUP] Configured silos: {list(silos_data.get('silos', {}).keys())}", flush=True)
+        
         silo_manager = SiloManager()
         for silo_info in silo_manager.list_silos():
             silo_name = silo_info["name"]

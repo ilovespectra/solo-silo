@@ -79,25 +79,40 @@ rm -f "$SCRIPT_DIR/public/demo-media.json" 2>/dev/null || true
 rm -f "$SCRIPT_DIR/backend/silos-demo.json" 2>/dev/null || true
 rm -rf "$SCRIPT_DIR/backend/demo-silo" 2>/dev/null || true
 
-# Reset silos.json to blank state (remove any demo silo config)
-if [ -f "$SCRIPT_DIR/backend/silos.json" ]; then
-  # Check if it contains demo silo or is empty
-  if grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null || [ "$(cat "$SCRIPT_DIR/backend/silos.json" | tr -d '[:space:]')" = '{"silos":{}}' ]; then
-    echo -e "${ORANGE}creating default silo in silos.json...${NC}"
-    CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%S")
-    echo "{\"silos\": {\"default\": {\"paths\": [], \"created_at\": \"$CREATED_AT\"}}}" > "$SCRIPT_DIR/backend/silos.json"
-    echo -e "${GREEN}✓ default silo created${NC}"
-  fi
-else
+# Reset silos.json to proper format (remove any demo silo config)
+if [ ! -f "$SCRIPT_DIR/backend/silos.json" ] || grep -q '"demo"' "$SCRIPT_DIR/backend/silos.json" 2>/dev/null; then
   echo -e "${ORANGE}creating silos.json with default silo...${NC}"
   mkdir -p "$SCRIPT_DIR/backend"
+  mkdir -p "$SCRIPT_DIR/backend/cache/silos/default"
+  
   CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%S")
-  echo "{\"silos\": {\"default\": {\"paths\": [], \"created_at\": \"$CREATED_AT\"}}}" > "$SCRIPT_DIR/backend/silos.json"
+  DB_PATH="$SCRIPT_DIR/backend/cache/silos/default/personalai.db"
+  CACHE_DIR="$SCRIPT_DIR/backend/cache/silos/default"
+  
+  cat > "$SCRIPT_DIR/backend/silos.json" <<EOF
+{
+  "active_silo": "default",
+  "silos": {
+    "default": {
+      "name": "default",
+      "created_at": "$CREATED_AT",
+      "password": null,
+      "password_mode": null,
+      "authenticated": true,
+      "db_path": "$DB_PATH",
+      "cache_dir": "$CACHE_DIR",
+      "media_paths": []
+    }
+  }
+}
+EOF
   echo -e "${GREEN}✓ silos.json created with default silo${NC}"
+else
+  echo -e "${GREEN}✓ silos.json already exists${NC}"
 fi
 
-# Ensure cache directory exists
-mkdir -p "$SCRIPT_DIR/backend/cache/silos"
+# Ensure cache directory structure exists
+mkdir -p "$SCRIPT_DIR/backend/cache/silos/default"
 echo -e "${GREEN}✓ local mode configured${NC}"
 
 echo -e "${ORANGE}starting backend...${NC}"
