@@ -113,6 +113,20 @@ fi
 
 # Ensure cache directory structure exists
 mkdir -p "$SCRIPT_DIR/backend/cache/silos/default"
+
+# Create config.yaml from example if it doesn't exist
+if [ ! -f "$SCRIPT_DIR/backend/config.yaml" ]; then
+  if [ -f "$SCRIPT_DIR/backend/config.yaml.example" ]; then
+    echo -e "${ORANGE}creating backend/config.yaml from template...${NC}"
+    cp "$SCRIPT_DIR/backend/config.yaml.example" "$SCRIPT_DIR/backend/config.yaml"
+    echo -e "${GREEN}✓ config.yaml created (edit to add your media folders)${NC}"
+  else
+    echo -e "${RED}❌ ERROR: backend/config.yaml.example not found${NC}"
+    exit 1
+  fi
+else
+  echo -e "${GREEN}✓ config.yaml exists${NC}"
+fi
 echo -e "${GREEN}✓ local mode configured${NC}"
 
 echo -e "${ORANGE}starting backend...${NC}"
