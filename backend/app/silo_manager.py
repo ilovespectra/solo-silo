@@ -46,6 +46,10 @@ class SiloManager:
     @staticmethod
     def _create_default_silos() -> dict:
         """Create initial silos metadata with default silo."""
+        # Use the new silo directory structure: cache/silos/<silo_name>/
+        default_silo_dir = os.path.join(CACHE_BASE_DIR, "silos", DEFAULT_SILO_NAME)
+        os.makedirs(default_silo_dir, exist_ok=True)
+        
         silos = {
             "active_silo": DEFAULT_SILO_NAME,
             "silos": {
@@ -55,8 +59,8 @@ class SiloManager:
                     "password": None,
                     "password_mode": None,  # "instantly" or "first_access"
                     "authenticated": True,  # Default silo starts authenticated
-                    "db_path": os.path.join(CACHE_BASE_DIR, "personalai.db"),
-                    "cache_dir": CACHE_BASE_DIR,
+                    "db_path": os.path.join(default_silo_dir, "personalai.db"),
+                    "cache_dir": default_silo_dir,
                     "media_paths": []  # Each silo has its own media sources
                 }
             }
