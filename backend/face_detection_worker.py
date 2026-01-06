@@ -175,7 +175,7 @@ def rebuild_clustering_cache():
         log_worker(f"[CLUSTERING] Traceback: {traceback.format_exc()}")
 
 def detect_faces_with_timeout(img_path, timeout_seconds=30):
-    """Detect faces with timeout protection."""
+    """Detect faces with timeout protection using daemon thread."""
     result = [None]
     exception = [None]
     
@@ -185,13 +185,16 @@ def detect_faces_with_timeout(img_path, timeout_seconds=30):
         except Exception as e:
             exception[0] = e
     
-    thread = threading.Thread(target=run_detection, daemon=False)
+    # Use daemon=True so thread doesn't block process exit on timeout
+    thread = threading.Thread(target=run_detection, daemon=True)
     thread.start()
     thread.join(timeout=timeout_seconds)
     
     if thread.is_alive():
-        # Timeout occurred
+        # Timeout occurred - thread is still running
         log_worker(f"[TIMEOUT] face detection exceeded {timeout_seconds}s for {os.path.basename(img_path)}")
+        log_worker(f"[TIMEOUT] Skipping image and continuing with next file")
+        # Note: daemon thread will be killed when process exits, but we continue with next image
         raise TimeoutError(f"face detection timeout after {timeout_seconds} seconds")
     
     if exception[0]:
@@ -211,7 +214,7 @@ def detect_faces_worker():
         processed_count = 0
         skipped_count = 0
         RESTART_THRESHOLD = 5  # Auto-restart after processing 5 files to avoid memory/hang issues
-        TIMEOUT_SECONDS = 60  # Increased timeout to 60s to handle slow images
+        TIMEOUT_SECONDS = 120  # M1 Mac timeout: 120s to handle large images with slow deepface
         last_failed_file = None  # Track consecutive failures
         
         # Get total count of eligible files in database
