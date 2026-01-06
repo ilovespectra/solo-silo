@@ -160,10 +160,11 @@ fi
 
 # Start backend with auto-restart
 # Redirect stdin from /dev/null to prevent terminal job control issues
+# Use -u flag for unbuffered output so logs appear immediately
 (
   cd backend
   while true; do
-    $PYTHON_CMD -m uvicorn app.main:app --port 8000 >> ../backend.log 2>&1 < /dev/null
+    $PYTHON_CMD -u -m uvicorn app.main:app --port 8000 >> ../backend.log 2>&1 < /dev/null
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Backend crashed, restarting in 2 seconds..." >> ../backend.log
     sleep 2
   done
