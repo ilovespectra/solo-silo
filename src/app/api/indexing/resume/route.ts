@@ -1,0 +1,43 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(req: NextRequest) {
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  
+  if (isDemoMode) {
+    return NextResponse.json(
+      { error: 'Indexing not available in demo mode' },
+      { status: 403 }
+    );
+  }
+  
+  // In local mode, proxy to backend
+  try {
+    const body = await req.text();
+    const url = new URL(req.url);
+    const backendUrl = `http://127.0.0.1:8000/api/indexing/resume${url.search}`;
+    
+    const backendResponse = await fetch(backendUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+      signal: AbortSignal.timeout(30000),
+    });
+    
+    if (!backendResponse.ok) {
+      const errorText = await backendResponse.text();
+      console.error('[resume] Backend error:', errorText);
+      throw new Error(`Backend returned ${backendResponse.status}`);
+    }
+    
+    const data = await backendResponse.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('[resume] Error proxying to backend:', error);
+    return NextResponse.json(
+      { error: 'Backend unavailable', details: String(error) },
+      { status: 503 }
+    );
+  }
+}
