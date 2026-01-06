@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
 from .config import load_config, ensure_paths
-from .db import init_db, get_db
+from .db import init_db, get_db, get_db_path
 from .indexer import full_reindex, rebuild_faiss_index_from_db, watch_directories, process_single, is_media, md5sum, extract_exif, SUPPORTED_IMAGE_TYPES, store_face_embeddings
 from .embeddings import get_text_embedding, get_image_embedding
 from .search_index import load_index, search, save_index
@@ -681,13 +681,29 @@ async def _index_and_detect_with_lock(silo_name: str):
                 print(f"[INDEX_DETECT] Starting worker: {worker_script}")
                 print(f"[INDEX_DETECT] Worker script exists: {os.path.exists(worker_script)}")
                 
+                # CRITICAL: Get silo context to pass to subprocess
+                from .silo_manager import SiloManager
+                db_path = get_db_path()
+                cache_dir = SiloManager.get_silo_cache_dir()
+                cluster_cache_path = os.path.join(cache_dir, "people_cluster_cache.json")
+                
+                print(f"[INDEX_DETECT] Silo database: {db_path}")
+                print(f"[INDEX_DETECT] Cluster cache: {cluster_cache_path}")
+                
+                # Setup environment for worker subprocess
+                worker_env = os.environ.copy()
+                worker_env["PAI_DB"] = db_path
+                worker_env["PAI_CLUSTER_CACHE"] = cluster_cache_path
+                worker_env["PAI_SILO_NAME"] = silo_name  # CRITICAL: Pass silo name
+                
                 try:
                     # Wait for face detection to complete with output capture
                     print("[INDEX_DETECT] Spawning worker process...")
                     process = await asyncio.create_subprocess_exec(
                         sys.executable, worker_script,
                         stdout=asyncio.subprocess.PIPE,
-                        stderr=asyncio.subprocess.PIPE
+                        stderr=asyncio.subprocess.PIPE,
+                        env=worker_env  # CRITICAL: Pass environment variables
                     )
                     
                     print(f"[INDEX_DETECT] Worker process spawned (PID: {process.pid})")

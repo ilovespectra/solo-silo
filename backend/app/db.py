@@ -5,10 +5,21 @@ from typing import Iterator
 
 # Import SiloManager for database path routing
 def get_db_path():
-    """Get the database path for the active silo. CRITICAL: No fallback - must resolve correctly."""
+    """Get the database path for the active silo.
+    
+    CRITICAL: Checks environment variable first (for subprocess context),
+    falls back to SiloManager for in-process context.
+    """
+    # Check if PAI_DB is set by parent process (for silo context in subprocesses)
+    if "PAI_DB" in os.environ:
+        path = os.environ["PAI_DB"]
+        print(f"[DB_PATH] Using PAI_DB env variable: {path}", flush=True)
+        return path
+    
+    # Otherwise get silo-aware path from SiloManager
     from .silo_manager import SiloManager
     path = SiloManager.get_silo_db_path()
-    print(f"[DB_PATH] Using database: {path}", flush=True)
+    print(f"[DB_PATH] Using silo manager: {path}", flush=True)
     return path
 
 # Database schema: All tables use "CREATE TABLE IF NOT EXISTS"

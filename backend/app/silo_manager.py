@@ -319,7 +319,13 @@ class SiloManager:
     @staticmethod
     def get_silo_db_path(silo_name: Optional[str] = None) -> str:
         """Get database path for a silo. Creates path if needed, ensures silo exists."""
-        # CRITICAL: Check if there's a processing silo set by main.py
+        # CRITICAL: Check environment first (for subprocess context like face detection worker)
+        if not silo_name:
+            silo_name = os.environ.get("PAI_SILO_NAME")
+            if silo_name:
+                print(f"[GET_SILO_DB_PATH] Using PAI_SILO_NAME env variable: {silo_name}", flush=True)
+        
+        # Check if there's a processing silo set by main.py (in-process context)
         if not silo_name:
             try:
                 from . import main
@@ -357,7 +363,11 @@ class SiloManager:
     @staticmethod
     def get_silo_cache_dir(silo_name: Optional[str] = None) -> str:
         """Get cache directory for a silo."""
-        # CRITICAL: Check if there's a processing silo set by main.py
+        # CRITICAL: Check environment first (for subprocess context like face detection worker)
+        if not silo_name:
+            silo_name = os.environ.get("PAI_SILO_NAME")
+        
+        # Check if there's a processing silo set by main.py (in-process context)
         if not silo_name:
             try:
                 from . import main
