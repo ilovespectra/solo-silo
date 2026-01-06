@@ -175,10 +175,36 @@ echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
 # Wait for backend to become healthy
 echo -e "${ORANGE}waiting for backend to become healthy...${NC}"
 sleep 5  # Give backend process more time to load dependencies (DeepFace, etc.)
+
+# First wait for the port to be listening
+echo -e "${ORANGE}waiting for backend to bind to port 8000...${NC}"
+PORT_READY=false
+for i in $(seq 1 30); do
+  if lsof -i :8000 -sTCP:LISTEN >/dev/null 2>&1; then
+    PORT_READY=true
+    echo -e "${GREEN}✓ backend port is listening${NC}"
+    break
+  fi
+  sleep 1
+  echo -n "."
+done
+echo ""
+
+if [ "$PORT_READY" = false ]; then
+  echo -e "${RED}✗ ERROR: Backend never bound to port 8000${NC}"
+  echo -e "${ORANGE}Check backend logs:${NC}"
+  tail -20 backend.log
+  exit 1
+fi
+
+# Now check if it's actually healthy
+echo -e "${ORANGE}waiting for backend health check...${NC}"
 BACKEND_READY=false
-HEALTH_CHECK_TIMEOUT=60  # Increased timeout for ML model loading
+HEALTH_CHECK_TIMEOUT=30  # Reduced since port is already listening
 for i in $(seq 1 $HEALTH_CHECK_TIMEOUT); do
-  if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
+  # Try health check with more verbose error handling
+  HEALTH_RESPONSE=$(curl -s -w "%{http_code}" http://127.0.0.1:8000/health 2>&1 | tail -n1)
+  if [ "$HEALTH_RESPONSE" = "200" ]; then
     BACKEND_READY=true
     echo -e "\n${GREEN}✓ backend is healthy!${NC}"
     break

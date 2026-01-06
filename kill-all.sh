@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🛑 KILLING EVERYTHING..."
+echo "🛑 preparing ports..."
 
 # Round 1: Kill by port FIRST (most direct)
 lsof -ti:8000 | xargs kill -9 2>/dev/null || true
