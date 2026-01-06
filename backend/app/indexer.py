@@ -644,7 +644,11 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
             await asyncio.sleep(0.05)
 
             print(f"[INDEXING]   Object detection...")
-            objects = detect_objects([full], confidence_threshold=0.45) if ext in SUPPORTED_IMAGE_TYPES else []
+            # Run object detection in thread pool to avoid blocking event loop
+            if ext in SUPPORTED_IMAGE_TYPES:
+                objects = await asyncio.to_thread(detect_objects, [full], 0.45)
+            else:
+                objects = []
             animals = [o for o in objects if o.is_animal]
             objects_json = json.dumps([
                 {
@@ -1178,7 +1182,11 @@ async def process_single(path: str):
             ext = os.path.splitext(path)[1].lower()
             clip_embed = get_image_embedding(path) if ext in SUPPORTED_IMAGE_TYPES else None
 
-            objects = detect_objects([path]) if ext in SUPPORTED_IMAGE_TYPES else []
+            # Run object detection in thread pool to avoid blocking event loop
+            if ext in SUPPORTED_IMAGE_TYPES:
+                objects = await asyncio.to_thread(detect_objects, [path])
+            else:
+                objects = []
             animals = [o for o in objects if o.is_animal]
             objects_json = json.dumps([
                 {
