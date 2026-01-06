@@ -214,7 +214,7 @@ def detect_faces_worker():
         processed_count = 0
         skipped_count = 0
         RESTART_THRESHOLD = 5  # Auto-restart after processing 5 files to avoid memory/hang issues
-        TIMEOUT_SECONDS = 120  # M1 Mac timeout: 120s to handle large images with slow deepface
+        TIMEOUT_SECONDS = 180  # M1 Mac timeout: 180s (3 min) - we retry, NOT skip images on timeout
         last_failed_file = None  # Track consecutive failures
         
         # Get total count of eligible files in database
@@ -313,8 +313,24 @@ def detect_faces_worker():
                     error_type = "TIMEOUT" if isinstance(detect_error, TimeoutError) else type(detect_error).__name__
                     error_msg = str(detect_error)[:100]
                     
-                    if last_failed_file == img_path:
-                        # Same file failed twice - skip it
+                    if isinstance(detect_error, TimeoutError):
+                        # TIMEOUT: Do NOT skip or mark as processed - retry this image on next worker restart
+                        log_worker(f"[TIMEOUT_RETRY] File {current_filename} exceeded {TIMEOUT_SECONDS}s")
+                        log_worker(f"[TIMEOUT_RETRY] NOT marking as processed - will retry on next worker restart")
+                        processed_count += 1  # Count it for batch tracking, but DON'T mark_image_processed()
+                        # Save progress and exit to restart fresh
+                        cumulative_processed = already_processed + processed_count
+                        cumulative_faces = already_found_faces + total_faces_detected
+                        log_progress(cumulative_processed, total_eligible_files, cumulative_faces, current_filename)
+                        print(json.dumps({
+                            "status": "restarting",
+                            "reason": "timeout",
+                            "processed": cumulative_processed,
+                            "faces_found": cumulative_faces
+                        }), flush=True)
+                        sys.exit(0)
+                    elif last_failed_file == img_path:
+                        # Same file failed twice (non-timeout) - skip it
                         log_skipped(img_path, f"Consecutive failure ({error_type}): {error_msg}")
                         log_worker(f"[SKIP_CONSECUTIVE] Skipping {current_filename} - failed twice in a row")
                         skipped_count += 1
@@ -324,24 +340,15 @@ def detect_faces_worker():
                         last_failed_file = None
                         continue
                     else:
-                        # First failure - log and trigger restart after this batch
+                        # First non-timeout failure - skip this file on retry
                         log_worker(f"[FACE_DETECT_ERROR] {error_type}: {error_msg}")
-                        if isinstance(detect_error, TimeoutError):
-                            # Timeout - exit to restart fresh
-                            log_worker(f"[TIMEOUT_EXIT] File {current_filename} exceeded {TIMEOUT_SECONDS}s, restarting worker")
-                            mark_image_processed(media_id)
-                            processed_count += 1
-                            # Save progress and exit to restart
-                            cumulative_processed = already_processed + processed_count
-                            cumulative_faces = already_found_faces + total_faces_detected
-                            log_progress(cumulative_processed, total_eligible_files, cumulative_faces, current_filename)
-                            print(json.dumps({
-                                "status": "restarting",
-                                "reason": "timeout",
-                                "processed": cumulative_processed,
-                                "faces_found": cumulative_faces
-                            }), flush=True)
-                            sys.exit(0)
+                        last_failed_file = img_path
+                        log_skipped(img_path, f"Detection failed ({error_type}): {error_msg}")
+                        skipped_count += 1
+                        processed_count += 1
+                        print(f"✗ SKIP", flush=True)
+                        mark_image_processed(media_id)
+                        continue
                         else:
                             # Other error - skip this file and mark for retry
                             last_failed_file = img_path
