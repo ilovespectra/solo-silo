@@ -17,13 +17,40 @@ import { BackendStatus } from '@/components/BackendStatus';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard, setShowGettingStartedTour, setGettingStartedStep, updatePermissions } = useAppStore();
+  const { showSetupWizard, currentView, setCurrentView, theme, setTheme, setShowSetupWizard, setShowGettingStartedTour, setGettingStartedStep, updatePermissions, showGettingStartedTour, gettingStartedStep } = useAppStore();
   const [mounted, setMounted] = useState(false);
   const [hasIndexedFiles, setHasIndexedFiles] = useState(false);
   const [showSiloManager, setShowSiloManager] = useState(false);
   const [siloSwitchKey, setSiloSwitchKey] = useState(0);
 
   useIndexingStatus();
+
+  // Helper to handle navigation with tour blocking detection
+  const handleNavigation = (view: typeof currentView) => {
+    // Check if tour is active and blocking this view
+    if (showGettingStartedTour) {
+      const tourSteps = [
+        { id: 'welcome', targetView: undefined },
+        { id: 'add-source', targetView: 'browser' },
+        { id: 'indexing', targetView: 'settings' },
+        { id: 'view-people', targetView: 'people' },
+        { id: 'manage-cluster', targetView: 'people' },
+        { id: 'semantic-search', targetView: 'search' },
+        { id: 'complete', targetView: undefined },
+      ];
+      
+      const currentStep = tourSteps[gettingStartedStep];
+      
+      // If trying to navigate to a different view than the tour wants, flash the tour
+      if (currentStep?.targetView && currentStep.targetView !== view) {
+        window.dispatchEvent(new CustomEvent('tour-blocked-navigation'));
+        return; // Block navigation
+      }
+    }
+    
+    // Allow navigation
+    setCurrentView(view);
+  };
 
   const handleRestartTour = () => {
     localStorage.removeItem('tour-dismissed');
@@ -161,7 +188,7 @@ export default function Home() {
         <nav className={`w-40 ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r p-4 flex flex-col gap-2 justify-between`}>
           <div className="flex flex-col gap-2">
             <button
-              onClick={() => setCurrentView('browser')}
+              onClick={() => handleNavigation('browser')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'browser'
                   ? theme === 'dark'
@@ -175,7 +202,7 @@ export default function Home() {
               browser
             </button>
             <button
-              onClick={() => setCurrentView('search')}
+              onClick={() => handleNavigation('search')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'search'
                   ? theme === 'dark'
@@ -189,7 +216,7 @@ export default function Home() {
               search
             </button>
             <button
-              onClick={() => setCurrentView('people')}
+              onClick={() => handleNavigation('people')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'people'
                   ? theme === 'dark'
@@ -203,7 +230,7 @@ export default function Home() {
               people
             </button>
             <button
-              onClick={() => setCurrentView('animals')}
+              onClick={() => handleNavigation('animals')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'animals'
                   ? theme === 'dark'
@@ -217,7 +244,7 @@ export default function Home() {
               animals
             </button>
             <button
-              onClick={() => setCurrentView('audio')}
+              onClick={() => handleNavigation('audio')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'audio'
                   ? theme === 'dark'
@@ -231,7 +258,7 @@ export default function Home() {
               audio
             </button>
             <button
-              onClick={() => setCurrentView('settings')}
+              onClick={() => handleNavigation('settings')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 currentView === 'settings'
                   ? theme === 'dark'

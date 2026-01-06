@@ -115,6 +115,7 @@ export const GettingStartedTour: React.FC = () => {
   const [demoMode, setDemoMode] = useState<boolean | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false);
   
   useEffect(() => {
     async function detectMode() {
@@ -205,6 +206,24 @@ export const GettingStartedTour: React.FC = () => {
     }
   }, [showGettingStartedTour, gettingStartedStep, currentView, setTourAutoOpenDebugLog, demoMode]);
 
+  // Listen for blocked navigation attempts
+  useEffect(() => {
+    if (!showGettingStartedTour || dismissed) return;
+    
+    const handleBlockedNavigation = () => {
+      // Flash the tour to get user's attention
+      setIsFlashing(true);
+      setTimeout(() => setIsFlashing(false), 2000);
+    };
+    
+    // Add event listener for custom event
+    window.addEventListener('tour-blocked-navigation', handleBlockedNavigation);
+    
+    return () => {
+      window.removeEventListener('tour-blocked-navigation', handleBlockedNavigation);
+    };
+  }, [showGettingStartedTour, dismissed]);
+
   if (!showGettingStartedTour || dismissed) {
     return null;
   }
@@ -279,8 +298,8 @@ export const GettingStartedTour: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-md animate-in slide-in-from-bottom-8">
-      <div className={`${bgClass} rounded-lg shadow-2xl border-2 border-orange-500 overflow-hidden`}>
+    <div className={`fixed bottom-6 right-6 z-50 max-w-md animate-in slide-in-from-bottom-8 ${isFlashing ? 'animate-pulse-glow' : ''}`}>
+      <div className={`${bgClass} rounded-lg shadow-2xl border-2 ${isFlashing ? 'border-orange-400 ring-4 ring-orange-400 ring-opacity-50' : 'border-orange-500'} overflow-hidden transition-all duration-300`}>
         {/* Header */}
         <div className="p-4 border-b border-gray-700 bg-gradient-to-r from-orange-600 to-orange-500">
           <div className="flex items-center justify-between mb-2">
