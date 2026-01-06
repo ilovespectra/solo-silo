@@ -180,14 +180,18 @@ sleep 5  # Give backend process more time to load dependencies (DeepFace, etc.)
 # First wait for the port to be listening
 echo -e "${ORANGE}waiting for backend to bind to port 8000...${NC}"
 PORT_READY=false
-for i in $(seq 1 30); do
+for i in $(seq 1 90); do
   if lsof -i :8000 -sTCP:LISTEN >/dev/null 2>&1; then
     PORT_READY=true
     echo -e "${GREEN}✓ backend port is listening${NC}"
     break
   fi
   sleep 1
-  echo -n "."
+  if [ $((i % 5)) -eq 0 ]; then
+    echo -n " ${i}s"
+  else
+    echo -n "."
+  fi
 done
 echo ""
 
