@@ -76,6 +76,8 @@ next-env.d.ts
 *.sqlite
 *.sqlite3
 personalai.db
+*.db-shm
+*.db-wal
 
 # Silo data (user-specific - NEVER commit)
 /backend/cache/silos/
@@ -85,19 +87,28 @@ removed_silos.json
 
 # Thumbnails and generated images
 /backend/cache/thumbnails/
+/cache/thumbnails/
 
 # User configuration (should be regenerated per installation)
 /backend/cache/user_config.json
 /backend/cache/people.json
 /backend/cache/animals.json
+/backend/cache/people_cluster_cache.json
+/backend/app/cache/people_cluster_cache.json
 
 # Search indices (should be rebuilt)
 /backend/cache/faiss.index
 /backend/cache/faiss_ids.npy
-Runtime logs (NEVER commit)
+
+# Runtime logs (NEVER commit)
 backend.log
 frontend.log
 *.log
+
+# User photo directories (NEVER commit personal photos)
+/public/test-files/
+public/test-files/**
+test-files/
 
 # 
 # ===== DEVELOPMENT & TESTING FILES =====
