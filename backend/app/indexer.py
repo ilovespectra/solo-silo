@@ -668,12 +668,10 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
             ])
             await asyncio.sleep(0.05)
 
-            print(f"[INDEXING]   OCR...")
-            ocr_results = run_ocr(full) if ext in SUPPORTED_IMAGE_TYPES else []
-            ocr_json = json.dumps([
-                {"text": r.text, "confidence": r.confidence, "bbox": r.bbox}
-                for r in ocr_results
-            ])
+            # OCR will run AFTER indexing completes in batch mode
+            # Skip per-file OCR during indexing to prevent crashes and improve performance
+            ocr_results = []
+            ocr_json = json.dumps([])
             await asyncio.sleep(0.05)
 
             # Face detection will run AFTER indexing completes in batch mode
