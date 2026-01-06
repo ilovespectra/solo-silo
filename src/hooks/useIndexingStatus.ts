@@ -47,10 +47,12 @@ export const useIndexingStatus = () => {
       return;
     }
 
+    const abortController = new AbortController();
+
     const checkIndexingStatus = async () => {
       try {
         const response = await fetch(`/api/indexing`, {
-          signal: AbortSignal.timeout(5000),
+          signal: abortController.signal,
         });
 
         if (!response.ok) {
@@ -119,6 +121,10 @@ export const useIndexingStatus = () => {
           console.log('[useIndexingStatus] State unchanged - skipping store update');
         }
       } catch (error) {
+        // Ignore abort errors - they're expected when component unmounts
+        if ((error as Error).name === 'AbortError') {
+          return;
+        }
         console.error('[useIndexingStatus] Error fetching status:', error);
         if (!lastStateRef.current) {
           setIndexingComplete(true);
@@ -136,6 +142,9 @@ export const useIndexingStatus = () => {
 
     const interval = setInterval(checkIndexingStatus, 2000);
 
-    return () => clearInterval(interval);
+    return () => {
+      abortController.abort();
+      clearInterval(interval);
+    };
   }, [setIndexingComplete, setIndexingProgress, setIsIndexing, demoMode]);
 };
