@@ -400,25 +400,29 @@ def detect_faces_worker():
                 gc.collect()
                 time.sleep(0.1)  # Small delay to prevent overheating
                 
-                # Auto-restart after processing RESTART_THRESHOLD files to clean memory
+                # Memory cleanup + clustering cache rebuild after processing RESTART_THRESHOLD files
                 if processed_count >= RESTART_THRESHOLD:
                     cumulative_processed = already_processed + processed_count
                     cumulative_faces = already_found_faces + total_faces_detected
                     
-                    # Rebuild clustering cache before restart for live propagation
-                    log_worker(f"[AUTO_RESTART] Rebuilding clustering cache with newly detected faces...")
+                    # Rebuild clustering cache for live propagation
+                    log_worker(f"[MEMORY_CLEANUP] Rebuilding clustering cache with newly detected faces...")
                     rebuild_clustering_cache()
                     
-                    log_worker(f"[AUTO_RESTART] Processed {processed_count} files (cumulative: {cumulative_processed}/{total_eligible_files}), restarting to clean memory...")
+                    log_worker(f"[MEMORY_CLEANUP] Processed {processed_count} files (cumulative: {cumulative_processed}/{total_eligible_files}), performing memory cleanup...")
                     log_progress(cumulative_processed, total_eligible_files, cumulative_faces, current_filename)
                     print(json.dumps({
-                        "status": "restarting",
+                        "status": "memory_cleanup",
                         "reason": "Memory cleanup + clustering cache rebuild",
                         "processed": processed_count,
                         "faces_found": total_faces_detected
                     }), flush=True)
-                    # Exit cleanly - backend will restart us automatically
-                    sys.exit(0)
+                    
+                    # Reset counter and continue processing (don't exit)
+                    processed_count = 0
+                    total_faces_detected = 0
+                    gc.collect()
+                    time.sleep(0.5)  # Brief pause for memory cleanup
                 
             except Exception as img_error:
                 error_msg = str(img_error)[:100]
