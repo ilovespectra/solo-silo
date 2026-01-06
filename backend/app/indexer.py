@@ -640,7 +640,11 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
             ext = os.path.splitext(full)[1].lower()
 
             print(f"[INDEXING]   CLIP embedding...")
-            clip_embed = get_image_embedding(full) if ext in SUPPORTED_IMAGE_TYPES else None
+            # Run CLIP in thread pool to avoid blocking async event loop
+            if ext in SUPPORTED_IMAGE_TYPES:
+                clip_embed = await asyncio.to_thread(get_image_embedding, full)
+            else:
+                clip_embed = None
             await asyncio.sleep(0.05)
 
             # Object detection will run AFTER indexing completes in batch mode via worker
