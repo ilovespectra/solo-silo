@@ -189,4 +189,4 @@ railway.json
 render.yaml
 backend/Dockerfile
 backend/requirements-minimal.txt
-backend/start.sh
+backend/start.shbackend/config.yaml
