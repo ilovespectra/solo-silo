@@ -3,9 +3,10 @@ import { fetchBackend } from '@/lib/backendClient';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { silo_name: string } }
+  context: { params: Promise<{ silo_name: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await req.json();
     const { paths } = body;
     const siloName = params.silo_name;
@@ -50,9 +51,10 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { silo_name: string } }
+  context: { params: Promise<{ silo_name: string }> }
 ) {
   try {
+    const params = await context.params;
     const siloName = params.silo_name;
 
     console.log(`[api/silos/${siloName}/media-paths] Getting paths`);
