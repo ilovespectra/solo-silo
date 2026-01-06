@@ -101,6 +101,37 @@ export default function SetupWizard() {
     }
   }, [activeSilo?.name, setActiveSiloName]);
 
+  // Load media paths from backend silo configuration (source of truth)
+  useEffect(() => {
+    const loadMediaPaths = async () => {
+      if (!activeSilo?.name) return;
+      
+      try {
+        console.log(`[SetupWizard] Loading media paths for silo: ${activeSilo.name}`);
+        const response = await fetch(`${API_BASE}/api/silos/${activeSilo.name}/media-paths`);
+        if (response.ok) {
+          const data = await response.json();
+          const backendPaths = data.paths || [];
+          console.log(`[SetupWizard] Backend has ${backendPaths.length} configured paths:`, backendPaths);
+          
+          // Clear localStorage paths and sync with backend
+          const currentPaths = config.selectedPaths || [];
+          if (JSON.stringify(currentPaths.sort()) !== JSON.stringify(backendPaths.sort())) {
+            console.log('[SetupWizard] Syncing paths from backend to frontend state');
+            // Clear existing paths
+            currentPaths.forEach(path => removeSelectedPath(path));
+            // Add backend paths
+            backendPaths.forEach((path: string) => addSelectedPath(path));
+          }
+        }
+      } catch (err) {
+        console.error('[SetupWizard] Failed to load media paths from backend:', err);
+      }
+    };
+    
+    loadMediaPaths();
+  }, [activeSilo?.name, API_BASE]);
+
   const retryBackendCheck = () => {
     setBackendStatus('checking');
     setBackendLogs([]);
