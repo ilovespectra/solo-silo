@@ -1320,32 +1320,57 @@ async def get_indexing_status(silo_name: str = None):
             from .silo_manager import SiloManager
             cache_dir = SiloManager.get_silo_cache_dir()
             progress_file = os.path.join(cache_dir, "detection-progress.json")
+            
+            # Get count of already-attempted files from database
+            try:
+                with get_db() as conn:
+                    cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE face_detection_attempted = 1")
+                    already_attempted = cur.fetchone()[0] or 0
+                    cur = conn.execute("SELECT COUNT(*) FROM media_files")
+                    total_files = cur.fetchone()[0] or 0
+            except:
+                already_attempted = 0
+                total_files = 0
+            
             if os.path.exists(progress_file):
-                with open(progress_file, "r") as f:
-                    progress_data = json.load(f)
-                    if progress_data.get("total", 0) > 0:
-                        # Get count of already-attempted files from database
-                        try:
-                            with get_db() as conn:
-                                cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE face_detection_attempted = 1")
-                                already_attempted = cur.fetchone()[0] or 0
-                        except:
-                            already_attempted = 0
-                        
-                        # Calculate cumulative progress
-                        current_processed = progress_data.get("processed", 0)
-                        remaining_total = progress_data.get("total", 0)
-                        cumulative_processed = already_attempted + current_processed
-                        cumulative_total = already_attempted + remaining_total
-                        
-                        indexing_state["processed"] = cumulative_processed
-                        indexing_state["total"] = cumulative_total
-                        indexing_state["faces_found"] = progress_data.get("faces_found", 0)
-                        indexing_state["current_file"] = progress_data.get("current_file", "")
-                        pct = int((cumulative_processed / cumulative_total) * 100) if cumulative_total > 0 else 0
-                        indexing_state["percentage"] = min(pct, 99)  # Cap at 99 until truly done
+                try:
+                    with open(progress_file, "r") as f:
+                        progress_data = json.load(f)
+                except:
+                    progress_data = {}
+            else:
+                progress_data = {}
+            
+            # If we have progress data, use it; otherwise set sensible defaults
+            if progress_data.get("total", 0) > 0:
+                # Calculate cumulative progress
+                current_processed = progress_data.get("processed", 0)
+                remaining_total = progress_data.get("total", 0)
+                cumulative_processed = already_attempted + current_processed
+                cumulative_total = already_attempted + remaining_total
+                
+                indexing_state["processed"] = cumulative_processed
+                indexing_state["total"] = cumulative_total
+                indexing_state["faces_found"] = progress_data.get("faces_found", 0)
+                indexing_state["current_file"] = progress_data.get("current_file", "")
+                pct = int((cumulative_processed / cumulative_total) * 100) if cumulative_total > 0 else 0
+                indexing_state["percentage"] = min(pct, 99)  # Cap at 99 until truly done
+                indexing_state["status"] = "processing"
+                indexing_state["phase"] = "detecting"
+                indexing_state["is_indexing"] = True
+            else:
+                # Progress file doesn't exist yet or is empty - worker is starting
+                # Set reasonable defaults based on database state
+                indexing_state["status"] = "processing"
+                indexing_state["phase"] = "detecting"
+                indexing_state["is_indexing"] = True
+                indexing_state["processed"] = already_attempted
+                indexing_state["total"] = total_files
+                indexing_state["percentage"] = int((already_attempted / total_files) * 100) if total_files > 0 else 0
+                indexing_state["message"] = f"Face detection in progress... ({already_attempted}/{total_files} scanned)"
+                indexing_state["current_file"] = ""
         except Exception as e:
-            print(f"[API] Could not read progress file: {e}", flush=True)
+            print(f"[API] Error reading face detection progress: {e}", flush=True)
     
     return {
         "progress": indexing_state,
