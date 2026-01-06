@@ -741,9 +741,9 @@ async def _index_and_detect_with_lock(silo_name: str):
                         indexing_state["status"] = "complete"
                         indexing_state["message"] = f"✓ Complete! Detected faces in {total_files} photos."
                     else:
-                        error_msg = '\n'.join(stderr_lines[-10:]) if stderr_lines else f"Exit code: {process.returncode}"
-                        print(f"[INDEX_DETECT] ✗ face detection failed with exit code {process.returncode}")
-                        print(f"[INDEX_DETECT] Error output: {error_msg[:500]}")
+                        error_msg = f"Worker process exited with code {return_code}"
+                        print(f"[INDEX_DETECT] ✗ face detection failed with exit code {return_code}")
+                        print(f"[INDEX_DETECT] Error output: {error_msg}")
                         indexing_state["status"] = "error"
                         indexing_state["error"] = error_msg[:200]
                         indexing_state["message"] = f"Error: {error_msg[:100]}"
