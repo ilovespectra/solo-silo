@@ -14,6 +14,7 @@ echo -e "${ORANGE}cleaning up old logs and cache...${NC}"
 bash "$SCRIPT_DIR/cleanup-startup.sh" 2>/dev/null || true
 
 # Kill all existing processes using kill-all.sh
+echo -e "${ORANGE}stopping any existing services...${NC}"
 if [ -f "$SCRIPT_DIR/kill-all.sh" ]; then
   bash "$SCRIPT_DIR/kill-all.sh"
 else
@@ -22,8 +23,34 @@ else
   pkill -9 -f "next.*dev" 2>/dev/null || true
   lsof -ti:8000 | xargs kill -9 2>/dev/null || true
   lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-  sleep 2
 fi
+
+# Wait and verify ports are free
+echo -e "${ORANGE}verifying ports are free...${NC}"
+sleep 2
+for i in {1..5}; do
+  if lsof -ti:8000 >/dev/null 2>&1 || lsof -ti:3000 >/dev/null 2>&1; then
+    echo -e "${ORANGE}waiting for ports to be released (attempt $i/5)...${NC}"
+    lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+    lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+    sleep 1
+  else
+    break
+  fi
+done
+
+# Final check
+if lsof -ti:8000 >/dev/null 2>&1; then
+  echo -e "${RED}ERROR: Port 8000 still in use after cleanup${NC}"
+  lsof -i:8000
+  exit 1
+fi
+if lsof -ti:3000 >/dev/null 2>&1; then
+  echo -e "${RED}ERROR: Port 3000 still in use after cleanup${NC}"
+  lsof -i:3000
+  exit 1
+fi
+echo -e "${GREEN}✓ Ports 8000 and 3000 are free${NC}"
 
 echo -e "${ORANGE}final log cleanup...${NC}"
 rm -f backend/*.log 2>/dev/null || true
