@@ -9,6 +9,7 @@ import { useDemoMode } from './useDemoMode';
 interface IndexingStatusResponse {
   progress: {
     status: string;
+    phase?: string;
     processed: number;
     total: number;
     current_file: string | null;
@@ -16,6 +17,7 @@ interface IndexingStatusResponse {
     error: string | null;
     faces_found: number;
     animals_found: number;
+    message?: string;
   };
   entities: {
     faces: Array<{ label: string; count: number }>;
@@ -28,10 +30,12 @@ export const useIndexingStatus = () => {
   const { demoMode } = useDemoMode();
   const lastStateRef = useRef<{
     status: string;
+    phase?: string;
     isComplete: boolean;
     isActive: boolean;
   } | null>(null);
   const hasTriggeredRefreshRef = useRef(false);
+  const hasTriggeredClusteringCompleteRef = useRef(false);
 
   useEffect(() => {
     if (demoMode) {
@@ -63,17 +67,23 @@ export const useIndexingStatus = () => {
         const data: IndexingStatusResponse = await response.json();
         const { progress } = data;
 
-        console.log('[useIndexingStatus] Status received:', progress.status);
+        console.log('[useIndexingStatus] Status received:', progress.status, 'Phase:', progress.phase);
 
         const newStatus = progress.status || 'idle';
+        const newPhase = progress.phase || '';
         const newIsComplete = newStatus === 'complete' || newStatus === 'idle';
         const newIsActive = newStatus === 'running' || newStatus === 'processing';
 
         const wasIndexing = lastStateRef.current?.isActive;
         const justCompleted = wasIndexing && newIsComplete && !newIsActive;
 
+        // Detect when clustering completes (phase changes from 'detecting' to something else)
+        const wasDetecting = lastStateRef.current?.phase === 'detecting';
+        const clusteringJustCompleted = wasDetecting && newPhase !== 'detecting' && newPhase !== '';
+
         const stateChanged = !lastStateRef.current || 
           lastStateRef.current.status !== newStatus ||
+          lastStateRef.current.phase !== newPhase ||
           lastStateRef.current.isComplete !== newIsComplete ||
           lastStateRef.current.isActive !== newIsActive;
 
@@ -91,6 +101,7 @@ export const useIndexingStatus = () => {
 
           lastStateRef.current = {
             status: newStatus,
+            phase: newPhase,
             isComplete: newIsComplete,
             isActive: newIsActive,
           };
@@ -115,6 +126,26 @@ export const useIndexingStatus = () => {
             // Reset the flag after 5 seconds to allow for future re-indexing
             setTimeout(() => {
               hasTriggeredRefreshRef.current = false;
+            }, 5000);
+          }
+
+          // Trigger refresh when clustering completes
+          if (clusteringJustCompleted && !hasTriggeredClusteringCompleteRef.current) {
+            console.log('[useIndexingStatus] 🎭 Clustering completed! Refreshing people pane...');
+            hasTriggeredClusteringCompleteRef.current = true;
+            
+            // Broadcast a custom event that PeoplePane can listen to
+            window.dispatchEvent(new CustomEvent('clustering-complete', {
+              detail: { 
+                processed: progress.processed,
+                total: progress.total,
+                faces_found: progress.faces_found,
+              }
+            }));
+            
+            // Reset the flag after 5 seconds
+            setTimeout(() => {
+              hasTriggeredClusteringCompleteRef.current = false;
             }, 5000);
           }
         } else {

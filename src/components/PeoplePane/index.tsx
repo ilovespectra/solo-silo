@@ -56,6 +56,24 @@ export default function PeoplePane() {
     };
   }, [fetchClusters, showHidden]);
 
+  // Auto-refresh when clustering completes
+  useEffect(() => {
+    const handleClusteringComplete = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      console.log('[PeoplePane] Clustering complete event received:', customEvent.detail);
+      console.log('[PeoplePane] Refreshing face clusters after clustering...');
+      
+      // Force refresh to clear cache and display new clusters
+      fetchClusters(showHidden, true);
+    };
+
+    window.addEventListener('clustering-complete', handleClusteringComplete);
+    
+    return () => {
+      window.removeEventListener('clustering-complete', handleClusteringComplete);
+    };
+  }, [fetchClusters, showHidden]);
+
   useEffect(() => {
     if (logsEndRef.current) {
       logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
