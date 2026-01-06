@@ -842,8 +842,8 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
                 unique_ids.append(mid)
                 seen.add(mid)
         
-        index = build_index(unique_embeddings, unique_ids, silo_name=current_silo_name)
-        save_index(index, unique_ids, silo_name=current_silo_name)
+        index = build_index(unique_embeddings, unique_ids, silo_name=silo_name)
+        save_index(index, unique_ids, silo_name=silo_name)
     
     print(f"[INDEXING] ==========================================")
     print(f"[INDEXING] UNIFIED INDEXING COMPLETE")

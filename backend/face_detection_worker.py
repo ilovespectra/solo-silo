@@ -349,15 +349,6 @@ def detect_faces_worker():
                         print(f"✗ SKIP", flush=True)
                         mark_image_processed(media_id)
                         continue
-                        else:
-                            # Other error - skip this file and mark for retry
-                            last_failed_file = img_path
-                            log_skipped(img_path, f"Detection failed ({error_type}): {error_msg}")
-                            skipped_count += 1
-                            processed_count += 1
-                            print(f"✗ SKIP", flush=True)
-                            mark_image_processed(media_id)
-                            continue
                 
                 # Store embeddings if faces found
                 if all_faces and len(all_faces) > 0:
