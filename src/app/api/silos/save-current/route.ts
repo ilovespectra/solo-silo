@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,12 +15,11 @@ export async function POST(req: NextRequest) {
     }
     
     // Forward to backend
-    const backendUrl = 'http://127.0.0.1:8000';
-    const response = await fetch(`${backendUrl}/api/silos/save-current`, {
+    const response = await fetchBackend('/api/silos/save-current', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(5000),
+      timeout: 10000,
+      retries: 0,
     });
     
     if (!response.ok) {

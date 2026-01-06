@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
@@ -14,18 +15,18 @@ export async function GET(req: NextRequest) {
     });
   }
   
-  // In local mode, proxy to backend
+  // In local mode, proxy to backend with retry logic
   try {
     const url = new URL(req.url);
-    const backendUrl = `http://127.0.0.1:8000/api/indexing${url.search}`;
-    
-    const backendResponse = await fetch(backendUrl, {
+    const backendResponse = await fetchBackend(`/api/indexing${url.search}`, {
       method: 'GET',
-      headers: req.headers as HeadersInit,
-      signal: AbortSignal.timeout(5000),
+      timeout: 15000,
+      retries: 3, // Retry up to 3 times for GET requests
     });
     
     if (!backendResponse.ok) {
+      const errorText = await backendResponse.text();
+      console.error('[indexing] Backend error:', backendResponse.status, errorText);
       throw new Error(`Backend returned ${backendResponse.status}`);
     }
     
@@ -33,8 +34,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('[indexing] Error proxying to backend:', error);
+    
+    // More specific error messages
+    const isTimeout = (error as Error).name === 'AbortError';
+    const isConnectionError = error instanceof TypeError;
+    
     return NextResponse.json(
-      { error: 'Backend unavailable' },
+      { 
+        error: isTimeout 
+          ? 'Backend is loading (ML models take 60+ seconds)' 
+          : isConnectionError
+          ? 'Backend not started - run backend first'
+          : 'Backend unavailable',
+        details: (error as Error).message
+      },
       { status: 503 }
     );
   }
@@ -50,20 +63,20 @@ export async function POST(req: NextRequest) {
     );
   }
   
-  // In local mode, proxy to backend
+  // In local mode, proxy to backend (no retries for POST)
   try {
     const body = await req.text();
     const url = new URL(req.url);
-    const backendUrl = `http://127.0.0.1:8000/api/indexing${url.search}`;
-    
-    const backendResponse = await fetch(backendUrl, {
+    const backendResponse = await fetchBackend(`/api/indexing${url.search}`, {
       method: 'POST',
-      headers: req.headers as HeadersInit,
       body,
-      signal: AbortSignal.timeout(30000),
+      timeout: 30000,
+      retries: 0, // Don't retry POST requests
     });
     
     if (!backendResponse.ok) {
+      const errorText = await backendResponse.text();
+      console.error('[indexing] Backend error:', backendResponse.status, errorText);
       throw new Error(`Backend returned ${backendResponse.status}`);
     }
     
@@ -71,8 +84,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('[indexing] Error proxying to backend:', error);
+    
+    const isTimeout = (error as Error).name === 'AbortError';
+    const isConnectionError = error instanceof TypeError;
+    
     return NextResponse.json(
-      { error: 'Backend unavailable' },
+      { 
+        error: isTimeout 
+          ? 'Backend timeout (indexing takes time)' 
+          : isConnectionError
+          ? 'Backend not started - run backend first'
+          : 'Backend unavailable',
+        details: (error as Error).message
+      },
       { status: 503 }
     );
   }

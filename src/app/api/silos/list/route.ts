@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function GET(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
@@ -17,11 +18,10 @@ export async function GET(req: NextRequest) {
   
   // In local mode, proxy to backend
   try {
-    const backendUrl = 'http://127.0.0.1:8000/api/silos/list';
-    const backendResponse = await fetch(backendUrl, {
+    const backendResponse = await fetchBackend('/api/silos/list', {
       method: 'GET',
-      headers: req.headers as HeadersInit,
-      signal: AbortSignal.timeout(5000),
+      timeout: 15000,
+      retries: 3,
     });
     
     if (!backendResponse.ok) {

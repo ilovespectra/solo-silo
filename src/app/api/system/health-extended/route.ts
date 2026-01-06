@@ -1,21 +1,16 @@
 import { NextResponse } from 'next/server';
+import { isBackendReady } from '@/lib/backendClient';
 
 export async function GET() {
   try {
-    // Check backend health
-    const backendUrl = 'http://127.0.0.1:8000/health';
-    const backendResponse = await fetch(backendUrl, {
-      signal: AbortSignal.timeout(3000),
-    });
-    
-    const backendHealthy = backendResponse.ok;
+    // Check backend health with improved timeout
+    const backendHealthy = await isBackendReady();
     
     return NextResponse.json({
       status: backendHealthy ? 'healthy' : 'unhealthy',
       backend: {
         healthy: backendHealthy,
-        url: backendUrl,
-        status: backendResponse.status,
+        url: 'http://127.0.0.1:8000',
       },
       frontend: {
         healthy: true,

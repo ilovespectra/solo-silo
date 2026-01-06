@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 import fs from 'fs';
 import path from 'path';
 
@@ -60,12 +61,10 @@ export async function GET(
   
   try {
     const url = new URL(req.url);
-    const backendUrl = `http://127.0.0.1:8000/api/media/thumbnail/${id}${url.search}`;
-    
-    const backendResponse = await fetch(backendUrl, {
+    const backendResponse = await fetchBackend(`/api/media/thumbnail/${id}${url.search}`, {
       method: 'GET',
-      headers: req.headers as HeadersInit,
-      signal: AbortSignal.timeout(10000),
+      timeout: 15000,
+      retries: 3,
     });
     
     if (!backendResponse.ok) {

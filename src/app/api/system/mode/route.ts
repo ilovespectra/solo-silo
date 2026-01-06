@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function GET(req: NextRequest) {
   // Check if demo mode is explicitly enabled
@@ -31,9 +32,9 @@ export async function GET(req: NextRequest) {
   }
   
   try {
-    const backendUrl = 'http://127.0.0.1:8000';
-    const response = await fetch(`${backendUrl}/api/system/mode`, {
-      signal: AbortSignal.timeout(2000),
+    const response = await fetchBackend('/api/system/mode', {
+      timeout: 15000,
+      retries: 3,
     });
     
     if (response.ok) {

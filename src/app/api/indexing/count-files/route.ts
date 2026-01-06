@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function POST(req: NextRequest) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
@@ -15,15 +16,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
     const url = new URL(req.url);
-    const backendUrl = `http://127.0.0.1:8000/api/indexing/count-files${url.search}`;
-    
-    const backendResponse = await fetch(backendUrl, {
+    const backendResponse = await fetchBackend(`/api/indexing/count-files${url.search}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body,
-      signal: AbortSignal.timeout(30000),
+      timeout: 30000,
+      retries: 0,
     });
     
     if (!backendResponse.ok) {

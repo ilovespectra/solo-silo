@@ -1,24 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchBackend } from '@/lib/backendClient';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   
-  const isVercel = !!((process.env.VERCEL && process.env.VERCEL !== '0') || process.env.VERCEL_ENV);
-  let backendUrl = isVercel 
-    ? process.env.RAILWAY_BACKEND_URL || 'https://silo-backend-production.up.railway.app'
-    : 'http://127.0.0.1:8000';
-  
-  // Ensure Railway URL has protocol
-  if (isVercel && !backendUrl.startsWith('http')) {
-    backendUrl = `https://${backendUrl}`;
-  }
-  
   try {
-    const searchUrl = `${backendUrl}/api/search?${searchParams.toString()}`;
-    const response = await fetch(searchUrl, {
+    const response = await fetchBackend(`/api/search?${searchParams.toString()}`, {
       method: 'GET',
-      headers: req.headers as HeadersInit,
-      signal: AbortSignal.timeout(30000),
+      timeout: 30000,
+      retries: 3,
     });
     
     if (!response.ok) {
