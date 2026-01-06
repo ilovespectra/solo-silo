@@ -47,7 +47,7 @@ async function ensureBackendRunning(): Promise<void> {
     
     // If we get here, backend never became healthy
     console.error('[backend] Backend failed to become healthy after 30 seconds');
-    throw new Error('Backend unavailable');
+    throw new Error('No media indexed yet. Please add a source folder to begin.');
   })();
   
   return backendReady;

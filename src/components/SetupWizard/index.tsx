@@ -305,40 +305,27 @@ export default function SetupWizard() {
       setIndexStartTime(Date.now());
 
 
-      for (const p of config.selectedPaths) {
-
-        if (!p.startsWith('/') && !p.startsWith('~')) {
-          throw new Error(`Path must be absolute or start with ~: "${p}". Please select the full path to the folder.`);
+      // Use combined indexing + face detection endpoint for automatic workflow
+      const siloParam = activeSilo?.name ? `?silo_name=${encodeURIComponent(activeSilo.name)}` : '';
+      console.log('Starting combined indexing + face detection workflow:', `${API_BASE}/api/indexing/index-and-detect-faces${siloParam}`);
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/indexing/index-and-detect-faces${siloParam}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Combined workflow POST response status:', res.status);
+        const data = await res.json();
+        console.log('Combined workflow POST response data:', data);
+        if (!res.ok) {
+          throw new Error(data?.detail || `Failed to start indexing and face detection (${res.status})`);
         }
-        
-
-        const fullPath = p.startsWith('~') ? p.replace('~', process.env.HOME || '') : p;
-        
-        console.log('Sending indexing request for path:', fullPath, 'to', `${API_BASE}/api/indexing`);
-        try {
-          const res = await fetch(`${API_BASE}/api/indexing`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              path: fullPath, 
-              recursive: true, 
-              includeContent: true,
-              silo_name: activeSilo?.name
-            }),
-          });
-          console.log('Indexing POST response status:', res.status);
-          const data = await res.json();
-          console.log('Indexing POST response data:', data);
-          if (!res.ok) {
-            throw new Error(data?.detail || `Failed to start indexing (${res.status})`);
-          }
-          console.log('Indexing started for path:', p);
-        } catch (fetchErr) {
-          console.error('Fetch error for path', p, ':', fetchErr);
-          throw fetchErr;
-        }
+        console.log('✅ Combined indexing + face detection started - will process all configured source paths automatically');
+      } catch (fetchErr) {
+        console.error('Fetch error for combined workflow:', fetchErr);
+        throw fetchErr;
       }
 
 

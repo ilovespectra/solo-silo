@@ -603,7 +603,7 @@ export default function MediaGallery() {
         )}
         {displayGroups.length === 0 ? (
           <div className={`text-center py-12 rounded-lg border ${borderClass}`}>
-            <p className={`${textClass}`}>no media filesfound</p>
+            <p className={`${textClass}`}>no media indexed</p>
             {activeTab === 'favorites' && (
               <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mt-2`}>
                 click the ❤️ icon on photos to add them to favorites
