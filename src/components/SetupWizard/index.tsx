@@ -301,6 +301,24 @@ export default function SetupWizard() {
         throw new Error('No folders selected. Please go back and select at least one folder.');
       }
 
+      // CRITICAL: Save selected paths to silo configuration BEFORE indexing
+      const siloName = activeSilo?.name || 'default';
+      console.log(`[SetupWizard] Saving ${config.selectedPaths.length} paths to silo '${siloName}'...`);
+      try {
+        const savePathsRes = await fetch(`${API_BASE}/api/silos/${siloName}/media-paths`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paths: config.selectedPaths }),
+        });
+        if (!savePathsRes.ok) {
+          const errorData = await savePathsRes.json();
+          throw new Error(`Failed to save media paths: ${errorData.detail || savePathsRes.statusText}`);
+        }
+        console.log('[SetupWizard] ✅ Media paths saved to silo configuration');
+      } catch (saveErr) {
+        console.error('[SetupWizard] Failed to save media paths:', saveErr);
+        throw new Error(`Could not save source folders to silo: ${saveErr}`);
+      }
 
       setIndexStartTime(Date.now());
 
