@@ -235,6 +235,15 @@ def init_db(db_path: str = None) -> None:
                     except sqlite3.OperationalError as e:
                         print(f"Note: {col_name} column already exists or migration skipped: {e}")
             
+            # Ensure face_detection_attempted is set to 0 for all existing rows (no NULL values)
+            try:
+                cursor.execute("UPDATE media_files SET face_detection_attempted = 0 WHERE face_detection_attempted IS NULL")
+                affected = cursor.rowcount
+                if affected > 0:
+                    print(f"✓ Fixed {affected} rows with NULL face_detection_attempted")
+            except Exception as e:
+                print(f"Note: Could not update face_detection_attempted: {e}")
+            
             conn.commit()
             print(f"[INIT_DB] ✓ Database initialization complete", flush=True)
     except Exception as e:

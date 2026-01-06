@@ -658,12 +658,12 @@ async def _index_and_detect_with_lock(silo_name: str):
             indexing_state["message"] = f"Indexed {indexed_count} photos. Starting face detection on unscanned files..."
             indexing_state["processed"] = 0
             
-            # Get total unprocessed files (files without embeddings)
+            # Get total unprocessed files (files that haven't been face-scanned yet)
             with get_db() as conn:
                 cur = conn.execute(
                     """SELECT COUNT(*) FROM media_files 
                        WHERE type IN ('.jpg', '.jpeg', '.png', '.heic', '.webp', '.tiff', '.bmp')
-                       AND id NOT IN (SELECT DISTINCT media_id FROM face_embeddings)"""
+                       AND face_detection_attempted = 0"""
                 )
                 total_files = cur.fetchone()[0]
             
@@ -865,7 +865,7 @@ async def _run_face_detection_worker(silo_name: str = None):
         with get_db() as conn:
             cur = conn.execute(
                 """SELECT COUNT(*) FROM media_files 
-                   WHERE id NOT IN (SELECT DISTINCT media_id FROM face_embeddings) 
+                   WHERE face_detection_attempted = 0
                    AND type IN ('.jpg', '.jpeg', '.png', '.heic', '.webp', '.tiff', '.bmp')"""
             )
             total_files = cur.fetchone()[0]
