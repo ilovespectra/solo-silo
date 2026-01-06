@@ -630,13 +630,16 @@ async def index_and_detect_faces(silo_name: str = None):
         "is_indexing": True,
     })
     
-    # Run combined indexing + face detection in the background
-    asyncio.create_task(_index_and_detect_with_lock())
+    # Run combined indexing + face detection in the background - PASS SILO NAME
+    asyncio.create_task(_index_and_detect_with_lock(silo_name))
     return {"status": "index_and_detect_started"}
 
 
-async def _index_and_detect_with_lock():
+async def _index_and_detect_with_lock(silo_name: str):
     """Wrapper to run indexing then face detection sequentially with lock."""
+    # CRITICAL: Set silo context in async task before any operations
+    _set_processing_silo(silo_name)
+    
     global _face_detection_running
     lock = get_indexing_lock()
     indexing_state = _get_silo_indexing_state()
