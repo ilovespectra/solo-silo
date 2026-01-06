@@ -147,9 +147,9 @@ echo -e "${GREEN}backend started with auto-restart (PID: $BACKEND_PID)${NC}"
 
 # Wait for backend to become healthy
 echo -e "${ORANGE}waiting for backend to become healthy...${NC}"
-sleep 2  # Give backend process time to actually start before health checks
+sleep 5  # Give backend process more time to load dependencies (DeepFace, etc.)
 BACKEND_READY=false
-HEALTH_CHECK_TIMEOUT=45
+HEALTH_CHECK_TIMEOUT=60  # Increased timeout for ML model loading
 for i in $(seq 1 $HEALTH_CHECK_TIMEOUT); do
   if curl -s http://127.0.0.1:8000/health > /dev/null 2>&1; then
     BACKEND_READY=true
@@ -170,6 +170,10 @@ if [ "$BACKEND_READY" = false ]; then
   echo -e "${RED}This usually means the backend crashed on startup.${NC}"
   echo -e "${ORANGE}Check backend logs for errors:${NC}"
   echo -e "${ORANGE}  tail -50 $SCRIPT_DIR/backend.log${NC}"
+  echo ""
+  echo -e "${ORANGE}Note: If the backend is still starting (loading ML models), you can:${NC}"
+  echo -e "${ORANGE}  1. Wait a bit longer and check: curl http://localhost:8000/health${NC}"
+  echo -e "${ORANGE}  2. Or restart with: ./start-all.sh${NC}"
   echo ""
   echo -e "${RED}Stopping all services...${NC}"
   bash "$SCRIPT_DIR/stop-all.sh"
