@@ -79,12 +79,13 @@ def _bbox_from_facial_area(area: dict) -> List[float]:
     ]
 
 
-def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
+def detect_faces(paths: List[str], batch_size: int = 1, timeout_seconds: int = 180) -> List[FaceInstance]:
     """Detect faces using DeepFace with optimized processing for M1 Mac.
     
     Args:
         paths: List of image paths to process
         batch_size: Number of images before memory cleanup (default 1)
+        timeout_seconds: Timeout per image in seconds (default 180 for M1 Mac)
     
     Returns:
         List of detected FaceInstance objects
@@ -105,7 +106,7 @@ def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
     processed = 0
     errors = 0
     timeouts = 0
-    max_seconds_per_image = 10  # Reduced since models are preloaded and processing one at a time
+    max_seconds_per_image = timeout_seconds  # Use parameter passed in (default 180s for M1 Mac)
     
     print(f"[FACE] Starting face detection for {len(paths)} images (timeout: {max_seconds_per_image}s per image)")
     

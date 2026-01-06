@@ -181,7 +181,7 @@ def detect_faces_with_timeout(img_path, timeout_seconds=30):
     
     def run_detection():
         try:
-            result[0] = detect_faces([img_path], batch_size=1)
+            result[0] = detect_faces([img_path], batch_size=1, timeout_seconds=timeout_seconds)
         except Exception as e:
             exception[0] = e
     
