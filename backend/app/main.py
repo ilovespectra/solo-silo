@@ -591,11 +591,18 @@ async def index_and_detect_faces(silo_name: str = None):
     This is the main workflow for users wanting to add new photos and detect faces in one go.
     
     Args:
-        silo_name: Optional silo name to ensure we use the correct silo
+        silo_name: Optional silo name to ensure we use the correct silo (defaults to active silo)
     """
-    # If silo_name is provided, ensure it's set as active and locked for this operation
-    if silo_name:
-        _set_processing_silo(silo_name)
+    # Ensure we have a silo to work with - default to active silo if not specified
+    if not silo_name:
+        active = SiloManager.get_active_silo()
+        if not active:
+            raise HTTPException(status_code=400, detail="No active silo found. Please create or switch to a silo first.")
+        silo_name = active["name"]
+        print(f"[INDEX_DETECT] No silo_name provided, using active silo: {silo_name}", flush=True)
+    
+    # Set this silo as active and locked for this operation
+    _set_processing_silo(silo_name)
     
     # Check if indexing is already in progress
     lock = get_indexing_lock()
