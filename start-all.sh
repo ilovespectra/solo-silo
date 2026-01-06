@@ -207,8 +207,8 @@ echo -e "${ORANGE}waiting for backend health check...${NC}"
 BACKEND_READY=false
 HEALTH_CHECK_TIMEOUT=30  # Reduced since port is already listening
 for i in $(seq 1 $HEALTH_CHECK_TIMEOUT); do
-  # Try health check with more verbose error handling
-  HEALTH_RESPONSE=$(curl -s -w "%{http_code}" http://127.0.0.1:8000/health 2>&1 | tail -n1)
+  # Try health check - use -o to discard body, only get http code
+  HEALTH_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null)
   if [ "$HEALTH_RESPONSE" = "200" ]; then
     BACKEND_READY=true
     echo -e "\n${GREEN}✓ backend is healthy!${NC}"
