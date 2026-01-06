@@ -93,6 +93,14 @@ def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
     import gc
     import threading
     
+    # Limit CPU usage to prevent system overload
+    import os as os_module
+    if hasattr(os_module, 'nice'):
+        try:
+            os_module.nice(10)  # Lower priority
+        except:
+            pass
+    
     faces: List[FaceInstance] = []
     processed = 0
     errors = 0
@@ -138,7 +146,7 @@ def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
             timeouts += 1
             processed += 1
             gc.collect()
-            time.sleep(0.5)  # Reduced from 1.0 second
+            time.sleep(1.0)  # Allow system to breathe
             continue
         
         if error[0]:
@@ -146,7 +154,7 @@ def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
             errors += 1
             processed += 1
             gc.collect()
-            time.sleep(1.0)
+            time.sleep(0.5)
             continue
         
         # Process results
@@ -187,9 +195,8 @@ def detect_faces(paths: List[str], batch_size: int = 1) -> List[FaceInstance]:
         if processed % batch_size == 0:
             gc.collect()
         
-        # Pacing reduced - only sleep on errors/timeouts
-        if error[0] or timeouts > 0:
-            time.sleep(0.3)
+        # CPU throttling - sleep after each image to prevent system overload
+        time.sleep(0.3)
         
         # Progress every batch
         if processed % batch_size == 0:

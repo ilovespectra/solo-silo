@@ -688,35 +688,36 @@ async def _index_and_detect_with_lock():
                     )
                     
                     print(f"[INDEX_DETECT] Worker process spawned (PID: {process.pid})")
-                    print("[INDEX_DETECT] Waiting for worker to complete...")
+                    print("[INDEX_DETECT] Streaming worker output in real-time...")
                     
-                    # Capture output line-by-line in real-time
-                    stdout_lines = []
-                    stderr_lines = []
+                    # Stream output in real-time instead of waiting for completion
+                    async def stream_output(stream, prefix):
+                        try:
+                            while True:
+                                line = await stream.readline()
+                                if not line:
+                                    break
+                                decoded = line.decode('utf-8', errors='ignore').strip()
+                                if decoded:
+                                    print(f"[{prefix}] {decoded}", flush=True)
+                        except Exception as e:
+                            print(f"[INDEX_DETECT] Error streaming {prefix}: {e}")
                     
+                    # Stream stdout and stderr concurrently
                     try:
-                        stdout_data, stderr_data = await process.communicate()
-                        stdout_lines = stdout_data.decode('utf-8', errors='ignore').split('\n')
-                        stderr_lines = stderr_data.decode('utf-8', errors='ignore').split('\n')
+                        await asyncio.gather(
+                            stream_output(process.stdout, "WORKER_OUT"),
+                            stream_output(process.stderr, "WORKER_ERR")
+                        )
                     except Exception as io_error:
                         print(f"[INDEX_DETECT] Error reading process output: {io_error}")
                     
-                    # Log all captured lines with markers
-                    print("[WORKER_STDOUT_START]")
-                    for line in stdout_lines:
-                        if line.strip():
-                            print(f"[WORKER_OUT] {line}")
-                    print("[WORKER_STDOUT_END]")
+                    # Wait for process to complete
+                    return_code = await process.wait()
                     
-                    print("[WORKER_STDERR_START]")
-                    for line in stderr_lines:
-                        if line.strip():
-                            print(f"[WORKER_ERR] {line}")
-                    print("[WORKER_STDERR_END]")
+                    print(f"[INDEX_DETECT] Worker process completed with return code: {return_code}")
                     
-                    print(f"[INDEX_DETECT] Worker process completed with return code: {process.returncode}")
-                    
-                    if process.returncode == 0:
+                    if return_code == 0:
                         print("[INDEX_DETECT] ✓ face detection completed successfully")
                         indexing_state["status"] = "complete"
                         indexing_state["message"] = f"✓ Complete! Detected faces in {total_files} photos."
