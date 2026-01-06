@@ -2126,7 +2126,7 @@ async def search_media(
             with get_db() as conn:
                 # Fetch all embeddings from database
                 cur = conn.execute(
-                    "SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation, embedding FROM media_files WHERE embedding IS NOT NULL"
+                    "SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation, clip_embedding FROM media_files WHERE clip_embedding IS NOT NULL"
                 )
                 rows = cur.fetchall()
                 
@@ -2137,11 +2137,11 @@ async def search_media(
                 scores = []
                 for row in rows:
                     mid = row[0]
-                    embedding_blob = row[10]
-                    if embedding_blob:
+                    clip_embedding_blob = row[10]
+                    if clip_embedding_blob:
                         # Deserialize embedding
                         import pickle
-                        embedding = pickle.loads(embedding_blob)
+                        embedding = pickle.loads(clip_embedding_blob)
                         emb_array = np.array(embedding, dtype=np.float32)
                         emb_norm = emb_array / (np.linalg.norm(emb_array) + 1e-12)
                         

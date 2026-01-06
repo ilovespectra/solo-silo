@@ -1067,11 +1067,20 @@ async def full_reindex() -> int:
     print(f"[INDEXING] Breakdown:")
     print(f"[INDEXING]   - Images: {scan_stats['by_type']['images']}")
     print(f"[INDEXING]   - Videos: {scan_stats['by_type']['videos']}")
-    print(f"[INDEXING]   - Audio: {scan_stats['by_type']['audio']}")
     print(f"[INDEXING]   - Documents: {scan_stats['by_type']['text']}")
     print(f"[INDEXING] Already indexed: {scan_stats['already_indexed']}")
     print(f"[INDEXING] Newly indexed: {total_processed}")
     print(f"[INDEXING] ==========================================")
+    
+    # Rebuild FAISS search index from all CLIP embeddings in database
+    print(f"[INDEXING] Rebuilding search index from CLIP embeddings...")
+    try:
+        indexed_count = await rebuild_faiss_index_from_db(silo_name=current_silo_name)
+        print(f"[INDEXING] ✓ Search index built with {indexed_count} embeddings")
+    except Exception as e:
+        print(f"[INDEXING] Warning: Failed to rebuild search index: {e}")
+        import traceback
+        traceback.print_exc()
     
     # Mark indexing as complete - face detection will be auto-triggered by frontend
     indexing_state["status"] = "complete"
