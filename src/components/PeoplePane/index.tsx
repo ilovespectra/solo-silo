@@ -199,7 +199,9 @@ export default function PeoplePane() {
   };
 
   useEffect(() => {
-    fetchClusters(showHidden, true);
+    // Don't fetch clusters on initial mount - wait for indexing to complete
+    // Clusters will be fetched when indexing-complete event fires
+    // This prevents errors when there are no faces yet
   }, [showHidden, fetchClusters]);
 
   useEffect(() => {
