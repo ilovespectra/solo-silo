@@ -1291,6 +1291,7 @@ async def _index_path_with_progress(root_path: str, recursive: bool = True):
         
         print(f"[INDEXING] ✓ Indexing complete! Processed {indexing_state['processed']} files")
         indexing_state["status"] = "complete"
+        indexing_state["phase"] = "idle"  # Signal phase change so frontend knows clustering finished
         gc.collect()  # Final cleanup
         
     except Exception as e:
