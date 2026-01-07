@@ -133,10 +133,23 @@ export default function AudioBrowser() {
         } else if (data.progress.status === 'complete') {
           setIndexingProgress(null);
           clearAudioCache(activeSilo?.name);
-          setLoading(true);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          // Trigger reload of audio data by clearing groups
+          setGroups([]);
+          // Fetch fresh data after a small delay
+          setTimeout(async () => {
+            try {
+              const siloParam = activeSilo?.name ? `?silo_name=${encodeURIComponent(activeSilo.name)}` : '';
+              const response = await fetch(`/api/media/audio${siloParam}`);
+              if (response.ok) {
+                const newData = await response.json();
+                cacheAudio(newData, activeSilo?.name);
+                // Signal to re-render by changing groups state
+                setGroups(newData.length ? [{ date_taken: null, items: newData }] : []);
+              }
+            } catch (err) {
+              console.error('[AudioBrowser] Failed to reload audio after indexing:', err);
+            }
+          }, 500);
         }
       } catch {
       }
