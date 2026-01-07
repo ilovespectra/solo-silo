@@ -217,10 +217,13 @@ export default function PeoplePane() {
   };
 
   useEffect(() => {
-    // Don't fetch clusters on initial mount - wait for indexing to complete
-    // Clusters will be fetched when indexing-complete event fires
-    // This prevents errors when there are no faces yet
-  }, [showHidden, fetchClusters]);
+    // Fetch clusters on mount if they're not already loaded
+    // This handles page refresh after indexing completes
+    if (clusters.length === 0 && !loading) {
+      console.log('[PeoplePane] Initial mount - fetching clusters');
+      fetchClusters(showHidden, false);
+    }
+  }, [showHidden, fetchClusters, clusters.length, loading]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
