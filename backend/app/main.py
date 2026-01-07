@@ -1299,9 +1299,22 @@ async def _index_path_with_progress(root_path: str, recursive: bool = True):
         
         indexing_state["animals_found"] = animals_found
         
-        print(f"[INDEXING] ✓ Indexing complete! Processed {indexing_state['processed']} files")
-        indexing_state["status"] = "complete"
-        indexing_state["phase"] = "idle"  # Signal phase change so frontend knows clustering finished
+        # Check if any new unindexed files were added during processing
+        with get_db() as conn:
+            cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE id NOT IN (SELECT DISTINCT media_id FROM face_embeddings) AND type IN ('.jpg', '.jpeg', '.png', '.heic', '.webp', '.tiff', '.bmp')")
+            remaining_faces = cur.fetchone()[0]
+            
+            cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE faces IS NULL OR faces = '[]'")
+            unindexed_media = cur.fetchone()[0]
+        
+        if remaining_faces > 0 or unindexed_media > 0:
+            print(f"[INDEXING] ⚠ Found {remaining_faces} unprocessed face images and {unindexed_media} unindexed media files - re-queuing for processing")
+            # Don't set to idle yet - let the next check restart if needed
+        else:
+            print(f"[INDEXING] ✓ Indexing complete! Processed {indexing_state['processed']} files")
+            indexing_state["status"] = "complete"
+            indexing_state["phase"] = "idle"  # Signal phase change so frontend knows clustering finished
+        
         gc.collect()  # Final cleanup
         
     except Exception as e:
