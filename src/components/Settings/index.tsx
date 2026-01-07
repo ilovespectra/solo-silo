@@ -240,7 +240,7 @@ export default function Settings() {
     if (logsContainerRef.current && isAtBottomRef.current) {
       logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight;
     }
-  }, [retrainingLogs, faceDetectionLogs]);
+  }, [retrainingLogs, faceDetectionLogs, indexingLogs, clusteringLogs]);
 
   const handleScroll = () => {
     if (logsContainerRef.current) {
@@ -323,19 +323,23 @@ export default function Settings() {
             let message = '';
             
             if (prog.current_file && prog.current_file.includes('📊 Database:')) {
-              if (indexingLogs.length === 1 && indexingLogs[0].message.includes('Initializing')) {
-                const newLogs = [
-                  {
-                    timestamp: Date.now(),
-                    progress: 0,
-                    message: prog.current_file
-                  }
-                ];
-                setIndexingLogs(newLogs);
-                return;
-              }
+              // Always add database progress messages to logs
+              const newLog: RetrainingLog = {
+                timestamp: Date.now(),
+                progress: prog.percentage || 0,
+                message: prog.current_file
+              };
+              setIndexingLogs(prev => {
+                // Replace the last log if it's also a database message (continuous update)
+                if (prev.length > 0 && prev[prev.length - 1].message.includes('📊 Database:')) {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = newLog;
+                  return updated;
+                }
+                // Otherwise add as new log
+                return [...prev, newLog];
+              });
             }
-            
 
             if (prog.current_file && prog.current_file !== '' && !prog.current_file.includes('📊 Database:')) {
               message = prog.current_file;
