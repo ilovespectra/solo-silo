@@ -1717,9 +1717,14 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
 
 @app.get("/api/media/audio")
 async def list_audio(limit: int = 1000, offset: int = 0):
-    """Get all audio files from the database."""
+    """Get all audio files from the database with conversion status.
+    
+    AIF/AIFF files are automatically converted to WAV format for web playback.
+    The response includes a 'converted' flag indicating if the file has been converted.
+    """
     # Define audio types inline to ensure they're available
     audio_types = {".mp3", ".wav", ".flac", ".aac", ".m4a", ".ogg", ".wma", ".opus", ".alac", ".aif", ".aiff"}
+    unsupported_types = {".aif", ".aiff"}  # These require conversion
     
     with get_db() as conn:
         # Get all non-hidden files first
@@ -1764,18 +1769,23 @@ async def list_audio(limit: int = 1000, offset: int = 0):
             
             # Check if it's an audio file
             if ext in audio_types:
+                is_unsupported = ext in unsupported_types
                 audio_files.append({
                     "id": media_id,
                     "path": path,
                     "type": file_type,
                     "date_taken": date_taken,
                     "size": size,
+                    "unsupported": is_unsupported,  # Mark if needs conversion
+                    "converted": is_unsupported,  # AIF/AIFF are converted to WAV for playback
+                    "original_type": ext,  # Preserve original file type
                 })
                 if ext in ['.aif', '.aiff', '.wav']:
-                    print(f"[AUDIO] Including audio file: {os.path.basename(path)} (ext: {ext}, is_wav: {ext == '.wav'})")
+                    print(f"[AUDIO] Including audio file: {os.path.basename(path)} (ext: {ext}, unsupported: {is_unsupported})")
         
         print(f"[AUDIO] Total audio files found: {len(audio_files)} out of {len(all_rows)} non-hidden files")
         return audio_files
+
 
 
 @app.get("/api/debug/database-file-types")

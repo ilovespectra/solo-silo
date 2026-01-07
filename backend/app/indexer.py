@@ -37,18 +37,26 @@ def convert_aif_to_wav(aif_path: str) -> str:
     import subprocess
     import hashlib
     
+def convert_aif_to_wav(aif_path: str) -> str:
+    """Convert AIF/AIFF files to WAV format in the silo cache directory.
+    
+    Returns the path to the WAV file (either converted or original if conversion fails).
+    The WAV file is stored in the silo cache under audio-conversions/ directory.
+    """
     try:
         ext = os.path.splitext(aif_path)[1].lower()
         if ext not in ['.aif', '.aiff']:
             return aif_path  # Not an AIF file
         
-        # Create cache directory
-        cache_dir = os.path.join(os.path.dirname(aif_path), '.audio-cache')
-        os.makedirs(cache_dir, exist_ok=True)
+        # Use silo cache directory for conversions (not local file directory)
+        from .silo_manager import SiloManager
+        cache_dir = SiloManager.get_silo_cache_dir()
+        audio_cache_dir = os.path.join(cache_dir, 'audio-conversions')
+        os.makedirs(audio_cache_dir, exist_ok=True)
         
-        # Generate cache filename
+        # Generate cache filename based on original file path
         file_hash = hashlib.md5(aif_path.encode()).hexdigest()
-        wav_path = os.path.join(cache_dir, f'{file_hash}.wav')
+        wav_path = os.path.join(audio_cache_dir, f'{file_hash}.wav')
         
         # Check if already converted
         if os.path.exists(wav_path) and os.path.getsize(wav_path) > 0:
@@ -89,6 +97,7 @@ def convert_aif_to_wav(aif_path: str) -> str:
     except Exception as e:
         print(f"[AUDIO] ✗ Conversion error: {e}")
         return aif_path
+
 
 
 def md5sum(path: str, chunk_size: int = 1024 * 1024) -> str:

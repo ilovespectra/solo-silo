@@ -13,6 +13,9 @@ interface AudioItem {
   type: string;
   date_taken?: number;
   size?: number;
+  unsupported?: boolean;  // True for AIF/AIFF files
+  converted?: boolean;    // True if file was converted to WAV for playback
+  original_type?: string; // Original file extension
 }
 
 interface DateGroup {
@@ -326,6 +329,19 @@ export default function AudioBrowser() {
 
       {/* Audio List/Grid */}
       <div className={`flex-1 overflow-y-auto`}>
+        {/* Notice about unsupported audio formats */}
+        {groups.some(g => g.items.some(item => item.unsupported)) && (
+          <div className={`mx-6 mt-4 p-3 rounded-lg border ${
+            theme === 'dark' 
+              ? 'bg-yellow-900 bg-opacity-20 border-yellow-700' 
+              : 'bg-yellow-50 border-yellow-200'
+          }`}>
+            <p className={`text-sm ${theme === 'dark' ? 'text-yellow-300' : 'text-yellow-800'}`}>
+              ⓘ <strong>Note:</strong> AIF/AIFF audio files are converted to WAV format for playback in this version. Original files are preserved.
+            </p>
+          </div>
+        )}
+        
         {viewMode === 'list' ? (
           <div className="divide-y" style={{ borderColor: theme === 'dark' ? '#374151' : '#e5e7eb' }}>
             {groups.map((group) => (
@@ -363,8 +379,20 @@ export default function AudioBrowser() {
                           <div className={`font-medium truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                             {getFileName(audio.path)}
                           </div>
-                          <div className={`text-xs truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {formatFileSize(audio.size)} • {getFileExtension(audio.path)}
+                          <div className={`text-xs truncate flex items-center gap-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                            <span>
+                              {formatFileSize(audio.size)} • {audio.original_type || getFileExtension(audio.path)}
+                              {audio.converted && ` (converted to WAV)`}
+                            </span>
+                            {audio.unsupported && (
+                              <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap ${
+                                theme === 'dark'
+                                  ? 'bg-yellow-900 bg-opacity-40 text-yellow-300'
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                Converted
+                              </span>
+                            )}
                           </div>
                         </div>
                         <div className={`text-xs whitespace-nowrap ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
