@@ -9,10 +9,15 @@ export async function POST(
   const url = new URL(request.url);
   const siloName = url.searchParams.get('silo_name');
 
-  return fetchBackend(`/api/media/${mediaId}/favorite`, {
+  let backendUrl = `/api/media/${mediaId}/favorite`;
+  if (siloName) {
+    backendUrl += `?silo_name=${encodeURIComponent(siloName)}`;
+  }
+
+  return fetchBackend(backendUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-  }, siloName);
+  });
 }
 
 export async function GET(
@@ -24,7 +29,12 @@ export async function GET(
   const url = new URL(request.url);
   const siloName = url.searchParams.get('silo_name');
 
-  return fetchBackend(`/api/media/${mediaId}/favorite`, {
+  let backendUrl = `/api/media/${mediaId}/favorite`;
+  if (siloName) {
+    backendUrl += `?silo_name=${encodeURIComponent(siloName)}`;
+  }
+
+  return fetchBackend(backendUrl, {
     method: 'GET',
-  }, siloName);
+  });
 }
