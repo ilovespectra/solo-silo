@@ -28,6 +28,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
   const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
   const [thumbnailRotation, setThumbnailRotation] = useState(0);
   const [hoveredPhotoId, setHoveredPhotoId] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showMergeDialog, setShowMergeDialog] = useState(false);
   const [selectedTargetCluster, setSelectedTargetCluster] = useState<string>('');
   const [isMerging, setIsMerging] = useState(false);
@@ -597,7 +598,11 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
           {/* Add Tab */}
           {activeTab === 'add' && (
             <div className={`text-center py-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              <p className="mb-4">add photos to this person</p>
+              {uploadSuccess ? (
+                <p className="mb-4 text-green-600 font-semibold">photo added successfully!</p>
+              ) : (
+                <>
+                  <p className="mb-4">add photos to this person</p>
               <button
                 onClick={() => {
                   const input = document.createElement('input');
@@ -636,6 +641,15 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                           console.log('[FaceDetailView] Adding photo', uploadedFile.media_id, 'to cluster', cluster.id);
                           await addPhotoToCluster(cluster.id, uploadedFile.media_id.toString());
                           console.log('[FaceDetailView] Successfully added photo to cluster');
+                          
+                          // Show success message and reload photos
+                          setUploadSuccess(true);
+                          setTimeout(() => {
+                            const data = await getClusterPhotos(cluster.id);
+                            setPhotos(data);
+                            setActiveTab('photos');
+                            setUploadSuccess(false);
+                          }, 1000);
                         } else {
                           console.warn('[FaceDetailView] Upload response missing media_id:', uploadedFile);
                         }
@@ -643,9 +657,6 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         console.error('Error adding photo:', error);
                       }
                     }
-                    
-                    const data = await getClusterPhotos(cluster.id);
-                    setPhotos(data);
                   };
                   input.click();
                 }}
@@ -657,6 +668,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
               >
                 browse photos
               </button>
+                </>
+              )}
             </div>
           )}
 
