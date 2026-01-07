@@ -630,8 +630,13 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         }
                         
                         const uploadedFile = await uploadResponse.json();
+                        console.log('[FaceDetailView] Upload response:', uploadedFile);
                         if (uploadedFile.media_id) {
+                          console.log('[FaceDetailView] Adding photo', uploadedFile.media_id, 'to cluster', cluster.id);
                           await addPhotoToCluster(cluster.id, uploadedFile.media_id.toString());
+                          console.log('[FaceDetailView] Successfully added photo to cluster');
+                        } else {
+                          console.warn('[FaceDetailView] Upload response missing media_id:', uploadedFile);
                         }
                       } catch (error) {
                         console.error('Error adding photo:', error);
