@@ -2043,10 +2043,11 @@ async def serve_face_crop(media_id: int):
 
 
 @app.post("/api/media/upload")
-async def upload_media_file(file: UploadFile = File(...), silo_name: str = Query("default")):
+async def upload_media_file(file: UploadFile = File(...), silo_name: str = Query("default"), cluster_id: str = Query(None)):
     """
     Upload a media file and add it to the database.
     Processes the image for face detection and adds to the search index.
+    If cluster_id is provided, adds the photo to that cluster's confirmed_photos.
     """
     check_read_only()  # Prevent uploads in demo mode
     import tempfile
@@ -2116,6 +2117,20 @@ async def upload_media_file(file: UploadFile = File(...), silo_name: str = Query
             img.save(thumb_path, 'JPEG', quality=85)
         except:
             thumb_path = None
+        
+        # If cluster_id is provided, add this photo to the cluster's confirmed_photos
+        if cluster_id:
+            labels = load_labels()
+            if cluster_id in labels:
+                # Add media_id to confirmed_photos if not already there
+                if media_id not in labels[cluster_id].get("confirmed_photos", []):
+                    if "confirmed_photos" not in labels[cluster_id]:
+                        labels[cluster_id]["confirmed_photos"] = []
+                    labels[cluster_id]["confirmed_photos"].append(media_id)
+                    save_labels(labels)
+                    print(f"[UPLOAD] Added media_id {media_id} to cluster {cluster_id}")
+            else:
+                print(f"[UPLOAD] Cluster {cluster_id} not found in labels")
         
         return {
             "success": True,
