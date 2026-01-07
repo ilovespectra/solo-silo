@@ -385,19 +385,27 @@ async def resolve_directory(request: ResolveDirectoryRequest):
                     if entry.name == target_name:
                         print(f"[RESOLVE] Found matching dir: {entry.path}")
                         # Found a matching directory name
-                        # Verify it has the sample files if we have them
-                        if sample_files:
+                        # Verify it has the sample files/entries if we have them
+                        if sample_files and len(sample_files) > 0:
                             dir_contents = set()
                             try:
-                                dir_contents = {f.name for f in os.scandir(entry.path) if os.path.isfile(f)}
+                                # Get both files and directories to verify
+                                dir_contents = {f.name for f in os.scandir(entry.path)}
                             except (PermissionError, OSError):
                                 pass
                             
-                            # Check if at least some sample files exist
-                            matching_files = sum(1 for f in sample_files if f in dir_contents)
-                            if matching_files >= len(sample_files) * 0.5:  # At least 50% match
-                                print(f"[RESOLVE] Verified with sample files: {matching_files}/{len(sample_files)} match")
+                            # If directory is empty, still valid
+                            if len(dir_contents) == 0:
+                                print(f"[RESOLVE] Directory is empty but name matches")
                                 return entry.path
+                            
+                            # Check if at least some sample entries exist (files or directories)
+                            matching_entries = sum(1 for f in sample_files if f in dir_contents)
+                            if matching_entries >= len(sample_files) * 0.5:  # At least 50% match
+                                print(f"[RESOLVE] Verified with sample entries: {matching_entries}/{len(sample_files)} match")
+                                return entry.path
+                            else:
+                                print(f"[RESOLVE] Sample entry verification failed: {matching_entries}/{len(sample_files)} match (need 50%)")
                         else:
                             # No sample files to verify, trust the name match
                             print(f"[RESOLVE] No sample files to verify, trusting name match")
