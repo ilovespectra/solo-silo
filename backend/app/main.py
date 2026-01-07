@@ -2081,11 +2081,7 @@ async def upload_media_file(file: UploadFile = File(...)):
             width = height = None
         
         # Process file and add to database
-        result = await process_single(
-            file_path, 
-            is_symlink=False, 
-            root_path=upload_dir
-        )
+        result = await process_single(file_path)
         
         # Get the media ID that was created
         with get_db() as conn:
