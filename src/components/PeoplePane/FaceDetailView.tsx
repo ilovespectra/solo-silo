@@ -644,7 +644,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                           
                           // Show success message and reload photos
                           setUploadSuccess(true);
-                          setTimeout(() => {
+                          setTimeout(async () => {
                             const data = await getClusterPhotos(cluster.id);
                             setPhotos(data);
                             setActiveTab('photos');
