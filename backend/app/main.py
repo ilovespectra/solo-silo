@@ -5652,8 +5652,10 @@ async def get_media_folders(media_id: int, silo_name: str = Query(None)):
 
 # Favorites API endpoints
 @app.post("/api/media/{media_id}/favorite")
-async def toggle_favorite(media_id: int):
+async def toggle_favorite(media_id: int, silo_name: str = Query(None)):
     """Toggle favorite status for a media file. Persists to database."""
+    if silo_name:
+        _set_processing_silo(silo_name)
     try:
         with get_db() as conn:
             # Check current favorite status
@@ -5681,8 +5683,10 @@ async def toggle_favorite(media_id: int):
 
 
 @app.get("/api/media/{media_id}/favorite")
-async def get_favorite_status(media_id: int):
+async def get_favorite_status(media_id: int, silo_name: str = Query(None)):
     """Get favorite status for a media file."""
+    if silo_name:
+        _set_processing_silo(silo_name)
     try:
         with get_db() as conn:
             cur = conn.execute("SELECT is_bookmarked FROM media_files WHERE id = ?", (media_id,))
@@ -5701,8 +5705,10 @@ async def get_favorite_status(media_id: int):
 
 
 @app.get("/api/favorites")
-async def get_all_favorites():
+async def get_all_favorites(silo_name: str = Query(None)):
     """Get all favorite media IDs."""
+    if silo_name:
+        _set_processing_silo(silo_name)
     try:
         with get_db() as conn:
             cur = conn.execute("SELECT id FROM media_files WHERE is_bookmarked = 1 ORDER BY updated_at DESC")
@@ -5716,8 +5722,10 @@ async def get_all_favorites():
 
 
 @app.post("/api/favorites/batch")
-async def batch_update_favorites(request: dict = Body(...)):
+async def batch_update_favorites(request: dict = Body(...), silo_name: str = Query(None)):
     """Batch update favorite status for multiple media files."""
+    if silo_name:
+        _set_processing_silo(silo_name)
     try:
         media_ids = request.get("media_ids", [])
         is_favorite = request.get("is_favorite", False)

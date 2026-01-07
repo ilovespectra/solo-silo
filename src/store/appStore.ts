@@ -376,7 +376,7 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
       newFavorites.add(mediaId);
       
       import('@/lib/backend').then(mod => {
-        mod.toggleFavorite(mediaId).catch(err => {
+        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).catch(err => {
           console.error('Failed to save favorite to backend:', err);
         });
       });
@@ -389,7 +389,7 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
       newFavorites.delete(mediaId);
       
       import('@/lib/backend').then(mod => {
-        mod.toggleFavorite(mediaId).catch(err => {
+        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).catch(err => {
           console.error('Failed to remove favorite from backend:', err);
         });
       });
@@ -398,7 +398,8 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
 
   loadFavorites: async () => {
     try {
-      const result = await import('@/lib/backend').then(mod => mod.getAllFavorites());
+      const state = useAppStore.getState();
+      const result = await import('@/lib/backend').then(mod => mod.getAllFavorites(state.activeSiloName || undefined));
       set({ favorites: new Set(result.favorites) });
     } catch (e) {
       console.error('Failed to load favorites from backend:', e);
