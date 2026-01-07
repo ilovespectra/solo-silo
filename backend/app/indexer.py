@@ -753,6 +753,7 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
                 "height": meta.get("height"),
                 "camera": meta.get("camera"),
                 "lens": meta.get("lens"),
+                "rotation": meta.get("rotation", 0),
                 "text_embedding": to_blob(text_embed) if text_embed else None,
                 "clip_embedding": to_blob(clip_embed) if clip_embed else None,
                 "objects": objects_json,
