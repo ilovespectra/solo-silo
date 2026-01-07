@@ -638,9 +638,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         const uploadedFile = await uploadResponse.json();
                         console.log('[FaceDetailView] Upload response:', uploadedFile);
                         if (uploadedFile.media_id) {
-                          console.log('[FaceDetailView] Adding photo', uploadedFile.media_id, 'to cluster', cluster.id);
-                          await addPhotoToCluster(cluster.id, uploadedFile.media_id.toString());
-                          console.log('[FaceDetailView] Successfully added photo to cluster');
+                          console.log('[FaceDetailView] Successfully uploaded photo', uploadedFile.media_id, 'to cluster', cluster.id);
+                          // Note: Backend upload endpoint already added photo to cluster if cluster_id was provided
                           
                           // Optimistically add photo to UI immediately
                           const newPhoto: ClusterPhoto = {
