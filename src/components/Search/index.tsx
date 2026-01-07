@@ -347,22 +347,22 @@ export const Search: React.FC<SearchComponentProps> = ({
           <SearchPhotoModal
             isOpen={true}
             media={mediaObj}
-          onClose={() => setSelectedMediaId(null)}
-          onAssignKeywords={async (mediaId, keywords) => {
-            try {
-              await fetch(`/api/media/${mediaId}/keywords`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ keywords })
-              });
-            } catch (error) {
-              console.error('Failed to assign keywords:', error);
-            }
-          }}
-          theme={theme}
+            onClose={() => setSelectedMediaId(null)}
+            onAssignKeywords={async (mediaId, keywords) => {
+              try {
+                await fetch(`/api/media/${mediaId}/keywords`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ keywords })
+                });
+              } catch (error) {
+                console.error('Failed to assign keywords:', error);
+              }
+            }}
+            theme={theme}
           />
         );
-      })()
+      })()}
 
       {/* Folder placement success modal */}
       {folderPlacementModal.isOpen && (
