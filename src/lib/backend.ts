@@ -332,6 +332,10 @@ export async function retrainEmbeddings(siloName?: string) {
 }
 
 export async function toggleFavorite(mediaId: number, siloName?: string): Promise<{success: boolean; media_id: number; is_favorite: boolean}> {
+  if (typeof mediaId !== 'number' || isNaN(mediaId)) {
+    console.error('[backend] toggleFavorite called with invalid mediaId:', mediaId, typeof mediaId);
+    throw new Error(`Invalid media ID: ${mediaId}`);
+  }
   return request(`/api/media/${mediaId}/favorite`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

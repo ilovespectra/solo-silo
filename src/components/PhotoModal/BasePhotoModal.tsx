@@ -249,9 +249,16 @@ export default function BasePhotoModal({
             )}
 
             {/* Favorite button */}
-            {onToggleFavorite && media && (
+            {onToggleFavorite && media && media.id && (
               <button
-                onClick={() => onToggleFavorite(parseInt(media.id))}
+                onClick={() => {
+                  const id = parseInt(media.id);
+                  if (isNaN(id)) {
+                    console.error('[PhotoModal] Invalid media ID:', media.id);
+                    return;
+                  }
+                  onToggleFavorite(id);
+                }}
                 className="absolute bottom-4 right-4 z-20 transition-all duration-200 hover:scale-125 flex items-center justify-center"
                 title={isFavorite && isFavorite(parseInt(media.id)) ? "remove favorite" : "add to favorites"}
                 style={{

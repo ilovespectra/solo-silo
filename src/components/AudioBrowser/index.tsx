@@ -113,7 +113,7 @@ export default function AudioBrowser() {
     };
 
     fetchAudio();
-  }, [sortField, sortOrder]);
+  }, [sortField, sortOrder, activeSilo?.name]);
 
   useEffect(() => {
     const pollIndexingProgress = async () => {
@@ -165,7 +165,7 @@ export default function AudioBrowser() {
         clearInterval(pollingIntervalRef.current);
       }
     };
-  }, []);
+  }, [activeSilo?.name]);
 
   const handleAudioClick = (audio: AudioItem) => {
     setSelectedAudioId(audio.id);
