@@ -642,14 +642,30 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                           await addPhotoToCluster(cluster.id, uploadedFile.media_id.toString());
                           console.log('[FaceDetailView] Successfully added photo to cluster');
                           
-                          // Show success message and reload photos
+                          // Optimistically add photo to UI immediately
+                          const newPhoto: ClusterPhoto = {
+                            id: uploadedFile.media_id.toString(),
+                            image_path: uploadedFile.file_path || '',
+                            thumbnail: uploadedFile.thumbnail || `http://127.0.0.1:8000/api/media/file/${uploadedFile.media_id}`,
+                            date_taken: Math.floor(Date.now() / 1000),
+                            similarity_score: 1.0,
+                            is_confirmed: true
+                          };
+                          
+                          setPhotos(prev => [newPhoto, ...prev]);
+                          setActiveTab('photos');
+                          
+                          // Show success message
                           setUploadSuccess(true);
+                          setTimeout(() => {
+                            setUploadSuccess(false);
+                          }, 2000);
+                          
+                          // Reload photos in background after indexing delay (3-5 seconds)
                           setTimeout(async () => {
                             const data = await getClusterPhotos(cluster.id);
                             setPhotos(data);
-                            setActiveTab('photos');
-                            setUploadSuccess(false);
-                          }, 1000);
+                          }, 5000);
                         } else {
                           console.warn('[FaceDetailView] Upload response missing media_id:', uploadedFile);
                         }
