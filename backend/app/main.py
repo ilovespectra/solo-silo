@@ -4330,8 +4330,8 @@ async def get_cluster_photos(cluster_id: str, silo_name: str = Query(None)):
                 cluster = c
                 break
         
-        # If not found, cluster doesn't exist
-        if not cluster:
+        # If not found in embedding-based clusters, check if it's a user-created cluster
+        if not cluster and cluster_id not in labels:
             raise HTTPException(status_code=404, detail=f"Cluster {cluster_id} not found")
         
         # Get exclusions for this cluster
@@ -4359,40 +4359,41 @@ async def get_cluster_photos(cluster_id: str, silo_name: str = Query(None)):
         
         # Return photos with thumbnails, excluding removed ones
         with get_db() as conn:
-            # First, add photos from the embedding-based cluster
-            for i, photo in enumerate(cluster.get("photos", [])):
-                media_id = photo.get("media_id")
-                if not media_id:
-                    continue
-                
-                # Skip excluded photos
-                if media_id in excluded_ids:
-                    continue
-                
-                added_media_ids.add(media_id)
-                
-                # Get photo metadata
-                cur = conn.execute(
-                    "SELECT date_taken FROM media_files WHERE id = ?",
-                    (media_id,)
-                )
-                row = cur.fetchone()
-                date_taken = row[0] if row else None
-                
-                photo_response = ClusterPhotoResponse(
-                    id=str(media_id),
-                    image_path=photo.get("path", ""),
-                    thumbnail=f"http://127.0.0.1:8000/api/media/file/{media_id}",
-                    date_taken=date_taken,
-                    similarity_score=photo.get("confidence", 0.5),
-                    is_confirmed=media_id in confirmed_photo_ids
-                )
-                
-                # Put confirmed photos first
-                if media_id in confirmed_photo_ids:
-                    confirmed_results.append(photo_response)
-                else:
-                    unconfirmed_results.append(photo_response)
+            # First, add photos from the embedding-based cluster (if it exists)
+            if cluster:
+                for i, photo in enumerate(cluster.get("photos", [])):
+                    media_id = photo.get("media_id")
+                    if not media_id:
+                        continue
+                    
+                    # Skip excluded photos
+                    if media_id in excluded_ids:
+                        continue
+                    
+                    added_media_ids.add(media_id)
+                    
+                    # Get photo metadata
+                    cur = conn.execute(
+                        "SELECT date_taken FROM media_files WHERE id = ?",
+                        (media_id,)
+                    )
+                    row = cur.fetchone()
+                    date_taken = row[0] if row else None
+                    
+                    photo_response = ClusterPhotoResponse(
+                        id=str(media_id),
+                        image_path=photo.get("path", ""),
+                        thumbnail=f"http://127.0.0.1:8000/api/media/file/{media_id}",
+                        date_taken=date_taken,
+                        similarity_score=photo.get("confidence", 0.5),
+                        is_confirmed=media_id in confirmed_photo_ids
+                    )
+                    
+                    # Put confirmed photos first
+                    if media_id in confirmed_photo_ids:
+                        confirmed_results.append(photo_response)
+                    else:
+                        unconfirmed_results.append(photo_response)
             
             # Now add confirmed photos that aren't already in the cluster
             for media_id in confirmed_photo_ids:
