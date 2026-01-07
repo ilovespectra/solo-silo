@@ -1604,8 +1604,13 @@ async def media_by_date(silo_name: str = Query(None)):
 
 
 @app.get("/api/media/file/{media_id}")
-async def serve_media_file(media_id: int):
+async def serve_media_file(media_id: int, silo_name: str = Query(None)):
     """Serve media file by ID. AIF files automatically converted to WAV on-the-fly if needed."""
+    # Set silo context if provided
+    if silo_name:
+        from .silo_manager import SiloManager
+        SiloManager.set_active_silo(silo_name)
+    
     with get_db() as conn:
         cur = conn.execute("SELECT path FROM media_files WHERE id = ?", (media_id,))
         row = cur.fetchone()
@@ -1629,10 +1634,15 @@ async def serve_media_file(media_id: int):
 
 
 @app.get("/api/media/thumbnail/{media_id}")
-async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False):
+async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, silo_name: str = Query(None)):
     """Serve compressed thumbnail directly from the file."""
     from PIL import Image
     import io
+    
+    # Set silo context if provided
+    if silo_name:
+        from .silo_manager import SiloManager
+        SiloManager.set_active_silo(silo_name)
     
     with get_db() as conn:
         cur = conn.execute("SELECT path, rotation FROM media_files WHERE id = ?", (media_id,))
@@ -1804,9 +1814,14 @@ async def get_total_media_count():
 
 
 @app.get("/api/media/{media_id}/metadata")
-async def get_media_metadata(media_id: int):
+async def get_media_metadata(media_id: int, silo_name: str = Query(None)):
     """Get metadata for a media file (dimensions, rotation, etc)."""
     try:
+        # Set silo context if provided
+        if silo_name:
+            from .silo_manager import SiloManager
+            SiloManager.set_active_silo(silo_name)
+        
         with get_db() as conn:
             cur = conn.execute(
                 "SELECT id, width, height, rotation FROM media_files WHERE id = ?",
@@ -1859,9 +1874,14 @@ async def get_media_clusters(media_id: int):
 
 
 @app.get("/api/media/{media_id}/faces")
-async def get_media_faces(media_id: int):
+async def get_media_faces(media_id: int, silo_name: str = Query(None)):
     """Get detected faces for a media file with bounding boxes in normalized 0-1 coordinates."""
     try:
+        # Set silo context if provided
+        if silo_name:
+            from .silo_manager import SiloManager
+            SiloManager.set_active_silo(silo_name)
+        
         with get_db() as conn:
             # Get image dimensions
             cur = conn.execute(
