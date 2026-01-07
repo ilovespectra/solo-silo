@@ -382,7 +382,9 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
       newFavorites.add(mediaId);
       
       import('@/lib/backend').then(mod => {
-        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).catch(err => {
+        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).then(() => {
+          useAppStore.getState().loadFavorites();
+        }).catch(err => {
           console.error('Failed to save favorite to backend:', err);
         });
       });
@@ -395,7 +397,9 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
       newFavorites.delete(mediaId);
       
       import('@/lib/backend').then(mod => {
-        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).catch(err => {
+        mod.toggleFavorite(mediaId, state.activeSiloName || undefined).then(() => {
+          useAppStore.getState().loadFavorites();
+        }).catch(err => {
           console.error('Failed to remove favorite from backend:', err);
         });
       });

@@ -64,7 +64,7 @@ export default function SearchPhotoModal({
       };
       loadClusters();
     }
-  }, [isOpen, isLoadingClusters, allClusters.length]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && media?.id && allClusters.length > 0) {

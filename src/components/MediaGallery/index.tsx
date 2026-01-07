@@ -741,7 +741,7 @@ export default function MediaGallery() {
                             {/* Thumbnail - rotation applied by backend serve_thumbnail, not CSS */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+                              src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover group-hover:scale-105 transition"
                               loading="lazy"
@@ -919,7 +919,7 @@ export default function MediaGallery() {
                           <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-300">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`/api/media/thumbnail/${item.id}?size=60&square=true${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+                              src={`/api/media/thumbnail/${item.id}?size=60&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
                               alt="Thumbnail"
                               className="w-full h-full object-cover"
                               loading="lazy"
