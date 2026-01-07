@@ -2043,7 +2043,7 @@ async def serve_face_crop(media_id: int):
 
 
 @app.post("/api/media/upload")
-async def upload_media_file(file: UploadFile = File(...)):
+async def upload_media_file(file: UploadFile = File(...), silo_name: str = Query("default")):
     """
     Upload a media file and add it to the database.
     Processes the image for face detection and adds to the search index.
@@ -2052,8 +2052,14 @@ async def upload_media_file(file: UploadFile = File(...)):
     import tempfile
     import shutil
     from PIL import Image
+    from fastapi import Query
     
     try:
+        # Set silo context for processing
+        from . import main
+        old_silo = getattr(main, '_currently_processing_silo', None)
+        main._currently_processing_silo = silo_name
+        
         # Validate file type
         if not file.content_type or not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="Only image files are supported")
@@ -2124,6 +2130,9 @@ async def upload_media_file(file: UploadFile = File(...)):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+    finally:
+        # Restore old silo context
+        main._currently_processing_silo = old_silo
 
 
 @app.get("/api/search")
