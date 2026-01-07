@@ -2089,14 +2089,27 @@ async def upload_media_file(file: UploadFile = File(...), silo_name: str = Query
         # Process file and add to database
         result = await process_single(file_path)
         
-        # Get the media ID that was created
+        # Get the media ID that was just created by finding the most recent entry
+        # Use relative path for database lookup since that's how process_single stores it
+        rel_file_path = os.path.relpath(file_path, os.getcwd())
+        
         with get_db() as conn:
             cur = conn.execute(
                 "SELECT id FROM media_files WHERE path = ? ORDER BY id DESC LIMIT 1",
-                (file_path,)
+                (rel_file_path,)
             )
             row = cur.fetchone()
             media_id = row[0] if row else None
+        
+        if not media_id:
+            # Try with absolute path as fallback
+            with get_db() as conn:
+                cur = conn.execute(
+                    "SELECT id FROM media_files WHERE path = ? ORDER BY id DESC LIMIT 1",
+                    (file_path,)
+                )
+                row = cur.fetchone()
+                media_id = row[0] if row else None
         
         if not media_id:
             raise HTTPException(status_code=500, detail="Failed to create media record")
