@@ -4526,37 +4526,40 @@ async def rotate_cluster_thumbnail(cluster_id: str, request: RotateClusterReques
 @app.post("/api/faces/{cluster_id}/add")
 async def add_photo_to_cluster(cluster_id: str, media_id: int = Query(...)):
     """Add a photo to a face cluster (manual assignment)."""
+    global _face_clusters_cache
     try:
-        # For now, this is a placeholder that tracks the association
-        # In a full implementation, you'd update a user_clusters table
-        with get_db() as conn:
-            # Create user_cluster_assignments table if it doesn't exist
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS user_cluster_assignments (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    cluster_id TEXT NOT NULL,
-                    media_id INTEGER NOT NULL,
-                    added_by_user BOOLEAN DEFAULT 1,
-                    created_at INTEGER,
-                    UNIQUE(cluster_id, media_id)
-                )
-            """)
-            
-            # Add the assignment
-            import time
-            conn.execute(
-                "INSERT OR IGNORE INTO user_cluster_assignments (cluster_id, media_id, created_at) VALUES (?, ?, ?)",
-                (cluster_id, media_id, int(time.time()))
-            )
-            conn.commit()
+        print(f"[ADD_PHOTO] Adding media_id {media_id} to cluster {cluster_id}")
+        
+        # Load labels and add to confirmed_photos
+        labels = load_labels()
+        if cluster_id not in labels:
+            labels[cluster_id] = {}
+        
+        if "confirmed_photos" not in labels[cluster_id]:
+            labels[cluster_id]["confirmed_photos"] = []
+        
+        media_id_int = int(media_id)
+        if media_id_int not in labels[cluster_id]["confirmed_photos"]:
+            labels[cluster_id]["confirmed_photos"].append(media_id_int)
+            print(f"[ADD_PHOTO] Added media_id {media_id} to confirmed_photos in {cluster_id}")
+        
+        # Save labels
+        save_labels(labels)
+        
+        # Clear the clusters cache
+        _face_clusters_cache["data"] = None
+        print(f"[ADD_PHOTO] Cleared face clusters cache")
         
         return {
             "cluster_id": cluster_id,
             "media_id": media_id,
-            "success": True
+            "success": True,
+            "message": "Photo added to cluster"
         }
     except Exception as e:
         print(f"[API_ERROR] Failed to add photo to cluster: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 

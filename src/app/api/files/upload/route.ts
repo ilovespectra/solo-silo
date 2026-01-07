@@ -30,13 +30,21 @@ export async function POST(req: NextRequest) {
     const backendFormData = new FormData();
     backendFormData.append('file', new Blob([buffer], { type: file.type }), file.name);
 
-    // Extract silo_name from query parameters
+    // Extract silo_name and cluster_id from query parameters
     const url = new URL(req.url);
     const siloName = url.searchParams.get('silo_name');
+    const clusterId = url.searchParams.get('cluster_id');
     
     let backendUrl = 'http://127.0.0.1:8000/api/media/upload';
+    const params = new URLSearchParams();
     if (siloName) {
-      backendUrl += `?silo_name=${encodeURIComponent(siloName)}`;
+      params.append('silo_name', siloName);
+    }
+    if (clusterId) {
+      params.append('cluster_id', clusterId);
+    }
+    if (params.toString()) {
+      backendUrl += `?${params.toString()}`;
     }
 
     console.log(`[upload] Uploading file: ${file.name}, size: ${buffer.byteLength}, type: ${file.type}, silo: ${siloName}, backend: ${backendUrl}`);
