@@ -30,7 +30,16 @@ export async function POST(req: NextRequest) {
     const backendFormData = new FormData();
     backendFormData.append('file', new Blob([buffer], { type: file.type }), file.name);
 
-    const backendResponse = await fetch('http://127.0.0.1:8000/api/media/upload', {
+    // Extract silo_name from query parameters
+    const url = new URL(req.url);
+    const siloName = url.searchParams.get('silo_name');
+    
+    let backendUrl = 'http://127.0.0.1:8000/api/media/upload';
+    if (siloName) {
+      backendUrl += `?silo_name=${encodeURIComponent(siloName)}`;
+    }
+
+    const backendResponse = await fetch(backendUrl, {
       method: 'POST',
       body: backendFormData,
     });

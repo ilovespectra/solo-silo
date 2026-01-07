@@ -2,6 +2,7 @@
 import { apiUrl } from '@/lib/api';
 
 import { useState, useRef, useEffect } from 'react';
+import { useAppStore } from '@/store/appStore';
 import PeoplePhotoModal from '@/components/PhotoModal/PeoplePhotoModal';
 import { FaceCluster, ClusterPhoto, useFaceClusters } from './hooks/useFaceClusters';
 
@@ -15,6 +16,7 @@ interface FaceDetailViewProps {
 type TabType = 'photos' | 'add' | 'settings';
 
 export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: FaceDetailViewProps) {
+  const { isFavorite, addFavorite, removeFavorite } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>('photos');
   const [name, setName] = useState(cluster.name || '');
   const [isEditing, setIsEditing] = useState(false);
@@ -402,8 +404,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         : 'bg-gray-50 border-gray-300 text-gray-900'
                     }`}
                     onKeyDown={(e) => {
-                      if (e.key === 'enter') handleSaveName();
-                      if (e.key === 'escape') {
+                      if (e.key === 'Enter') handleSaveName();
+                      if (e.key === 'Escape') {
                         setName(cluster.name || '');
                         setIsEditing(false);
                       }
@@ -609,13 +611,19 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         const formData = new FormData();
                         formData.append('file', file);
                         
-                        const uploadResponse = await fetch(apiUrl('/api/files/upload'), {
+                        const uploadUrl = new URL(apiUrl('/api/files/upload'), window.location.origin);
+                        if (activeSilo?.name) {
+                          uploadUrl.searchParams.append('silo_name', activeSilo.name);
+                        }
+                        
+                        const uploadResponse = await fetch(uploadUrl.toString(), {
                           method: 'POST',
                           body: formData
                         });
                         
                         if (!uploadResponse.ok) {
-                          console.error(`Failed to upload ${file.name}`);
+                          const errorText = await uploadResponse.text();
+                          console.error(`Failed to upload ${file.name}: ${uploadResponse.status} ${errorText}`);
                           continue;
                         }
                         
@@ -705,6 +713,14 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
             onNavigateNext={handleNavigateNext}
             canNavigatePrev={canNavigatePrev}
             canNavigateNext={canNavigateNext}
+            onToggleFavorite={(mediaId: number) => {
+              if (isFavorite(mediaId)) {
+                removeFavorite(mediaId);
+              } else {
+                addFavorite(mediaId);
+              }
+            }}
+            isFavorite={isFavorite}
             onConfirm={async () => {
               if (selectedPhoto) {
                 await handleConfirmPhoto(selectedPhoto.id);

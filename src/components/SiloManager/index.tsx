@@ -159,6 +159,9 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
       setEditingSilo(null);
       setEditNewName('');
       setEditPassword('');
+      setToast({ message: `silo renamed to "${editNewName}"`, type: 'success' });
+      // Close the manager after successful rename
+      setTimeout(() => onClose(), 500);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'failed to rename silo';
       setFormError(message);

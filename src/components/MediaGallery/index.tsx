@@ -172,7 +172,13 @@ export default function MediaGallery() {
       console.log(`[MediaGallery] Loaded ${parsed.length} date groups, rotations now included in media items`);
     } catch (e) {
       const error = e as Error;
-      setError(error?.message || 'Failed to load media');
+      const errorMsg = error?.message || 'Failed to load media';
+      // Check if this is a backend unavailable error - if so, show helpful message
+      if (errorMsg.includes('Backend unavailable') || errorMsg.includes('503')) {
+        setError('Add a source in Settings to begin browsing');
+      } else {
+        setError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
