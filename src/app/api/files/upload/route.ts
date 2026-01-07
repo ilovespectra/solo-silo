@@ -39,21 +39,26 @@ export async function POST(req: NextRequest) {
       backendUrl += `?silo_name=${encodeURIComponent(siloName)}`;
     }
 
+    console.log(`[upload] Uploading file: ${file.name}, size: ${buffer.byteLength}, type: ${file.type}, silo: ${siloName}, backend: ${backendUrl}`);
+
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
       body: backendFormData,
     });
 
+    console.log(`[upload] Backend response status: ${backendResponse.status}`);
+
     if (!backendResponse.ok) {
       const error = await backendResponse.text();
-      console.error('Backend upload error:', error);
+      console.error(`[upload] Backend upload error (${backendResponse.status}):`, error);
       return NextResponse.json(
-        { error: 'Failed to upload file to backend' },
+        { error: `Failed to upload file to backend: ${error}` },
         { status: backendResponse.status }
       );
     }
 
     const result = await backendResponse.json();
+    console.log(`[upload] Backend response:`, result);
 
     return NextResponse.json({
       success: true,
@@ -62,9 +67,9 @@ export async function POST(req: NextRequest) {
       thumbnail: result.thumbnail,
     });
   } catch (error) {
-    console.error('Error in /api/files/upload:', error);
+    console.error('[upload] Error in /api/files/upload:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
