@@ -247,6 +247,15 @@ async def startup_event():
         raise  # Re-raise to prevent silent failures
 
 
+def check_read_only():
+    """Check if the system is in read-only mode (demo mode).
+    Raises HTTPException if write operations are not allowed.
+    """
+    # Currently not in demo mode, so no restriction
+    # This function exists for future demo mode support
+    pass
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "time": int(time.time())}
