@@ -1190,6 +1190,7 @@ async def _index_path_with_progress(root_path: str, recursive: bool = True):
         
         # Run face detection on ALL newly indexed files with memory efficiency and throttling
         indexing_state["current_file"] = "Detecting faces in all indexed images..."
+        indexing_state["phase"] = "detecting"  # Signal start of face detection phase
         print(f"[INDEXING] Starting batch face detection for all unprocessed files...")
         print(f"[INDEXING] Using throttled face detection with 3-second delay every 3 images for system stability")
         try:
