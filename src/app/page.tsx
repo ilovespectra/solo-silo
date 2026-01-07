@@ -88,8 +88,23 @@ export default function Home() {
   useEffect(() => {
     if (mounted) {
       setupConfigPersistence();
+      
+      // Load tour state from localStorage
+      if (typeof window !== 'undefined') {
+        const tourCompleted = localStorage.getItem('app-tour-completed') === 'true';
+        const savedStep = localStorage.getItem('app-tour-step');
+        
+        // Only show tour if not completed and user has indexed files
+        if (!tourCompleted && hasIndexedFiles) {
+          setShowGettingStartedTour(true);
+          const step = savedStep ? parseInt(savedStep) : 0;
+          setGettingStartedStep(step);
+        } else {
+          setShowGettingStartedTour(false);
+        }
+      }
     }
-  }, [mounted]);
+  }, [mounted, hasIndexedFiles, setShowGettingStartedTour, setGettingStartedStep]);
 
   useEffect(() => {
     if (mounted) {

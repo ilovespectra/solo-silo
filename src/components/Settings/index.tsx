@@ -1410,7 +1410,7 @@ export default function Settings() {
           >
             <div className={`flex items-center gap-3 mb-4 ${theme === 'dark' ? 'text-orange-100' : 'text-orange-800'}`}>
               <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></div>
-              <span className="font-semibold">⏳ Indexing in progress...</span>
+              <span className="font-semibold">⏳ indexing in progress...</span>
             </div>
 
             <div className={`text-sm mb-4 ${theme === 'dark' ? 'text-orange-200' : 'text-orange-700'}`}>

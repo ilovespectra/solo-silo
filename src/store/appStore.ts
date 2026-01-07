@@ -325,15 +325,21 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
   showGettingStartedTour: false,
 
   setShowGettingStartedTour: (show) =>
-    set({
-      showGettingStartedTour: show,
+    set(() => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('app-tour-completed', show ? 'false' : 'true');
+      }
+      return { showGettingStartedTour: show };
     }),
 
   gettingStartedStep: 0,
 
   setGettingStartedStep: (step) =>
-    set({
-      gettingStartedStep: step,
+    set(() => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('app-tour-step', step.toString());
+      }
+      return { gettingStartedStep: step };
     }),
 
   tourAutoOpenDebugLog: false,

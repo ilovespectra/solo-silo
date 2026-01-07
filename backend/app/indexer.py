@@ -327,6 +327,21 @@ def extract_text_content(path: str) -> str:
     return text.strip()[:50000] if text else ""
 
 
+def exif_orientation_to_rotation(orientation: int) -> int:
+    """
+    Convert EXIF Orientation tag value to CSS rotation degrees.
+    EXIF values: 1=normal, 3=180°, 6=90° CW, 8=90° CCW
+    CSS rotation: 0, 90, 180, 270
+    """
+    orientation_map = {
+        1: 0,    # Normal
+        3: 180,  # Rotate 180
+        6: 90,   # Rotate 90 CW (portrait taken with camera rotated)
+        8: 270,  # Rotate 270 (90 CCW)
+    }
+    return orientation_map.get(orientation, 0)
+
+
 def extract_exif(path: str) -> dict:
     meta = {
         "date_taken": None,
@@ -334,6 +349,7 @@ def extract_exif(path: str) -> dict:
         "lens": None,
         "width": None,
         "height": None,
+        "rotation": 0,  # CSS rotation in degrees (0, 90, 180, 270)
     }
     try:
         with Image.open(path) as img:
@@ -345,6 +361,9 @@ def extract_exif(path: str) -> dict:
                 meta["date_taken"] = int(time.mktime(time.strptime(dt, "%Y:%m:%d %H:%M:%S")))
             meta["camera"] = tag_map.get("Model")
             meta["lens"] = tag_map.get("LensModel")
+            # Extract EXIF Orientation tag and convert to CSS rotation
+            exif_orientation = tag_map.get("Orientation", 1)
+            meta["rotation"] = exif_orientation_to_rotation(exif_orientation)
     except Exception:
         pass
     return meta
@@ -482,8 +501,8 @@ def upsert_media(conn: sqlite3.Connection, record: dict) -> int:
     try:
         conn.execute(
             """
-            INSERT INTO media_files (path, hash, type, date_taken, location, size, width, height, camera, lens, text_embedding, clip_embedding, objects, faces, animals, text_content, created_at, updated_at)
-            VALUES (:path, :hash, :type, :date_taken, :location, :size, :width, :height, :camera, :lens, :text_embedding, :clip_embedding, :objects, :faces, :animals, :text_content, :created_at, :updated_at)
+            INSERT INTO media_files (path, hash, type, date_taken, location, size, width, height, camera, lens, rotation, text_embedding, clip_embedding, objects, faces, animals, text_content, created_at, updated_at)
+            VALUES (:path, :hash, :type, :date_taken, :location, :size, :width, :height, :camera, :lens, :rotation, :text_embedding, :clip_embedding, :objects, :faces, :animals, :text_content, :created_at, :updated_at)
             ON CONFLICT(path) DO UPDATE SET
                 hash=excluded.hash,
                 type=excluded.type,
@@ -494,6 +513,7 @@ def upsert_media(conn: sqlite3.Connection, record: dict) -> int:
                 height=excluded.height,
                 camera=excluded.camera,
                 lens=excluded.lens,
+                rotation=excluded.rotation,
                 text_embedding=excluded.text_embedding,
                 clip_embedding=excluded.clip_embedding,
                 objects=excluded.objects,
@@ -1220,6 +1240,7 @@ async def process_single(path: str):
                 "height": meta.get("height"),
                 "camera": meta.get("camera"),
                 "lens": meta.get("lens"),
+                "rotation": meta.get("rotation", 0),
                 "text_embedding": to_blob(text_embed) if text_embed else None,
                 "clip_embedding": to_blob(clip_embed) if clip_embed else None,
                 "objects": objects_json,
