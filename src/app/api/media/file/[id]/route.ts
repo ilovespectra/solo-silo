@@ -9,9 +9,9 @@ export async function GET(
   const silo_name = req.nextUrl.searchParams.get('silo_name') || 'default';
 
   try {
-    const backendUrl = `${process.env.BACKEND_URL || 'http://localhost:8000'}/api/media/file/${id}?silo_name=${encodeURIComponent(silo_name)}`;
+    const endpoint = `/api/media/file/${id}?silo_name=${encodeURIComponent(silo_name)}`;
     
-    const response = await fetchBackend(backendUrl, {
+    const response = await fetchBackend(endpoint, {
       method: 'GET'
     });
 

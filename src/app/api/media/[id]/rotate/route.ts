@@ -14,9 +14,9 @@ export async function POST(
 
     console.log(`[API] Proxying rotate request for media_id=${id}, rotation=${rotation}, silo=${silo_name}`);
 
-    const backendUrl = `${process.env.BACKEND_URL || 'http://localhost:8000'}/api/media/${id}/rotate?silo_name=${encodeURIComponent(silo_name)}`;
+    const endpoint = `/api/media/${id}/rotate?silo_name=${encodeURIComponent(silo_name)}`;
     
-    const response = await fetchBackend(backendUrl, {
+    const response = await fetchBackend(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ rotation })
