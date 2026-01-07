@@ -615,9 +615,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         formData.append('file', file);
                         
                         const uploadUrl = new URL(apiUrl('/api/files/upload'), window.location.origin);
-                        if (activeSiloName) {
-                          uploadUrl.searchParams.append('silo_name', activeSiloName);
-                        }
+                        const siloName = activeSiloName || 'default';
+                        uploadUrl.searchParams.append('silo_name', siloName);
                         
                         const uploadResponse = await fetch(uploadUrl.toString(), {
                           method: 'POST',
