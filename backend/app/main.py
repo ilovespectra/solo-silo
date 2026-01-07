@@ -4946,48 +4946,9 @@ async def add_photo_to_multiple_clusters(request: AddToMultipleClustersRequest):
                 labels[cluster_id]["confirmed_photos"].append(media_id_int)
                 print(f"[DEBUG] Added media_id {media_id} to confirmed_photos in {cluster_id}")
         
-        # If source cluster is unnamed, remove photo from source cluster (move instead of add to multiple)
-        if is_unnamed_source and source_cluster_id not in ('search', 'browse', 'unknown'):
-            print(f"[DEBUG] Source cluster is unnamed - removing photo from source cluster")
-            
-            # Remove from source cluster confirmed photos
-            if source_cluster_id in labels and "confirmed_photos" in labels[source_cluster_id]:
-                if media_id_int in labels[source_cluster_id]["confirmed_photos"]:
-                    labels[source_cluster_id]["confirmed_photos"].remove(media_id_int)
-                    print(f"[DEBUG] Removed media_id {media_id} from confirmed_photos in {source_cluster_id}")
-            
-            # Create exclusion in source cluster so it doesn't appear there
-            with get_db() as conn:
-                # Ensure exclusion table exists
-                conn.execute("""
-                    CREATE TABLE IF NOT EXISTS face_cluster_exclusions (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        cluster_id TEXT NOT NULL,
-                        media_id INTEGER NOT NULL,
-                        created_at INTEGER,
-                        UNIQUE(cluster_id, media_id)
-                    )
-                """)
-                
-                import time
-                # Remove any existing exclusion first
-                conn.execute(
-                    "DELETE FROM face_cluster_exclusions WHERE cluster_id = ? AND media_id = ?",
-                    (source_cluster_id, media_id_int)
-                )
-                # Create new exclusion
-                conn.execute(
-                    "INSERT INTO face_cluster_exclusions (cluster_id, media_id, created_at) VALUES (?, ?, ?)",
-                    (source_cluster_id, media_id_int, int(time.time()))
-                )
-                conn.commit()
-                print(f"[DEBUG] Exclusion created in database for {source_cluster_id}:{media_id}")
-            
-            # Save labels before checking if cluster is empty
-            save_labels(labels)
-            
-            # Check if source cluster is now empty and hide it if so
-            check_and_hide_empty_cluster(source_cluster_id, labels)
+        # NEVER remove photo from source cluster - always keep it in all relevant clusters
+        # This ensures photos with multiple people appear in all their clusters
+        print(f"[DEBUG] Photo {media_id} is now in multiple clusters (duplicated, not moved)")
         
         # Save labels
         save_labels(labels)

@@ -208,7 +208,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
       <div className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Manage Silos</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">manage silos</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -229,7 +229,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            Save Current Silo
+            save current silo
           </button>
           <button
             onClick={() => setActiveTab('create')}
@@ -239,7 +239,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            Create New Silo
+            create new silo
           </button>
           <button
             onClick={() => setActiveTab('manage')}
@@ -249,7 +249,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            Manage Silos
+            manage silos
           </button>
         </div>
 
@@ -267,7 +267,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
             </div>
           )}
 
-          {/* Save Current Silo Tab */}
+          {/* save current silo Tab */}
           {activeTab === 'save' && (
             <form onSubmit={handleSaveSilo} className="space-y-4">
               <div>
@@ -339,12 +339,12 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
                 disabled={formLoading || loading}
                 className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors disabled:opacity-50"
               >
-                {formLoading ? 'Saving...' : 'Save Silo'}
+                {formLoading ? 'Saving...' : 'save silo'}
               </button>
             </form>
           )}
 
-          {/* Create New Silo Tab */}
+          {/* create new silo Tab */}
           {activeTab === 'create' && (
             <form onSubmit={handleCreateSilo} className="space-y-4">
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
@@ -453,7 +453,7 @@ export function SiloManager({ isOpen, onClose }: SiloManagerProps) {
             </form>
           )}
 
-          {/* Manage Silos Tab */}
+          {/* manage silos Tab */}
           {activeTab === 'manage' && (
             <>
               {editingSilo === null ? (

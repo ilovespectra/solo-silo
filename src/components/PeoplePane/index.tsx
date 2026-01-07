@@ -466,7 +466,8 @@ export default function PeoplePane() {
           onClose={() => setSelectedCluster(null)}
           theme={theme}
           onUpdated={() => {
-            fetchClusters(showHidden).then((updated) => {
+            // Force refresh of clusters when photos are added/modified (new people might have been created)
+            fetchClusters(showHidden, true).then((updated) => {
               const updated_cluster = updated.find(c => c.id === selectedCluster.id);
               if (updated_cluster) {
                 setSelectedCluster(updated_cluster);

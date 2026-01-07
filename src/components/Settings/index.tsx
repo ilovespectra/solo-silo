@@ -1415,13 +1415,13 @@ export default function Settings() {
 
             <div className={`text-sm mb-4 ${theme === 'dark' ? 'text-orange-200' : 'text-orange-700'}`}>
               {indexingProgress?.current_file && (
-                <div className="truncate">Processing: {indexingProgress.current_file}</div>
+                <div className="truncate">processing: {indexingProgress.current_file}</div>
               )}
             </div>
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <span className={`text-sm font-medium ${theme === 'dark' ? 'text-orange-100' : 'text-orange-900'}`}>
-                  Progress
+                  progress
                 </span>
                 <span className={`text-sm ${theme === 'dark' ? 'text-orange-200' : 'text-orange-700'}`}>
                   {indexingProgress?.processed || 0} / {indexingProgress?.total || 0} files ({progressPercent}%)
@@ -1436,7 +1436,7 @@ export default function Settings() {
             </div>
 
             <div className={`text-xs ${theme === 'dark' ? 'text-orange-200' : 'text-orange-600'}`}>
-              Files may not be searchable until indexing completes. You can browse and view files now.
+              files may not be searchable until indexing completes. you can browse and view files now.
             </div>
           </div>
         )}
@@ -1468,7 +1468,7 @@ export default function Settings() {
             <div className="flex items-center gap-3 mb-2">
               <span className="text-2xl">💾</span>
               <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                Total Size
+                total size
               </h3>
             </div>
             <div className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -1507,7 +1507,7 @@ export default function Settings() {
             <div className="flex items-center gap-3 mb-2">
               <span className="text-2xl">🐾</span>
               <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                With Animals
+                with animals
               </h3>
             </div>
             <div className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>

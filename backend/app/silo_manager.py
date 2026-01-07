@@ -70,7 +70,7 @@ class SiloManager:
     
     @staticmethod
     def save_silos(silos: dict) -> bool:
-        """Save silos metadata."""
+        """save silos metadata."""
         try:
             os.makedirs(os.path.dirname(SILOS_FILE), exist_ok=True)
             with open(SILOS_FILE, "w", encoding="utf-8") as f:
