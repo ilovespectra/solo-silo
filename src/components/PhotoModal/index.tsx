@@ -96,11 +96,21 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
     setSelectedFaceIdx(null);
   };
 
-  const toggleFavorite = () => {
-    if (isFavorite(selectedMediaId)) {
-      removeFavorite(selectedMediaId);
-    } else {
-      addFavorite(selectedMediaId);
+  const toggleFavorite = async () => {
+    if (!selectedMediaId) {
+      console.error('[FAVORITES] No selectedMediaId available');
+      return;
+    }
+    try {
+      if (isFavorite(selectedMediaId)) {
+        console.log('[FAVORITES] Removing favorite:', selectedMediaId);
+        removeFavorite(selectedMediaId);
+      } else {
+        console.log('[FAVORITES] Adding favorite:', selectedMediaId);
+        addFavorite(selectedMediaId);
+      }
+    } catch (err) {
+      console.error('[FAVORITES] Error toggling favorite:', err);
     }
   };
 

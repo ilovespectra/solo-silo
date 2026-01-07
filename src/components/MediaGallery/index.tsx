@@ -732,9 +732,8 @@ export default function MediaGallery() {
 
                           <div
                             className="w-full h-full absolute inset-0"
-                            style={{ transform: `rotate(${item.rotation || 0}deg)` }}
                           >
-                            {/* Thumbnail */}
+                            {/* Thumbnail - rotation applied by backend serve_thumbnail, not CSS */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={`/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo ? `&silo=${activeSilo}` : ''}`}

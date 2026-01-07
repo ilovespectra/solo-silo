@@ -3614,6 +3614,132 @@ async def has_indexed_files():
     return {"has_indexed_files": count > 0, "file_count": count}
 
 
+@app.post("/api/media/{media_id}/track-view")
+async def track_file_view(media_id: int, silo_name: str = Query(None)):
+    """Track that a file was viewed/accessed by the user."""
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    try:
+        with get_db() as conn:
+            # Ensure file_access_log table exists
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS file_access_log (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    media_id INTEGER NOT NULL,
+                    accessed_at INTEGER NOT NULL,
+                    UNIQUE(media_id, accessed_at)
+                )
+            """)
+            
+            # Record the access with current timestamp
+            current_time = int(time.time())
+            conn.execute(
+                "INSERT OR IGNORE INTO file_access_log (media_id, accessed_at) VALUES (?, ?)",
+                (media_id, current_time)
+            )
+            conn.commit()
+        
+        return {"success": True, "media_id": media_id, "timestamp": int(time.time())}
+    except Exception as e:
+        print(f"[API_ERROR] Failed to track file view: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/media/recently-added")
+async def get_recently_added(limit: int = 50, silo_name: str = Query(None)):
+    """Get recently added files ordered by creation date (most recent first)."""
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    try:
+        with get_db() as conn:
+            # Get files ordered by date_taken (most recent first), fall back to id for new files
+            cur = conn.execute(
+                """SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation 
+                   FROM media_files 
+                   WHERE is_hidden = 0
+                   ORDER BY date_taken DESC NULLS LAST, id DESC 
+                   LIMIT ?""",
+                (limit,)
+            )
+            rows = cur.fetchall()
+            
+            results = [
+                {
+                    "id": r[0],
+                    "path": r[1],
+                    "type": r[2],
+                    "date_taken": r[3],
+                    "size": r[4],
+                    "width": r[5],
+                    "height": r[6],
+                    "camera": r[7],
+                    "lens": r[8],
+                    "rotation": r[9] or 0,
+                }
+                for r in rows
+            ]
+            
+            return results
+    except Exception as e:
+        print(f"[API_ERROR] Failed to get recently added files: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/media/recently-viewed")
+async def get_recently_viewed(limit: int = 50, silo_name: str = Query(None)):
+    """Get recently viewed files based on file_access_log."""
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
+    try:
+        with get_db() as conn:
+            # Check if file_access_log table exists
+            cur = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='file_access_log'"
+            )
+            if not cur.fetchone():
+                # No access log yet, return empty
+                return []
+            
+            # Get recently viewed files
+            cur = conn.execute(
+                """SELECT DISTINCT mf.id, mf.path, mf.type, mf.date_taken, mf.size, mf.width, mf.height, mf.camera, mf.lens, mf.rotation,
+                          MAX(fal.accessed_at) as last_viewed
+                   FROM file_access_log fal
+                   JOIN media_files mf ON mf.id = fal.media_id
+                   WHERE mf.is_hidden = 0
+                   GROUP BY mf.id
+                   ORDER BY last_viewed DESC
+                   LIMIT ?""",
+                (limit,)
+            )
+            rows = cur.fetchall()
+            
+            results = [
+                {
+                    "id": r[0],
+                    "path": r[1],
+                    "type": r[2],
+                    "date_taken": r[3],
+                    "size": r[4],
+                    "width": r[5],
+                    "height": r[6],
+                    "camera": r[7],
+                    "lens": r[8],
+                    "rotation": r[9] or 0,
+                    "viewed_at": r[10],
+                }
+                for r in rows
+            ]
+            
+            return results
+    except Exception as e:
+        print(f"[API_ERROR] Failed to get recently viewed files: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/api/media/stats")
 async def get_media_stats(silo_name: str = Query(None)):
     """Get statistics about the media library.
