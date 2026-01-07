@@ -247,18 +247,18 @@ export default function BasePhotoModal({
                 />
               </div>
             )}
-
             {/* Favorite button */}
             {onToggleFavorite && media && media.id && (
               <button
                 onClick={() => {
+                  console.log('[BasePhotoModal] Favorite button: media.id raw value:', JSON.stringify(media.id), 'type:', typeof media.id);
                   const id = parseInt(media.id);
-                  console.log('[BasePhotoModal] Favorite button clicked. media.id:', media.id, 'parsed id:', id, 'isNaN:', isNaN(id));
-                  if (isNaN(id)) {
-                    console.error('[PhotoModal] Invalid media ID:', media.id);
+                  console.log('[BasePhotoModal] Favorite button: parsed id:', id, 'isNaN:', isNaN(id));
+                  if (isNaN(id) || typeof id !== 'number') {
+                    console.error('[PhotoModal] PREVENTED invalid favorite call: media.id=', JSON.stringify(media.id));
                     return;
                   }
-                  console.log('[BasePhotoModal] Calling onToggleFavorite with id:', id);
+                  console.log('[BasePhotoModal] Calling onToggleFavorite with id:', id, 'type:', typeof id);
                   onToggleFavorite(id);
                 }}
                 className="absolute bottom-4 right-4 z-20 transition-all duration-200 hover:scale-125 flex items-center justify-center"

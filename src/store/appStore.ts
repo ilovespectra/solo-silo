@@ -378,12 +378,18 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
 
   addFavorite: (mediaId) =>
     set((state: AppStore) => {
-      console.log('[appStore] addFavorite called with mediaId:', mediaId, 'type:', typeof mediaId);
+      console.log('[appStore] addFavorite called with mediaId:', mediaId, 'type:', typeof mediaId, 'isNaN:', isNaN(mediaId));
+      if (typeof mediaId !== 'number' || isNaN(mediaId)) {
+        console.error('[appStore] REJECTED addFavorite with invalid mediaId:', mediaId);
+        return state;
+      }
       const newFavorites = new Set(state.favorites);
       newFavorites.add(mediaId);
       
       import('@/lib/backend').then(mod => {
+        console.log('[appStore] About to call toggleFavorite with mediaId:', mediaId, 'activeSiloName:', state.activeSiloName);
         mod.toggleFavorite(mediaId, state.activeSiloName || undefined).then(() => {
+          console.log('[appStore] toggleFavorite succeeded, calling loadFavorites');
           useAppStore.getState().loadFavorites();
         }).catch(err => {
           console.error('Failed to save favorite to backend:', err);
