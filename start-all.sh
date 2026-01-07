@@ -209,14 +209,15 @@ sleep 5  # Give backend process more time to load dependencies (DeepFace, etc.)
 # First wait for the port to be listening
 echo -e "${ORANGE}waiting for backend to bind to port 8000...${NC}"
 PORT_READY=false
-for i in $(seq 1 90); do
+MAX_PORT_WAIT=120  # Increased to 2 minutes max for port binding
+for i in $(seq 1 $MAX_PORT_WAIT); do
   if lsof -i :8000 -sTCP:LISTEN >/dev/null 2>&1; then
     PORT_READY=true
     echo -e "${GREEN}✓ backend port is listening${NC}"
     break
   fi
   sleep 1
-  if [ $((i % 5)) -eq 0 ]; then
+  if [ $((i % 10)) -eq 0 ]; then
     echo -n " ${i}s"
   else
     echo -n "."
@@ -225,27 +226,48 @@ done
 echo ""
 
 if [ "$PORT_READY" = false ]; then
-  echo -e "${RED}✗ ERROR: Backend never bound to port 8000${NC}"
+  echo -e "${RED}✗ ERROR: Backend never bound to port 8000 after ${MAX_PORT_WAIT} seconds${NC}"
+  echo -e "${RED}The backend process failed to start or crashed immediately.${NC}"
   echo -e "${ORANGE}Check backend logs:${NC}"
-  tail -20 backend.log
+  tail -30 backend.log
+  echo ""
+  echo -e "${RED}Stopping all services...${NC}"
+  bash "$SCRIPT_DIR/stop-all.sh"
   exit 1
 fi
 
 # Now check if it's actually healthy
 echo -e "${ORANGE}waiting for backend health check...${NC}"
 BACKEND_READY=false
-HEALTH_CHECK_TIMEOUT=30  # Reduced since port is already listening
-for i in $(seq 1 $HEALTH_CHECK_TIMEOUT); do
+HEALTH_CHECK_TIMEOUT=180  # Increased to 3 minutes to allow ML model loading on first run
+HEALTH_CHECK_INTERVAL=2    # Check every 2 seconds instead of every second
+CONSECUTIVE_SUCCESSES=2    # Require 2 consecutive healthy responses
+CONSECUTIVE_COUNT=0
+
+for i in $(seq 1 $((HEALTH_CHECK_TIMEOUT / HEALTH_CHECK_INTERVAL))); do
   # Try health check - use -o to discard body, only get http code
-  HEALTH_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null)
+  HEALTH_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 --max-time 5 http://127.0.0.1:8000/health 2>/dev/null)
+  
   if [ "$HEALTH_RESPONSE" = "200" ]; then
-    BACKEND_READY=true
-    echo -e "\n${GREEN}✓ backend is healthy!${NC}"
-    break
+    CONSECUTIVE_COUNT=$((CONSECUTIVE_COUNT + 1))
+    if [ $CONSECUTIVE_COUNT -ge $CONSECUTIVE_SUCCESSES ]; then
+      BACKEND_READY=true
+      echo -e "\n${GREEN}✓ backend is healthy!${NC}"
+      break
+    fi
+  else
+    CONSECUTIVE_COUNT=0
   fi
-  sleep 1
-  if [ $((i % 5)) -eq 0 ]; then
-    echo -n " ${i}s"
+  
+  ELAPSED=$((i * HEALTH_CHECK_INTERVAL))
+  sleep $HEALTH_CHECK_INTERVAL
+  
+  if [ $((ELAPSED % 10)) -eq 0 ]; then
+    if [ "$HEALTH_RESPONSE" = "200" ]; then
+      echo -n " ${ELAPSED}s (responding)"
+    else
+      echo -n " ${ELAPSED}s"
+    fi
   else
     echo -n "."
   fi
@@ -253,17 +275,34 @@ done
 echo ""
 
 if [ "$BACKEND_READY" = false ]; then
-  echo -e "${RED}✗ CRITICAL ERROR: Backend failed to become healthy within ${HEALTH_CHECK_TIMEOUT} seconds${NC}"
-  echo -e "${RED}This usually means the backend crashed on startup.${NC}"
-  echo -e "${ORANGE}Check backend logs for errors:${NC}"
-  echo -e "${ORANGE}  tail -50 $SCRIPT_DIR/backend.log${NC}"
+  echo -e "${RED}✗ ERROR: Backend failed to become healthy within ${HEALTH_CHECK_TIMEOUT} seconds${NC}"
   echo ""
-  echo -e "${ORANGE}Note: If the backend is still starting (loading ML models), you can:${NC}"
-  echo -e "${ORANGE}  1. Wait a bit longer and check: curl http://localhost:8000/health${NC}"
-  echo -e "${ORANGE}  2. Or restart with: ./start-all.sh${NC}"
+  
+  # Check if port is still listening
+  if lsof -i :8000 -sTCP:LISTEN >/dev/null 2>&1; then
+    echo -e "${ORANGE}ℹ️  The backend port (8000) is listening, but the health check is failing.${NC}"
+    echo -e "${ORANGE}This usually means the backend is still initializing (loading ML models, etc).${NC}"
+    echo ""
+    echo -e "${ORANGE}You can:${NC}"
+    echo -e "${ORANGE}  1. Wait a bit longer - the backend may be initializing. Check with:${NC}"
+    echo -e "${ORANGE}     while true; do curl http://localhost:8000/health && break; sleep 5; done${NC}"
+    echo -e "${ORANGE}  2. Check the detailed logs:${NC}"
+    echo -e "${ORANGE}     tail -100 backend.log${NC}"
+    echo -e "${ORANGE}  3. Once the backend is healthy, restart frontend:${NC}"
+    echo -e "${ORANGE}     npm run dev${NC}"
+  else
+    echo -e "${RED}❌ The backend never started properly (port not listening).${NC}"
+    echo -e "${ORANGE}Check the error logs:${NC}"
+    echo -e "${ORANGE}  tail -50 backend.log${NC}"
+    echo ""
+    echo -e "${RED}Stopping all services...${NC}"
+    bash "$SCRIPT_DIR/stop-all.sh"
+    exit 1
+  fi
+  
   echo ""
-  echo -e "${RED}Stopping all services...${NC}"
-  bash "$SCRIPT_DIR/stop-all.sh"
+  echo -e "${ORANGE}Showing last 50 lines of backend logs:${NC}"
+  tail -50 backend.log
   exit 1
 fi
 
