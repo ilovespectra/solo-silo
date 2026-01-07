@@ -25,6 +25,7 @@ interface PeoplePhotoModalProps extends PhotoModalProps {
   onNavigateNext?: () => void;
   canNavigatePrev?: boolean;
   canNavigateNext?: boolean;
+  onUpdated?: () => void;
 }
 
 export default function PeoplePhotoModal({
@@ -45,6 +46,7 @@ export default function PeoplePhotoModal({
   onNavigateNext,
   canNavigatePrev = false,
   canNavigateNext = false,
+  onUpdated,
   theme = 'dark',
 }: PeoplePhotoModalProps) {
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
@@ -170,6 +172,10 @@ export default function PeoplePhotoModal({
       console.log(`[PeoplePhotoModal] Adding photo to clusters:`, targetClusters);
       await onAddToMultipleClusters(media.id, targetClusters);
       setShowFaceSelection(false);
+      if (onUpdated) {
+        console.log('[PeoplePhotoModal] Calling onUpdated after person creation');
+        await onUpdated();
+      }
     } catch (error) {
       console.error('failed to add to multiple clusters:', error);
       throw error;

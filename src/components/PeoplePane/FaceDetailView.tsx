@@ -720,6 +720,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
             onNavigateNext={handleNavigateNext}
             canNavigatePrev={canNavigatePrev}
             canNavigateNext={canNavigateNext}
+            onUpdated={onUpdated}
             onToggleFavorite={(mediaId: number) => {
               if (isFavorite(mediaId)) {
                 removeFavorite(mediaId);
