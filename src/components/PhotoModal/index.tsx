@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/appStore';
+import { useSilos } from '../../hooks/useSilos';
 
 interface Face {
   bbox: number[];
@@ -28,6 +29,7 @@ interface PhotoModalProps {
 
 export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClose }: PhotoModalProps = {}) {
   const { selectedMediaId: storeSelectedMediaId, setSelectedMediaId, addFavorite, removeFavorite, isFavorite, theme } = useAppStore();
+  const { activeSilo } = useSilos();
   const selectedMediaId = propSelectedMediaId !== undefined ? propSelectedMediaId : storeSelectedMediaId;
   const [photoData, setPhotoData] = useState<PhotoData | null>(null);
   const [faces, setFaces] = useState<Face[]>([]);
@@ -193,7 +195,7 @@ export default function PhotoModal({ selectedMediaId: propSelectedMediaId, onClo
             <div className="relative" style={{ transform: `rotate(${rotation}deg)` }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/api/media/file/${photoData.id}`}
+                src={`/api/media/file/${photoData.id}${activeSilo?.name ? `?silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
                 alt="Photo"
                 className="max-w-full max-h-[70vh] object-contain transition-transform"
                 onError={(e) => {
