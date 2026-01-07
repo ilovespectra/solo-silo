@@ -332,13 +332,21 @@ export async function retrainEmbeddings(siloName?: string) {
 }
 
 export async function toggleFavorite(mediaId: number, siloName?: string): Promise<{success: boolean; media_id: number; is_favorite: boolean}> {
-  console.log('[backend] toggleFavorite called with mediaId:', mediaId, 'type:', typeof mediaId, 'siloName:', siloName);
-  if (typeof mediaId !== 'number' || isNaN(mediaId)) {
-    console.error('[backend] toggleFavorite called with invalid mediaId:', mediaId, typeof mediaId);
+  console.log('[backend.toggleFavorite] Called with mediaId:', mediaId, 'type:', typeof mediaId, 'isNaN:', Number.isNaN(mediaId), 'JSON:', JSON.stringify({mediaId}));
+  
+  if (mediaId === undefined || mediaId === null) {
+    console.error('[backend.toggleFavorite] CRITICAL: mediaId is null/undefined!');
+    throw new Error(`toggleFavorite called with null/undefined mediaId`);
+  }
+  
+  if (typeof mediaId !== 'number' || Number.isNaN(mediaId)) {
+    console.error('[backend.toggleFavorite] CRITICAL: mediaId is not a valid number! mediaId:', mediaId, 'type:', typeof mediaId);
     throw new Error(`Invalid media ID: ${mediaId}`);
   }
-  console.log('[backend] Calling /api/media/' + mediaId + '/favorite');
-  return request(`/api/media/${mediaId}/favorite`, {
+  
+  const url = `/api/media/${mediaId}/favorite`;
+  console.log('[backend.toggleFavorite] Final URL:', url);
+  return request(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   }, siloName);
