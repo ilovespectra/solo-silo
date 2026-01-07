@@ -4113,6 +4113,7 @@ async def list_face_clusters(include_hidden: bool = False, min_photos: int = 1, 
         print(f"[API] Loaded labels.json with {len(labels)} entries for silo")
         
         result = []
+        processed_cluster_ids = set()
         
         with get_db() as conn:
             # Load embedding-based clusters and apply labels to them
@@ -4123,6 +4124,7 @@ async def list_face_clusters(include_hidden: bool = False, min_photos: int = 1, 
             # clusters = assign_new_faces_to_confirmed_clusters(clusters)
             
             for cluster in clusters:
+                processed_cluster_ids.add(cluster.get("id"))
                 cluster_id = cluster.get("id")
                 
                 photos = cluster.get("photos", [])
@@ -4219,9 +4221,80 @@ async def list_face_clusters(include_hidden: bool = False, min_photos: int = 1, 
                 ))
                 print(f"[API] Cluster: {cluster_id} ({cluster_name}) - {photo_count} photos")
             
+            # Also add user-created clusters that don't have embedding-based clusters yet
+            # These are clusters created manually but haven't had photos assigned
+            for cluster_id, cluster_label_data in labels.items():
+                if cluster_id in processed_cluster_ids:
+                    # Already processed as part of embedding-based clusters
+                    continue
+                
+                if not isinstance(cluster_label_data, dict):
+                    # Skip invalid label entries
+                    continue
+                
+                is_hidden = cluster_label_data.get("hidden", False)
+                
+                # Skip hidden clusters unless explicitly requested
+                if is_hidden and not include_hidden:
+                    continue
+                
+                cluster_name = cluster_label_data.get("name", "unknown")
+                photo_ids = cluster_label_data.get("confirmed_photos", [])
+                photo_count = len(photo_ids)
+                
+                # Only show if meets minimum size (0 for newly created clusters, respect min_photos for others)
+                # Actually, for user-created clusters, show them even with 0 photos
+                # This allows users to create a cluster first, then add photos later
+                
+                # Get thumbnail from first photo
+                thumbnail_url = ""
+                if photo_ids:
+                    first_photo_id = photo_ids[0]
+                    thumbnail_url = f"http://127.0.0.1:8000/api/media/file/{first_photo_id}"
+                
+                # Get timestamp
+                last_updated = int(time.time())
+                if photo_ids:
+                    try:
+                        placeholders = ','.join(['?' for _ in photo_ids])
+                        cur = conn.execute(
+                            f"SELECT MAX(date_taken) FROM media_files WHERE id IN ({placeholders})",
+                            photo_ids
+                        )
+                        row = cur.fetchone()
+                        last_updated = row[0] if row and row[0] else int(time.time())
+                    except Exception as e:
+                        pass
+                
+                # Get confidence score from photos
+                confidence_score = 0.0
+                if photo_ids:
+                    try:
+                        placeholders = ','.join(['?' for _ in photo_ids])
+                        cur = conn.execute(
+                            f"SELECT AVG(confidence) FROM face_embeddings WHERE media_id IN ({placeholders})",
+                            photo_ids
+                        )
+                        row = cur.fetchone()
+                        confidence_score = float(row[0]) if row and row[0] else 0.0
+                    except:
+                        confidence_score = 0.0
+                
+                result.append(FaceClusterResponse(
+                    id=cluster_id,
+                    name=cluster_name,
+                    primary_thumbnail=thumbnail_url,
+                    photo_count=photo_count,
+                    confidence_score=confidence_score,
+                    is_hidden=is_hidden,
+                    last_updated=last_updated,
+                    rotation_override=0
+                ))
+                print(f"[API] User-created cluster: {cluster_id} ({cluster_name}) - {photo_count} photos")
+            
             # Sort by name (labeled first, then unknown)
             result.sort(key=lambda c: (c.name == "unknown", c.name))
-            print(f"[API] Returning {len(result)} total clusters (labeled + embedding-based)")
+            print(f"[API] Returning {len(result)} total clusters (labeled + embedding-based + user-created)")
             return result
     
     except Exception as e:
@@ -5302,10 +5375,12 @@ async def create_new_cluster(request: CreateClusterRequest):
         import uuid
         cluster_id = f"user_{int(time.time())}_{uuid.uuid4().hex[:8]}"
         
-        print(f"[DEBUG] Creating new cluster: {cluster_id} with name: {cluster_name}")
+        print(f"[CREATE_CLUSTER] Creating new cluster: {cluster_id} with name: {cluster_name}")
         
         # Load labels and create new cluster entry
+        from .face_cluster import _get_label_path
         labels = load_labels()
+        print(f"[CREATE_CLUSTER] Loaded labels from {_get_label_path()}, currently has {len(labels)} entries")
         
         if cluster_id in labels:
             # Extremely unlikely, but handle collision
@@ -5318,9 +5393,10 @@ async def create_new_cluster(request: CreateClusterRequest):
             "created_at": int(time.time())
         }
         
+        print(f"[CREATE_CLUSTER] About to save {len(labels)} labels to {_get_label_path()}")
         # Save labels
         save_labels(labels)
-        print(f"[DEBUG] New cluster saved to labels")
+        print(f"[CREATE_CLUSTER] Successfully saved new cluster {cluster_id}")
         
         # Clear the clusters cache
         _face_clusters_cache["data"] = None
