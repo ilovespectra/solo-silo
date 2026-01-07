@@ -1659,7 +1659,7 @@ async def serve_media_file(media_id: int, silo_name: str = Query(None)):
 
 
 @app.get("/api/media/thumbnail/{media_id}")
-async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, silo_name: str = Query(None)):
+async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, rotation: int = Query(None), silo_name: str = Query(None)):
     """Serve compressed thumbnail directly from the file."""
     from PIL import Image
     import io
@@ -1676,7 +1676,9 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
             raise HTTPException(status_code=404, detail="Media not found")
         
         file_path = row[0]
-        rotation = row[1] if row[1] else 0
+        db_rotation = row[1] if row[1] else 0
+        # Use query parameter rotation if provided, otherwise use database rotation
+        applied_rotation = rotation if rotation is not None else db_rotation
         
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
@@ -1691,8 +1693,8 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
             img = Image.open(file_path)
             
             # Apply rotation if needed
-            if rotation and rotation != 0:
-                img = img.rotate(-rotation, expand=False, fillcolor='white')
+            if applied_rotation and applied_rotation != 0:
+                img = img.rotate(-applied_rotation, expand=False, fillcolor='white')
             
             # Convert RGBA to RGB
             if img.mode in ('RGBA', 'LA'):

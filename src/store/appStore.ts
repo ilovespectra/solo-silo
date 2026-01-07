@@ -378,6 +378,7 @@ export const useAppStore = create<AppStore>((set): AppStore => ({
 
   addFavorite: (mediaId) =>
     set((state: AppStore) => {
+      console.log('[appStore] addFavorite called with mediaId:', mediaId, 'type:', typeof mediaId);
       const newFavorites = new Set(state.favorites);
       newFavorites.add(mediaId);
       

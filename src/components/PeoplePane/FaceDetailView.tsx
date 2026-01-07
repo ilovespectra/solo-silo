@@ -16,7 +16,7 @@ interface FaceDetailViewProps {
 type TabType = 'photos' | 'add' | 'settings';
 
 export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: FaceDetailViewProps) {
-  const { isFavorite, addFavorite, removeFavorite } = useAppStore();
+  const { isFavorite, addFavorite, removeFavorite, activeSiloName } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>('photos');
   const [name, setName] = useState(cluster.name || '');
   const [isEditing, setIsEditing] = useState(false);
@@ -612,8 +612,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                         formData.append('file', file);
                         
                         const uploadUrl = new URL(apiUrl('/api/files/upload'), window.location.origin);
-                        if (activeSilo?.name) {
-                          uploadUrl.searchParams.append('silo_name', activeSilo.name);
+                        if (activeSiloName) {
+                          uploadUrl.searchParams.append('silo_name', activeSiloName);
                         }
                         
                         const uploadResponse = await fetch(uploadUrl.toString(), {
