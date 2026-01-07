@@ -333,19 +333,20 @@ export const Search: React.FC<SearchComponentProps> = ({
       )}
 
       {/* Full-size image modal */}
-      {selectedMediaId !== null && selectedMediaId !== undefined && (
-        <SearchPhotoModal
-          isOpen={selectedMediaId !== null && selectedMediaId !== undefined}
-          media={selectedMediaId !== null && selectedMediaId !== undefined ? (() => {
-            const result = results.find(r => r.id === selectedMediaId);
-            return {
-              id: selectedMediaId.toString(),
-              image_path: result?.path || '',
-              thumbnail: '',
-              name: result?.path?.split('/').pop() || '',
-              rotation: result?.rotation || 0
-            };
-          })() : null}
+      {selectedMediaId !== null && selectedMediaId !== undefined && (() => {
+        const result = results.find(r => r.id === selectedMediaId);
+        const mediaObj = result ? {
+          id: selectedMediaId.toString(),
+          image_path: result.path || '',
+          thumbnail: '',
+          name: result.path?.split('/').pop() || '',
+          rotation: result.rotation || 0
+        } : null;
+
+        return (
+          <SearchPhotoModal
+            isOpen={true}
+            media={mediaObj}
           onClose={() => setSelectedMediaId(null)}
           onAssignKeywords={async (mediaId, keywords) => {
             try {
@@ -359,8 +360,9 @@ export const Search: React.FC<SearchComponentProps> = ({
             }
           }}
           theme={theme}
-        />
-      )}
+          />
+        );
+      })()
 
       {/* Folder placement success modal */}
       {folderPlacementModal.isOpen && (

@@ -86,7 +86,7 @@ export default function SearchPhotoModal({
       };
       loadPhotoClusters();
     }
-  }, [isOpen, media?.id, allClusters]);
+  }, [isOpen, media?.id]);
 
   const handleAddKeyword = async () => {
     if (keywordInput.trim() && !keywords.includes(keywordInput.trim())) {

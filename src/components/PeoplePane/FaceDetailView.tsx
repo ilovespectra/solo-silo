@@ -319,7 +319,10 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
       setShowMergeDialog(false);
       setSelectedTargetCluster('');
       
+      // Call onUpdated to refresh parent cluster list with updated counts
       await onUpdated();
+      
+      // Then close after parent has refreshed
       onClose();
     } catch (err) {
       console.error('failed to merge clusters:', err);
