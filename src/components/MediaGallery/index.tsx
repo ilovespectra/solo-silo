@@ -782,34 +782,6 @@ export default function MediaGallery() {
                             </div>
                           )}
 
-                          {/* Rotation Controls */}
-                          <div className="absolute bottom-2 left-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition z-20">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRotateThumbnail(item.id, 'left');
-                              }}
-                              className="bg-white/10 hover:bg-white/20 text-white p-1 rounded transition"
-                              title="Rotate Left"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRotateThumbnail(item.id, 'right');
-                              }}
-                              className="bg-white/10 hover:bg-white/20 text-white p-1 rounded transition"
-                              title="Rotate Right"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </button>
-                          </div>
-
                           {/* Click Hint */}
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 opacity-0 group-hover:opacity-100 transition">
                             <p className="text-white text-xs font-medium">Double-click to view • Click to select</p>

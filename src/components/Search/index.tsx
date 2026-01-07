@@ -333,10 +333,10 @@ export const Search: React.FC<SearchComponentProps> = ({
       )}
 
       {/* Full-size image modal */}
-      {selectedMediaId !== null && (
+      {selectedMediaId !== null && selectedMediaId !== undefined && (
         <SearchPhotoModal
-          isOpen={selectedMediaId !== null}
-          media={selectedMediaId !== null ? (() => {
+          isOpen={selectedMediaId !== null && selectedMediaId !== undefined}
+          media={selectedMediaId !== null && selectedMediaId !== undefined ? (() => {
             const result = results.find(r => r.id === selectedMediaId);
             return {
               id: selectedMediaId.toString(),
