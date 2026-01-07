@@ -384,23 +384,29 @@ def cluster_faces(instances: List[FaceInstance], min_cluster_size: int = 2):
         highest_confidence_face = sorted_faces[0]
         
         # Build photo list with confidence scores and media IDs
-        photos = []
+        # Use dict to deduplicate by media_id (one face per photo, highest confidence)
+        unique_photos_dict = {}  # media_id -> photo data
         with get_db() as conn:
             for face in sorted_faces:
                 cur = conn.execute("SELECT id FROM media_files WHERE path = ?", (face.path,))
                 row = cur.fetchone()
                 media_id = row[0] if row else None
-                photos.append({
-                    "path": face.path,
-                    "media_id": media_id,
-                    "confidence": face.score,
-                    "bbox": face.bbox,
-                })
+                
+                # Only keep highest confidence face per media_id
+                if media_id not in unique_photos_dict:
+                    unique_photos_dict[media_id] = {
+                        "path": face.path,
+                        "media_id": media_id,
+                        "confidence": face.score,
+                        "bbox": face.bbox,
+                    }
+        
+        photos = list(unique_photos_dict.values())
         
         result.append(
             {
                 "id": f"person_{cid}",
-                "count": len(faces),
+                "count": len(photos),  # Count unique photos, not individual face detections
                 "sample": highest_confidence_face.path,
                 "sample_media_id": photos[0].get("media_id") if photos else None,
                 "bbox": highest_confidence_face.bbox,
