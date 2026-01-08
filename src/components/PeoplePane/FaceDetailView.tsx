@@ -176,14 +176,22 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
   const handleConfirmPhoto = async (photoId: string) => {
     try {
       console.log(`confirming photo ${photoId} in cluster ${cluster.id}`);
-      const response = await fetch(`/api/faces/${cluster.id}/confirm?media_id=${photoId}`, {
+      const siloParam = activeSiloName ? `&silo_name=${encodeURIComponent(activeSiloName)}` : '';
+      const response = await fetch(`/api/faces/${cluster.id}/confirm?media_id=${photoId}${siloParam}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || 'Failed to confirm photo');
+        let errorMsg = `HTTP ${response.status}`;
+        try {
+          const data = await response.json();
+          errorMsg = data.detail || errorMsg;
+        } catch {
+          const text = await response.text();
+          errorMsg = text || errorMsg;
+        }
+        throw new Error(errorMsg);
       }
       
       console.log(`Photo confirmed successfully`);

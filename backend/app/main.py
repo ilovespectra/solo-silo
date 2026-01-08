@@ -4564,11 +4564,15 @@ async def add_photo_to_cluster(cluster_id: str, media_id: int = Query(...)):
 
 
 @app.post("/api/faces/{cluster_id}/confirm")
-async def confirm_photo_in_cluster(cluster_id: str, media_id: int = Query(...)):
+async def confirm_photo_in_cluster(cluster_id: str, media_id: int = Query(...), silo_name: str = Query(None)):
     """Confirm a photo as belonging to a face cluster."""
     global _face_clusters_cache
     try:
-        print(f"[DEBUG] Confirming media_id {media_id} in cluster {cluster_id}")
+        # Set silo context if provided
+        if silo_name:
+            _set_processing_silo(silo_name)
+        
+        print(f"[CONFIRM_PHOTO] Confirming media_id {media_id} in cluster {cluster_id}")
         
         # Load labels and add to confirmed_photos
         labels = load_labels()
@@ -4581,14 +4585,16 @@ async def confirm_photo_in_cluster(cluster_id: str, media_id: int = Query(...)):
         media_id_int = int(media_id)
         if media_id_int not in labels[cluster_id]["confirmed_photos"]:
             labels[cluster_id]["confirmed_photos"].append(media_id_int)
-            print(f"[DEBUG] Added media_id {media_id} to confirmed_photos in {cluster_id}")
+            print(f"[CONFIRM_PHOTO] Added media_id {media_id} to confirmed_photos in {cluster_id}")
+        else:
+            print(f"[CONFIRM_PHOTO] media_id {media_id} already in confirmed_photos for {cluster_id}")
         
         # Save labels
         save_labels(labels)
         
         # Clear the clusters cache
         _face_clusters_cache["data"] = None
-        print(f"[DEBUG] Cleared face clusters cache")
+        print(f"[CONFIRM_PHOTO] Cleared face clusters cache")
         
         return {
             "cluster_id": cluster_id,
@@ -4598,6 +4604,9 @@ async def confirm_photo_in_cluster(cluster_id: str, media_id: int = Query(...)):
         }
     except Exception as e:
         print(f"[API_ERROR] Failed to confirm photo: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
