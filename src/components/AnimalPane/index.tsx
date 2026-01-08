@@ -239,7 +239,7 @@ export default function AnimalPane() {
 
       {sortedAnimals.length === 0 && !loading && (
         <p className={`text-center ${secondaryTextClass} py-12`}>
-          No animals detected yet. Upload photos and they&apos;ll appear here.
+          no animals detected yet. upload photos and they&apos;ll appear here.
         </p>
       )}
     </div>

@@ -83,22 +83,22 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
     <div className="w-full h-full flex flex-col bg-white">
       {/* Header */}
       <div className="border-b border-gray-200 p-6 bg-gray-50">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Animals</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">animals</h1>
         <p className="text-gray-600 mb-4">
-          Manage your detected animal clusters, name them, and organize by species.
+          manage your detected animal clusters, name them, and organize by species.
         </p>
 
         {/* Filters and Sorting */}
         <div className="flex flex-wrap gap-4 items-center">
           {/* Species Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-gray-700">Species:</label>
+            <label className="text-sm font-semibold text-gray-700">species:</label>
             <select
               value={filter.species}
               onChange={(e) => setFilter({ species: e.target.value as SpeciesType | 'all' })}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-              <option value="all">All Species</option>
+              <option value="all">all species</option>
               {SPECIES_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.emoji} {option.label}
@@ -109,13 +109,13 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
 
           {/* Category Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-gray-700">Category:</label>
+            <label className="text-sm font-semibold text-gray-700">category:</label>
             <select
               value={filter.category}
               onChange={(e) => setFilter({ category: e.target.value as AnimalCategory | 'all' })}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-              <option value="all">All Categories</option>
+              <option value="all">all categories</option>
               {CATEGORY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.emoji} {option.label}
@@ -126,7 +126,7 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
 
           {/* Sort */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-gray-700">Sort:</label>
+            <label className="text-sm font-semibold text-gray-700">sort:</label>
             <select
               value={sort.by}
               onChange={(e) =>
@@ -134,9 +134,9 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
               }
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-              <option value="photoCount">Most Photos</option>
-              <option value="recentlyAdded">Recently Added</option>
-              <option value="alphabetical">Alphabetical</option>
+              <option value="photoCount">most photos</option>
+              <option value="recentlyAdded">recently added</option>
+              <option value="alphabetical">alphabetical</option>
             </select>
           </div>
 
@@ -152,7 +152,7 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
 
         {/* Results count */}
         <div className="mt-4 text-sm text-gray-600">
-          Showing {filteredClusters.length} of {clusters.length} animals
+          showing {filteredClusters.length} of {clusters.length} animals
         </div>
       </div>
 
@@ -168,15 +168,15 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mx-auto mb-3" />
-              <div className="text-gray-600">Loading animals...</div>
+              <div className="text-gray-600">loading animals...</div>
             </div>
           </div>
         ) : filteredClusters.length === 0 ? (
           <div className="flex items-center justify-center h-64 text-gray-500">
             <div className="text-center">
               <div className="text-3xl mb-2">🐾</div>
-              <div className="font-semibold">No animals detected yet</div>
-              <div className="text-sm mt-1">Enable animal detection in settings to get started</div>
+              <div className="font-semibold">no animals detected yet</div>
+              <div className="text-sm mt-1">enable animal detection in settings to get started</div>
             </div>
           </div>
         ) : (
@@ -212,10 +212,10 @@ export const AnimalsTab: React.FC<AnimalsTabProps> = ({ devMode = false }) => {
       {/* Dev Mode Info */}
       {devMode && (
         <div className="border-t border-gray-200 bg-gray-50 p-4 text-xs text-gray-600 font-mono">
-          <div>Showing: {filteredClusters.length} animals</div>
-          <div>Filter: {JSON.stringify(filter)}</div>
-          <div>Sort: {JSON.stringify(sort)}</div>
-          <div>Selected: {selectedCluster?.id || 'None'}</div>
+          <div>showing: {filteredClusters.length} animals</div>
+          <div>filter: {JSON.stringify(filter)}</div>
+          <div>sort: {JSON.stringify(sort)}</div>
+          <div>selected: {selectedCluster?.id || 'None'}</div>
         </div>
       )}
     </div>

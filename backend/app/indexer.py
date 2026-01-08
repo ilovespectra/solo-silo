@@ -676,10 +676,21 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
                 clip_embed = None
             await asyncio.sleep(0.05)
 
-            # Object detection will run AFTER indexing completes in batch mode via worker
-            # Skip per-file object detection during indexing to prevent crashes
+            # Run object and animal detection for images
             objects = []
             animals = []
+            if ext in SUPPORTED_IMAGE_TYPES:
+                try:
+                    print(f"[INDEXING] Running animal/object detection...")
+                    detections = detect_objects([full], confidence_threshold=0.5)
+                    objects = [d for d in detections if not d.is_animal]
+                    animals = [d for d in detections if d.is_animal]
+                    print(f"[INDEXING] Detected {len(objects)} objects, {len(animals)} animals")
+                except Exception as e:
+                    print(f"[INDEXING] Animal/object detection failed (non-critical): {e}")
+                    objects = []
+                    animals = []
+            
             objects_json = json.dumps([
                 {
                     "class": o.class_name,
