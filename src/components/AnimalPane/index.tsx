@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useSilos } from '@/hooks/useSilos';
-import { fetchAnimals, nameAnimal, hideAnimal } from '@/lib/backend';
+import { fetchAnimals } from '@/lib/backend';
 
 type SortBy = 'appearances' | 'name' | 'hidden';
 
@@ -79,13 +79,52 @@ export default function AnimalPane() {
   const handleName = async (id: string) => {
     const name = prompt('Name this animal:');
     if (!name) return;
-    await nameAnimal(id, name, activeSilo?.name);
-    await load();
+    
+    try {
+      const response = await fetch(`/api/animals/${id}/name`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to rename animal');
+      }
+      
+      // Update local state immediately
+      setAnimals(prev =>
+        prev.map(a => a.id === id ? { ...a, label: name } : a)
+      );
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to rename animal';
+      console.error('Failed to rename animal:', errorMsg);
+      setError(errorMsg);
+    }
   };
 
   const handleHide = async (id: string, hidden: boolean) => {
-    await hideAnimal(id, hidden, activeSilo?.name);
-    await load();
+    try {
+      const response = await fetch(`/api/animals/${id}/hide`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hidden }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update animal visibility');
+      }
+      
+      // Update local state immediately
+      setAnimals(prev =>
+        prev.map(a => a.id === id ? { ...a, hidden } : a)
+      );
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to update animal visibility';
+      console.error('Failed to hide animal:', errorMsg);
+      setError(errorMsg);
+    }
   };
 
   const getSortedAnimals = () => {
