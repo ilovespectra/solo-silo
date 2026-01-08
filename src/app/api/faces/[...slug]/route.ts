@@ -203,7 +203,12 @@ export async function POST(
   let body;
   const contentType = request.headers.get('content-type');
   if (contentType?.includes('application/json')) {
-    body = await request.json();
+    try {
+      body = await request.json();
+    } catch {
+      // Empty or invalid JSON body, no problem
+      body = undefined;
+    }
   } else {
     body = await request.text();
   }
@@ -214,7 +219,7 @@ export async function POST(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: typeof body === 'string' ? body : JSON.stringify(body),
+      body: body === undefined ? undefined : (typeof body === 'string' ? body : JSON.stringify(body)),
     });
     
     if (!response.ok) {
