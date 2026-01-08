@@ -828,7 +828,14 @@ def load_animals_from_db() -> List[AnimalInstance]:
 
 
 def cluster_animals(instances: List[AnimalInstance], min_cluster_size: int = 1):
-    """Group animals by type and appearance. Simple clustering by animal type + visual similarity."""
+    """Group animals by type and visual similarity to create multiple clusters per species.
+    
+    Uses bounding box overlap and confidence scores as a proxy for visual similarity.
+    Creates multiple clusters per animal type (e.g., multiple dog clusters, multiple cat clusters).
+    """
+    if not instances:
+        return []
+    
     # First group by animal type/label
     by_type = {}
     for instance in instances:
@@ -836,25 +843,86 @@ def cluster_animals(instances: List[AnimalInstance], min_cluster_size: int = 1):
         if label not in by_type:
             by_type[label] = []
         by_type[label].append(instance)
-
-    # For each type, create clusters (for now, just group by label as a simple heuristic)
-    clusters = {}
-    cluster_id = 0
     
-    for animal_type, animals in by_type.items():
+    # For each type, create multiple clusters using spatial/visual similarity
+    all_clusters = {}
+    global_cluster_id = 0
+    
+    for animal_type, type_animals in by_type.items():
         # Sort by confidence score descending
-        animals.sort(key=lambda x: x.score, reverse=True)
+        type_animals.sort(key=lambda x: x.score, reverse=True)
         
-        # Group animals of the same type by rough visual similarity (simple heuristic)
-        # For now, create primary cluster for this type, and split if too different
-        clusters[cluster_id] = animals
-        cluster_id += 1
-
+        # Use bounding box overlap and confidence to group similar individuals
+        # This creates multiple clusters within the same species
+        assigned = set()
+        type_clusters = {}
+        type_cluster_id = 0
+        
+        for i, animal in enumerate(type_animals):
+            if i in assigned:
+                continue
+            
+            # Start new cluster with this animal
+            cluster = [animal]
+            assigned.add(i)
+            
+            # Find similar animals (based on bbox overlap and confidence proximity)
+            x1_i, y1_i, x2_i, y2_i = animal.bbox
+            area_i = (x2_i - x1_i) * (y2_i - y1_i) if len(animal.bbox) >= 4 else 1
+            
+            for j in range(i + 1, len(type_animals)):
+                if j in assigned:
+                    continue
+                
+                other = type_animals[j]
+                x1_j, y1_j, x2_j, y2_j = other.bbox
+                area_j = (x2_j - x1_j) * (y2_j - y1_j) if len(other.bbox) >= 4 else 1
+                
+                # Calculate IoU (Intersection over Union) for bounding boxes
+                if area_i > 0 and area_j > 0:
+                    x1_inter = max(x1_i, x1_j)
+                    y1_inter = max(y1_i, y1_j)
+                    x2_inter = min(x2_i, x2_j)
+                    y2_inter = min(y2_i, y2_j)
+                    
+                    inter_area = max(0, x2_inter - x1_inter) * max(0, y2_inter - y1_inter)
+                    union_area = area_i + area_j - inter_area
+                    iou = inter_area / union_area if union_area > 0 else 0
+                else:
+                    iou = 0
+                
+                # Confidence proximity (animals with similar confidence scores are likely the same individual)
+                confidence_diff = abs(animal.score - other.score)
+                
+                # Heuristic: cluster together if:
+                # 1. Moderate bbox overlap (IoU > 0.1) OR
+                # 2. Very high confidence difference (likely same individual at different times/angles)
+                should_cluster = (iou > 0.1) or (confidence_diff < 0.15 and animal.score > 0.7)
+                
+                if should_cluster:
+                    cluster.append(other)
+                    assigned.add(j)
+            
+            # Only keep clusters with at least min_cluster_size animals
+            if len(cluster) >= min_cluster_size:
+                type_clusters[type_cluster_id] = cluster
+                type_cluster_id += 1
+        
+        # If no clusters were created (all below min_cluster_size), create single clusters
+        if not type_clusters:
+            for i, animal in enumerate(type_animals):
+                type_clusters[i] = [animal]
+        
+        # Map type clusters to global cluster IDs
+        for tc_id, cluster in type_clusters.items():
+            all_clusters[global_cluster_id] = (animal_type, cluster)
+            global_cluster_id += 1
+    
     result = []
-    for cid, animals in clusters.items():
+    for cid, (animal_type, animals) in all_clusters.items():
         if not animals:
             continue
-            
+        
         # Highest confidence animal first
         sorted_animals = sorted(animals, key=lambda a: a.score, reverse=True)
         highest_confidence = sorted_animals[0]
@@ -876,18 +944,21 @@ def cluster_animals(instances: List[AnimalInstance], min_cluster_size: int = 1):
         result.append(
             {
                 "id": f"animal_{cid}",
-                "label": animals[0].label if animals else "unknown",
+                "label": animal_type,
                 "count": len(animals),
                 "sample": highest_confidence.path,
                 "sample_media_id": photos[0].get("media_id") if photos else None,
                 "bbox": highest_confidence.bbox,
-                "score": sum(a.score for a in animals) / len(animals) if animals else 0.5,
+                "score": sum(a.score for a in animals) / len(animals) if animals else 0,
                 "photos": photos,
                 "hidden": False,
             }
         )
-    # Sort by count (frequency) descending
+    
     result.sort(key=lambda x: x["count"], reverse=True)
+    total_animals = sum(c["count"] for c in result)
+    print(f"[CLUSTERING] Created {len(result)} animal clusters with {total_animals} total animals")
+    
     return result
 
 
