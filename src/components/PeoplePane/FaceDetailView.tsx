@@ -123,6 +123,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
     setSaving(true);
     try {
       await renameCluster(cluster.id, name.trim());
+      // Update local cluster name immediately for UI feedback
+      cluster.name = name.trim();
       setIsEditing(false);
       onUpdated();
     } catch (err) {
@@ -711,8 +713,11 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                 </label>
                 <button
                   onClick={async () => {
-                    await hideCluster(cluster.id, true);
-                    onUpdated();
+                    if (confirm('are you sure you would like to hide this cluster?')) {
+                      await hideCluster(cluster.id, true);
+                      onUpdated();
+                      onClose();
+                    }
                   }}
                   className={`px-3 py-1 rounded text-sm font-medium transition ${
                     theme === 'dark'
