@@ -185,11 +185,17 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
       if (!response.ok) {
         let errorMsg = `HTTP ${response.status}`;
         try {
-          const data = await response.json();
-          errorMsg = data.detail || errorMsg;
-        } catch {
+          // Read body once - can't read response multiple times
           const text = await response.text();
-          errorMsg = text || errorMsg;
+          try {
+            const data = JSON.parse(text);
+            errorMsg = data.detail || errorMsg;
+          } catch {
+            // Not JSON, use text directly
+            errorMsg = text || errorMsg;
+          }
+        } catch {
+          // Couldn't read body
         }
         throw new Error(errorMsg);
       }
