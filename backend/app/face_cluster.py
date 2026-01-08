@@ -812,10 +812,12 @@ def load_animals_from_db() -> List[AnimalInstance]:
             try:
                 detections = json.loads(animals_json)
                 for detection in detections:
+                    # Try to use user-set label first, fall back to detected class, then unknown
+                    label = detection.get("label") or detection.get("class", "unknown")
                     animals.append(
                         AnimalInstance(
                             path=path,
-                            label=detection.get("label", "unknown"),
+                            label=label,
                             bbox=detection.get("bbox", [0, 0, 0, 0]),
                             score=detection.get("confidence", detection.get("score", 0.5)),
                         )
