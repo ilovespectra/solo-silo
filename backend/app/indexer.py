@@ -682,9 +682,10 @@ async def index_all_sources(media_paths: list, skip_videos: bool = False) -> int
             if ext in SUPPORTED_IMAGE_TYPES:
                 try:
                     print(f"[INDEXING] Running animal/object detection...")
-                    detections = detect_objects([full], confidence_threshold=0.5)
+                    detections = detect_objects([full], confidence_threshold=0.6)
                     objects = [d for d in detections if not d.is_animal]
-                    animals = [d for d in detections if d.is_animal]
+                    # Only keep high-confidence animal detections
+                    animals = [d for d in detections if d.is_animal and d.confidence >= 0.6]
                     print(f"[INDEXING] Detected {len(objects)} objects, {len(animals)} animals")
                 except Exception as e:
                     print(f"[INDEXING] Animal/object detection failed (non-critical): {e}")

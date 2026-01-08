@@ -11,6 +11,7 @@ except ImportError:
 
 
 # COCO classes that are animals/living things (not people)
+# These are the actual COCO dataset class IDs for animals
 LIVING_THING_CLASSES = {
     16: "dog",
     17: "cat",
@@ -23,9 +24,6 @@ LIVING_THING_CLASSES = {
     24: "giraffe",
     25: "monkey",
     26: "bird",
-    27: "fish",
-    28: "insect",
-    29: "reptile",
 }
 
 
