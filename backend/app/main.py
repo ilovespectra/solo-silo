@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import FastAPI, Query, HTTPException, Body, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel
 
 from .config import load_config, ensure_paths
@@ -913,21 +913,35 @@ async def _run_face_detection_worker(silo_name: str = None):
                 # Ensure flag stays set during restarts
                 _face_detection_running = True
                 
-                result = subprocess.run(
-                    [sys.executable, worker_script],
-                    cwd=backend_dir,
-                    capture_output=True,
-                    timeout=3600,  # 1 hour timeout
-                    text=True,
-                    env=worker_env  # Pass silo DB path to worker
-                )
-                
-                # Log worker output for debugging
-                if result.stdout:
-                    print(f"[WORKER-STDOUT] {result.stdout[:500]}", flush=True)
-                if result.stderr:
-                    print(f"[WORKER-STDERR] {result.stderr[:500]}", flush=True)
-                print(f"[WORKER] Exit code: {result.returncode}", flush=True)
+                try:
+                    result = subprocess.run(
+                        [sys.executable, worker_script],
+                        cwd=backend_dir,
+                        capture_output=True,
+                        timeout=None,  # No timeout - let worker process at its own pace, it handles timeouts internally
+                        text=True,
+                        env=worker_env  # Pass silo DB path to worker
+                    )
+                    
+                    # Log worker output for debugging
+                    if result.stdout:
+                        print(f"[WORKER-STDOUT] {result.stdout[:500]}", flush=True)
+                    if result.stderr:
+                        print(f"[WORKER-STDERR] {result.stderr[:500]}", flush=True)
+                    print(f"[WORKER] Exit code: {result.returncode}", flush=True)
+                except subprocess.TimeoutExpired as te:
+                    # This should not happen with timeout=None, but handle it just in case
+                    print(f"[WORKER] ❌ TIMEOUT: Worker exceeded timeout after {te.timeout}s", flush=True)
+                    restart_count += 1
+                    print(f"[API] 🔄 Restarting worker batch #{restart_count} after timeout...", flush=True)
+                    time.sleep(1)
+                    continue
+                except Exception as e:
+                    print(f"[WORKER] ❌ Exception running worker: {e}", flush=True)
+                    restart_count += 1
+                    print(f"[API] 🔄 Restarting worker batch #{restart_count} after error...", flush=True)
+                    time.sleep(1)
+                    continue
                 
                 # Check if any unprocessed files remain (regardless of exit code)
                 try:
@@ -1660,9 +1674,11 @@ async def serve_media_file(media_id: int, silo_name: str = Query(None)):
 
 @app.get("/api/media/thumbnail/{media_id}")
 async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, rotation: int = Query(None), silo_name: str = Query(None)):
-    """Serve compressed thumbnail directly from the file."""
+    """Serve compressed thumbnail directly from the file with caching headers."""
     from PIL import Image
     import io
+    import hashlib
+    from fastapi.responses import Response
     
     # Set silo context if provided
     if silo_name:
@@ -1686,9 +1702,16 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
         # Check if it's an image file
         image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tiff'}
         if not any(file_path.lower().endswith(ext) for ext in image_extensions):
-            return FileResponse(file_path, headers={"Cache-Control": "public, max-age=86400"})
+            return FileResponse(file_path, headers={
+                "Cache-Control": "public, max-age=604800, immutable",  # Cache for 7 days
+                "X-Content-Type-Options": "nosniff"
+            })
         
         try:
+            # Get file modification time for ETag
+            file_mtime = os.path.getmtime(file_path)
+            etag = f'"{media_id}-{size}-{square}-{applied_rotation}-{int(file_mtime)}"'
+            
             # Open image directly from the file
             img = Image.open(file_path)
             
@@ -1714,15 +1737,26 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
                 # Resize maintaining aspect ratio
                 img.thumbnail((size, size), Image.Resampling.LANCZOS)
             
-            # Return compressed JPEG directly from memory
+            # Return compressed JPEG directly from memory with proper caching headers
             img_bytes = io.BytesIO()
             img.save(img_bytes, "JPEG", quality=80, optimize=True)
             img_bytes.seek(0)
             
-            return Response(content=img_bytes.getvalue(), media_type="image/jpeg")
+            return Response(
+                content=img_bytes.getvalue(),
+                media_type="image/jpeg",
+                headers={
+                    "Cache-Control": "public, max-age=604800, immutable",  # Cache for 7 days
+                    "ETag": etag,
+                    "X-Content-Type-Options": "nosniff",
+                    "Content-Type": "image/jpeg; charset=utf-8"
+                }
+            )
         except Exception as e:
             print(f"[THUMBNAIL] Error generating thumbnail: {str(e)}")
-            return FileResponse(file_path)
+            return FileResponse(file_path, headers={
+                "Cache-Control": "public, max-age=604800, immutable"
+            })
 
 
 @app.get("/api/media/audio")

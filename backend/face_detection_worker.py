@@ -13,6 +13,7 @@ import traceback
 import time
 import signal
 import threading
+import multiprocessing
 from pathlib import Path
 from datetime import datetime
 
@@ -174,33 +175,57 @@ def rebuild_clustering_cache():
         import traceback
         log_worker(f"[CLUSTERING] Traceback: {traceback.format_exc()}")
 
-def detect_faces_with_timeout(img_path, timeout_seconds=30):
-    """Detect faces with timeout protection using daemon thread."""
-    result = [None]
-    exception = [None]
+def run_detection_process(img_path, timeout_seconds, result_queue):
+    """Worker process that runs face detection in isolation."""
+    try:
+        # Setup path and environment in subprocess
+        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        backend_dir = os.path.join(root_dir, "backend")
+        sys.path.insert(0, backend_dir)
+        os.chdir(backend_dir)
+        
+        # Import inside process to avoid contamination
+        from app.face_cluster import detect_faces
+        result = detect_faces([img_path], batch_size=1, timeout_seconds=timeout_seconds)
+        result_queue.put(('success', result))
+    except Exception as e:
+        result_queue.put(('error', str(e)))
+
+def detect_faces_with_timeout(img_path, timeout_seconds=180):
+    """Detect faces with timeout protection using multiprocessing.
     
-    def run_detection():
-        try:
-            result[0] = detect_faces([img_path], batch_size=1, timeout_seconds=timeout_seconds)
-        except Exception as e:
-            exception[0] = e
+    This uses a separate process so we can actually kill it on timeout.
+    Unlike daemon threads, this truly terminates the face detection operation.
+    """
+    result_queue = multiprocessing.Queue()
+    process = multiprocessing.Process(
+        target=run_detection_process,
+        args=(img_path, timeout_seconds, result_queue)
+    )
+    process.start()
+    process.join(timeout=timeout_seconds)
     
-    # Use daemon=True so thread doesn't block process exit on timeout
-    thread = threading.Thread(target=run_detection, daemon=True)
-    thread.start()
-    thread.join(timeout=timeout_seconds)
-    
-    if thread.is_alive():
-        # Timeout occurred - thread is still running
+    if process.is_alive():
+        # Timeout occurred - terminate the process
         log_worker(f"[TIMEOUT] face detection exceeded {timeout_seconds}s for {os.path.basename(img_path)}")
-        log_worker(f"[TIMEOUT] Skipping image and continuing with next file")
-        # Note: daemon thread will be killed when process exits, but we continue with next image
+        process.terminate()
+        process.join(timeout=5)  # Give it 5 seconds to terminate gracefully
+        if process.is_alive():
+            process.kill()  # Force kill if still alive
+        process.join()
+        log_worker(f"[TIMEOUT] Process terminated, skipping {os.path.basename(img_path)}")
         raise TimeoutError(f"face detection timeout after {timeout_seconds} seconds")
     
-    if exception[0]:
-        raise exception[0]
-    
-    return result[0]
+    # Check if there was a result
+    if not result_queue.empty():
+        status, data = result_queue.get()
+        if status == 'success':
+            return data
+        else:
+            raise Exception(f"Face detection failed: {data}")
+    else:
+        # Process finished but no result - likely crashed
+        raise Exception("Face detection process crashed without result")
 
 def detect_faces_worker():
     """Run face detection with crash recovery and memory management."""
@@ -314,21 +339,15 @@ def detect_faces_worker():
                     error_msg = str(detect_error)[:100]
                     
                     if isinstance(detect_error, TimeoutError):
-                        # TIMEOUT: Do NOT skip or mark as processed - retry this image on next worker restart
-                        log_worker(f"[TIMEOUT_RETRY] File {current_filename} exceeded {TIMEOUT_SECONDS}s")
-                        log_worker(f"[TIMEOUT_RETRY] NOT marking as processed - will retry on next worker restart")
-                        processed_count += 1  # Count it for batch tracking, but DON'T mark_image_processed()
-                        # Save progress and exit to restart fresh
-                        cumulative_processed = already_processed + processed_count
-                        cumulative_faces = already_found_faces + total_faces_detected
-                        log_progress(cumulative_processed, total_eligible_files, cumulative_faces, current_filename)
-                        print(json.dumps({
-                            "status": "restarting",
-                            "reason": "timeout",
-                            "processed": cumulative_processed,
-                            "faces_found": cumulative_faces
-                        }), flush=True)
-                        sys.exit(0)
+                        # TIMEOUT: Skip the problematic image and continue
+                        log_skipped(img_path, f"Face detection timeout after {TIMEOUT_SECONDS}s")
+                        log_worker(f"[TIMEOUT_SKIP] Skipping {current_filename} - exceeded {TIMEOUT_SECONDS}s")
+                        skipped_count += 1
+                        processed_count += 1
+                        print(f"✗ TIMEOUT (skipped)", flush=True)
+                        mark_image_processed(media_id)
+                        last_failed_file = None
+                        continue
                     elif last_failed_file == img_path:
                         # Same file failed twice (non-timeout) - skip it
                         log_skipped(img_path, f"Consecutive failure ({error_type}): {error_msg}")
