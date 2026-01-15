@@ -55,12 +55,17 @@ export default function BasePhotoModal({
   const [textContent, setTextContent] = useState<string>('');
   const [loadingText, setLoadingText] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [fullImageLoaded, setFullImageLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const fileExtension = getFileExtension(media);
   const isVideo = isVideoFile(fileExtension);
   const isText = isTextFile(fileExtension);
   const isImage = isImageFile(fileExtension);
+  
+  // Use thumbnail first for fast initial display, then load full image
+  const displayUrl = media ? `/api/media/thumbnail/${media.id}?size=1000` : null;
+  const fullImageUrl = media ? `/api/media/file/${media.id}` : null;
   
   useEffect(() => {
     if (media?.id && media?.rotation === undefined) {
@@ -99,8 +104,6 @@ export default function BasePhotoModal({
       loadText();
     }
   }, [media?.id, isText]);
-  
-  const displayUrl = media ? `/api/media/file/${media.id}` : null;
 
   if (!isOpen || !media) return null;
 
@@ -253,10 +256,25 @@ export default function BasePhotoModal({
                   src={displayUrl || undefined}
                   alt="Media"
                   className="max-w-full max-h-full object-contain"
-                  onLoad={() => setImageLoading(false)}
+                  onLoad={(e) => {
+                    setImageLoading(false);
+                    // If this is the thumbnail, start loading the full image
+                    if (displayUrl?.includes('thumbnail') && fullImageUrl && !fullImageLoaded) {
+                      const fullImg = new Image();
+                      fullImg.src = fullImageUrl;
+                      fullImg.onload = () => {
+                        setFullImageLoaded(true);
+                        e.currentTarget.src = fullImageUrl;
+                      };
+                      fullImg.onerror = () => {
+                        // Full image failed, stick with thumbnail
+                        console.log('[PhotoModal] Full image failed to load, using thumbnail');
+                      };
+                    }
+                  }}
                   onError={(e) => {
                     setImageLoading(false);
-                    if (media?.thumbnail) {
+                    if (media?.thumbnail && e.currentTarget.src !== media.thumbnail) {
                       e.currentTarget.src = media.thumbnail;
                     }
                   }}
