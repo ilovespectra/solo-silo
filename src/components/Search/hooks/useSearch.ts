@@ -125,6 +125,7 @@ export const useSearch = (): UseSearchReturn => {
           similarity: r.similarity !== undefined ? r.similarity : (r.score || 0),
           camera: r.camera || 'Unknown',
           type: r.type || 'image',
+          query: searchQuery,
         }));
 
         const enhancedResults = searchResults.map((result) => {
@@ -209,6 +210,7 @@ export const useSearch = (): UseSearchReturn => {
         similarity: r.similarity !== undefined ? r.similarity : (r.score || 0),
         camera: r.camera || 'Unknown',
         type: r.type || 'image',
+        query: currentQuery,
       }));
       
       setResults((prev) => [...prev, ...newResults]);
@@ -226,58 +228,125 @@ export const useSearch = (): UseSearchReturn => {
 
   const handleConfirm = useCallback(
     (imageId: number, imagePath: string) => {
+      console.log('[useSearch] ======== CONFIRM BUTTON CLICKED ========');
+      console.log('[useSearch] imageId:', imageId, 'imagePath:', imagePath);
+      console.log('[useSearch] results length:', results.length);
+      
       setResults((prev) => {
+        console.log('[useSearch] Previous results:', prev);
         const confirmed = prev.find((r) => r.id === imageId);
-        if (!confirmed) return prev;
+        console.log('[useSearch] Found result to confirm:', confirmed);
+        
+        if (!confirmed) {
+          console.error('[useSearch] Could not find result with id:', imageId);
+          return prev;
+        }
 
-        return [
+        const resultQuery = confirmed.query || currentQuery;
+        console.log('[useSearch] Result query:', resultQuery);
+        
+        if (!resultQuery) {
+          console.error('[useSearch] Cannot confirm: no query available');
+          return prev;
+        }
+
+        const newResults = [
           { ...confirmed, confirmed: true, boosted: true, removed: false },
           ...prev.filter((r) => r.id !== imageId),
         ];
+        console.log('[useSearch] New results after confirm:', newResults);
+        return newResults;
       });
 
+      const resultToConfirm = results.find((r) => r.id === imageId);
+      const resultQuery = resultToConfirm?.query || currentQuery;
+      
+      console.log('[useSearch] resultToConfirm:', resultToConfirm);
+      console.log('[useSearch] resultQuery:', resultQuery);
+      
+      if (!resultQuery) {
+        console.error('[useSearch] Cannot confirm: no query available for imageId:', imageId);
+        return;
+      }
+
       const siloName = activeSilo?.name;
-      const approveUrl = `/api/search/${encodeURIComponent(query)}/approve?file_id=${imageId}${siloName ? `&silo_name=${encodeURIComponent(siloName)}` : ''}`;
-      console.log('[useSearch] Approving result:', approveUrl);
+      const approveUrl = `/api/search/${encodeURIComponent(resultQuery)}/approve?file_id=${imageId}${siloName ? `&silo_name=${encodeURIComponent(siloName)}` : ''}`;
+      console.log('[useSearch] Sending POST to:', approveUrl);
       
       fetch(approveUrl, { method: 'POST' })
         .then((r) => {
+          console.log('[useSearch] Response status:', r.status, r.statusText);
           if (r.ok) {
-            console.log('[useSearch] Result approved:', imageId);
+            console.log('[useSearch] ✓ Result confirmed:', imageId);
+            return r.json().then(data => {
+              console.log('[useSearch] Confirm response body:', data);
+            });
           } else {
-            console.error('[useSearch] Failed to approve result:', r.status);
+            console.error('[useSearch] ✗ Failed to confirm result:', r.status, r.statusText);
+            return r.text().then(text => console.error('[useSearch] Response body:', text));
           }
         })
-        .catch((err) => console.error('[useSearch] Failed to send approve feedback:', err));
+        .catch((err) => console.error('[useSearch] ✗ Failed to send confirm feedback:', err));
 
-      feedbackQueue.add('confirm', imageId, imagePath, query);
+      console.log('[useSearch] Adding to feedbackQueue:', { action: 'confirm', imageId, imagePath, query: resultQuery });
+      feedbackQueue.add('confirm', imageId, imagePath, resultQuery);
+      console.log('[useSearch] ======== CONFIRM END ========');
     },
-    [query, activeSilo?.name]
+    [results, currentQuery, activeSilo?.name]
   );
 
   const handleRemove = useCallback(
     (imageId: number, imagePath: string) => {
+      console.log('[useSearch] ======== REMOVE BUTTON CLICKED ========');
+      console.log('[useSearch] imageId:', imageId, 'imagePath:', imagePath);
+      console.log('[useSearch] results length:', results.length);
+      console.log('[useSearch] results:', results);
+      
+      const resultToRemove = results.find((r) => r.id === imageId);
+      console.log('[useSearch] Found result to remove:', resultToRemove);
+      
+      const resultQuery = resultToRemove?.query || currentQuery;
+      console.log('[useSearch] Result query:', resultQuery, 'from result.query:', resultToRemove?.query, 'fallback currentQuery:', currentQuery);
+      
+      if (!resultQuery || !resultQuery.trim()) {
+        console.error('[useSearch] ✗ Cannot reject: no query available!', { resultQuery, currentQuery, resultToRemove });
+        return;
+      }
+
       setResults((prev) =>
-        prev.map((r) => (r.id === imageId ? { ...r, removed: true, confirmed: false } : r))
+        prev.map((r) => {
+          if (r.id === imageId) {
+            console.log('[useSearch] Marking as removed:', r);
+            return { ...r, removed: true, confirmed: false };
+          }
+          return r;
+        })
       );
 
       const siloName = activeSilo?.name;
-      const rejectUrl = `/api/search/${encodeURIComponent(query)}/reject?file_id=${imageId}${siloName ? `&silo_name=${encodeURIComponent(siloName)}` : ''}`;
-      console.log('[useSearch] Rejecting result:', rejectUrl);
+      const rejectUrl = `/api/search/${encodeURIComponent(resultQuery)}/reject?file_id=${imageId}${siloName ? `&silo_name=${encodeURIComponent(siloName)}` : ''}`;
+      console.log('[useSearch] Sending POST to:', rejectUrl);
       
       fetch(rejectUrl, { method: 'POST' })
         .then((r) => {
+          console.log('[useSearch] Response status:', r.status, r.statusText);
           if (r.ok) {
-            console.log('[useSearch] Result rejected:', imageId);
+            console.log('[useSearch] ✓ Result rejected:', imageId);
+            return r.json().then(data => {
+              console.log('[useSearch] Reject response body:', data);
+            });
           } else {
-            console.error('[useSearch] Failed to reject result:', r.status);
+            console.error('[useSearch] ✗ Failed to reject result:', r.status, r.statusText);
+            return r.text().then(text => console.error('[useSearch] Response body:', text));
           }
         })
-        .catch((err) => console.error('[useSearch] Failed to send reject feedback:', err));
+        .catch((err) => console.error('[useSearch] ✗ Failed to send reject feedback:', err));
 
-      feedbackQueue.add('remove', imageId, imagePath, query);
+      console.log('[useSearch] Adding to feedbackQueue:', { action: 'remove', imageId, imagePath, query: resultQuery });
+      feedbackQueue.add('remove', imageId, imagePath, resultQuery);
+      console.log('[useSearch] ======== REMOVE END ========');
     },
-    [query, activeSilo?.name]
+    [results, currentQuery, activeSilo?.name]
   );
 
   const handleUndo = useCallback((imageId: number) => {

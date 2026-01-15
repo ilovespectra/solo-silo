@@ -17,6 +17,7 @@ export interface SearchResult {
   camera?: string;
   lens?: string;
   rotation?: number;
+  query?: string;
   
   confirmed_for_query?: boolean;
   

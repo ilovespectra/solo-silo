@@ -1,11 +1,12 @@
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const url = new URL(request.url);
   const body = await request.json();
   
-  const backendUrl = `http://127.0.0.1:8000/api/animals/${params.id}/hide${url.search}`;
+  const backendUrl = `http://127.0.0.1:8000/api/animals/${id}/hide${url.search}`;
   
   try {
     const response = await fetch(backendUrl, {

@@ -1670,7 +1670,7 @@ async def media_by_date(silo_name: str = Query(None)):
 
 @app.get("/api/media/file/{media_id}")
 async def serve_media_file(media_id: int, silo_name: str = Query(None)):
-    """Serve media file by ID. AIF files automatically converted to WAV on-the-fly if needed."""
+    """Serve media file by ID. AIF files automatically converted to WAV, HEIC to JPG if needed."""
     with get_db() as conn:
         cur = conn.execute("SELECT path FROM media_files WHERE id = ?", (media_id,))
         row = cur.fetchone()
@@ -1681,14 +1681,71 @@ async def serve_media_file(media_id: int, silo_name: str = Query(None)):
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="File not found on disk")
         
-        # Check if it's an AIF file that needs conversion
+        # Check file extension
         file_ext = os.path.splitext(file_path)[1].lower()
+        
+        # Handle AIF to WAV conversion
         if file_ext in ['.aif', '.aiff']:
-            # Convert to WAV on-the-fly
             from .indexer import convert_aif_to_wav
             converted_path = convert_aif_to_wav(file_path)
             if converted_path != file_path and os.path.exists(converted_path):
                 file_path = converted_path
+        
+        # Handle HEIC to JPG conversion for browsers
+        if file_ext in ['.heic', '.heif']:
+            try:
+                from PIL import Image
+                import io
+                img = Image.open(file_path)
+                # Convert RGBA to RGB if needed
+                if img.mode in ('RGBA', 'LA'):
+                    rgb_img = Image.new('RGB', img.size, (255, 255, 255))
+                    rgb_img.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                    img = rgb_img
+                elif img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Save as JPEG to bytes
+                img_bytes = io.BytesIO()
+                img.save(img_bytes, 'JPEG', quality=95)
+                img_bytes.seek(0)
+                
+                return Response(
+                    content=img_bytes.getvalue(),
+                    media_type="image/jpeg",
+                    headers={
+                        "Cache-Control": "public, max-age=604800",
+                        "Content-Disposition": f'inline; filename="{os.path.basename(file_path)}.jpg"'
+                    }
+                )
+            except Exception as e:
+                print(f"[MEDIA_FILE] Error converting HEIC {media_id}: {str(e)}")
+                # Fallback to ImageMagick if PIL fails
+                try:
+                    import subprocess
+                    import tempfile
+                    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp:
+                        temp_path = tmp.name
+                    
+                    result = subprocess.run(
+                        ['convert', file_path, '-quality', '95', temp_path],
+                        timeout=30,
+                        capture_output=True
+                    )
+                    if result.returncode == 0 and os.path.exists(temp_path):
+                        with open(temp_path, 'rb') as f:
+                            data = f.read()
+                        os.remove(temp_path)
+                        return Response(
+                            content=data,
+                            media_type="image/jpeg",
+                            headers={
+                                "Cache-Control": "public, max-age=604800",
+                                "Content-Disposition": f'inline; filename="{os.path.basename(file_path)}.jpg"'
+                            }
+                        )
+                except Exception as convert_err:
+                    print(f"[MEDIA_FILE] ImageMagick conversion also failed: {str(convert_err)}")
         
         return FileResponse(file_path)
 
@@ -2578,6 +2635,10 @@ async def search_media(
                             print(f"[SEARCH]     First result: id={rows[0][0]} path={rows[0][1]}")
                         
                         for row in rows:
+                            # Skip if rejected for THIS query
+                            if row[0] in rejected_ids:
+                                continue
+                            
                             if row[0] in seen_ids:
                                 print(f"[SEARCH]     Skipping {row[0]} - already seen")
                                 continue

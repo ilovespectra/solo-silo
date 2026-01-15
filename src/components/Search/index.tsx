@@ -19,6 +19,7 @@ export const Search: React.FC<SearchComponentProps> = ({
   devMode = false,
   columns = 4,
 }) => {
+  console.log('[Search] Component loaded/rendered');
   const {
     results,
     loading,
@@ -378,6 +379,18 @@ export const Search: React.FC<SearchComponentProps> = ({
             isOpen={true}
             media={mediaObj}
             onClose={() => setSelectedMediaId(null)}
+            onConfirm={() => {
+              console.log('[Search] onConfirm clicked in modal, mediaObj:', mediaObj);
+              const id = parseInt(mediaObj.id);
+              console.log('[Search] Calling handleConfirm with id:', id, 'imagePath:', mediaObj.image_path);
+              handleConfirm(id, mediaObj.image_path);
+            }}
+            onRemove={() => {
+              console.log('[Search] onRemove clicked in modal, mediaObj:', mediaObj);
+              const id = parseInt(mediaObj.id);
+              console.log('[Search] Calling handleRemove with id:', id, 'imagePath:', mediaObj.image_path);
+              handleRemove(id, mediaObj.image_path);
+            }}
             onAssignKeywords={async (mediaId, keywords) => {
               try {
                 await fetch(`/api/media/${mediaId}/keywords`, {

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { query: string } }
+  { params }: { params: Promise<{ query: string }> }
 ) {
+  const { query } = await params;
   try {
     const { searchParams } = request.nextUrl;
     const fileId = searchParams.get('file_id');
@@ -16,7 +17,7 @@ export async function POST(
       );
     }
 
-    const backendUrl = `http://localhost:8000/api/search/${encodeURIComponent(params.query)}/approve?file_id=${fileId}&silo_name=${encodeURIComponent(siloName)}`;
+    const backendUrl = `http://localhost:8000/api/search/${encodeURIComponent(query)}/approve?file_id=${fileId}&silo_name=${encodeURIComponent(siloName)}`;
 
     const response = await fetch(backendUrl, {
       method: 'POST',
