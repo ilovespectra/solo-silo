@@ -68,6 +68,12 @@ export default function BasePhotoModal({
   const fullImageUrl = media ? `/api/media/file/${media.id}` : null;
   
   useEffect(() => {
+    if (isOpen && displayUrl) {
+      console.log('[BasePhotoModal] Loading media:', { displayUrl, fullImageUrl, mediaId: media?.id });
+    }
+  }, [isOpen, displayUrl, fullImageUrl, media?.id]);
+  
+  useEffect(() => {
     if (media?.id && media?.rotation === undefined) {
       fetch(`/api/media/${media.id}/metadata`)
         .then(res => res.ok ? res.json() : null)

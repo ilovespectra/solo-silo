@@ -360,7 +360,7 @@ export const Search: React.FC<SearchComponentProps> = ({
         const mediaObj = result ? {
           id: selectedMediaId.toString(),
           image_path: result.path || '',
-          thumbnail: '',
+          thumbnail: `/api/media/thumbnail/${selectedMediaId}?size=500`,
           name: result.path?.split('/').pop() || '',
           rotation: result.rotation || 0
         } : null;
