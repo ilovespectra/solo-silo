@@ -1651,9 +1651,9 @@ async def media_by_date(silo_name: str = Query(None)):
         
         # Build dynamic query based on available columns
         if has_rotation:
-            query = "SELECT date_taken, json_group_array(json_object('id', id, 'path', path, 'type', type, 'size', size, 'width', width, 'height', height, 'rotation', rotation)) AS items FROM media_files WHERE is_hidden = 0 GROUP BY date_taken ORDER BY date_taken DESC"
+            query = "SELECT date_taken, json_group_array(json_object('id', id, 'path', path, 'type', type, 'size', size, 'width', width, 'height', height, 'rotation', rotation, 'date_taken', date_taken)) AS items FROM media_files WHERE is_hidden = 0 GROUP BY date_taken ORDER BY date_taken DESC"
         else:
-            query = "SELECT date_taken, json_group_array(json_object('id', id, 'path', path, 'type', type, 'size', size, 'width', width, 'height', height, 'rotation', 0)) AS items FROM media_files WHERE is_hidden = 0 GROUP BY date_taken ORDER BY date_taken DESC"
+            query = "SELECT date_taken, json_group_array(json_object('id', id, 'path', path, 'type', type, 'size', size, 'width', width, 'height', height, 'rotation', 0, 'date_taken', date_taken)) AS items FROM media_files WHERE is_hidden = 0 GROUP BY date_taken ORDER BY date_taken DESC"
         
         cur = conn.execute(query)
         result = []

@@ -390,7 +390,7 @@ export default function MediaGallery() {
         items: typeof g.items === 'string' ? JSON.parse(g.items || '[]') : (g.items || []),
       }));
       setGroups(parsed);
-      console.log(`[MediaGallery] Loaded ${parsed.length} date groups, rotations now included in media items`);
+      console.log(`[MediaGallery] Loaded ${parsed.length} date groups`);
     } catch (e) {
       const error = e as Error;
       const errorMsg = error?.message || 'Failed to load media';
