@@ -221,16 +221,15 @@ export default function MediaGallery() {
     // First sort items
     const sorted = sortItemsByGallerySort(items);
     
-    // Group into years and months
+    // Group into years and months - only include items with date_taken metadata
     sorted.forEach((item) => {
-      let year = new Date().getFullYear();
-      let month = 0;
-      
-      if (item.date_taken) {
-        const date = new Date(item.date_taken * 1000);
-        year = date.getFullYear();
-        month = date.getMonth();
+      if (!item.date_taken) {
+        return; // Skip items without date metadata
       }
+      
+      const date = new Date(item.date_taken * 1000);
+      const year = date.getFullYear();
+      const month = date.getMonth();
       
       if (!yearMap.has(year)) {
         yearMap.set(year, new Map());
