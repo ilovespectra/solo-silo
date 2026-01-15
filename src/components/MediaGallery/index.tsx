@@ -42,6 +42,129 @@ type SortField = 'date' | 'name' | 'size' | 'type';
 type SortOrder = 'asc' | 'desc';
 type GallerySort = 'date-newest' | 'date-oldest' | 'size-largest' | 'size-smallest';
 
+// Lazy loading wrapper component for individual grid items
+function LazyMediaItem({ 
+  item, 
+  isSelected, 
+  handleThumbnailClick, 
+  handleMediaDragStart, 
+  getFileIcon, 
+  isVideo, 
+  isFavorite, 
+  theme, 
+  activeSilo 
+}: {
+  item: MediaItem;
+  isSelected: boolean;
+  handleThumbnailClick: (id: number, e: React.MouseEvent) => void;
+  handleMediaDragStart: (e: React.DragEvent, item: MediaItem) => void;
+  getFileIcon: (type: string, size: number) => string;
+  isVideo: (type: string) => boolean;
+  isFavorite: (id: number) => boolean;
+  theme: string;
+  activeSilo: any;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '50px' }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      data-media-item={item.id}
+      data-item-id={item.id}
+      data-selectable="true"
+      className={`group relative aspect-square rounded-lg overflow-hidden cursor-pointer transition ${
+        isSelected 
+          ? theme === 'dark'
+            ? 'ring-2 ring-orange-500 bg-orange-900 bg-opacity-20'
+            : 'ring-2 ring-orange-500 bg-orange-50'
+          : theme === 'dark'
+          ? 'hover:ring-2 hover:ring-orange-500 bg-gray-800'
+          : 'hover:ring-2 hover:ring-orange-400 bg-gray-100'
+      }`}
+      onClick={(e) => {
+        if (!e.defaultPrevented) {
+          handleThumbnailClick(item.id, e);
+        }
+      }}
+      onDragStart={(e) => handleMediaDragStart(e, item)}
+      draggable={isSelected}
+    >
+      {/* Loading Placeholder */}
+      <div className={`absolute inset-0 animate-pulse ${
+        theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+      }`} />
+
+      {/* Lazy Loaded Content */}
+      {isVisible && (
+        <div className="w-full h-full absolute inset-0">
+          <img
+            src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+            alt="Thumbnail"
+            className="w-full h-full object-cover group-hover:scale-105 transition"
+            loading="lazy"
+            decoding="async"
+            onLoad={(e) => {
+              e.currentTarget.style.zIndex = '10';
+              const placeholder = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
+              if (placeholder) {
+                placeholder.style.display = 'none';
+              }
+            }}
+            onError={(e) => {
+              e.currentTarget.src = getFileIcon(item.type, 200);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition"></div>
+
+      {/* Video Badge */}
+      {isVisible && isVideo(item.type) && (
+        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded text-xs font-semibold">
+          🎬
+        </div>
+      )}
+
+      {/* Favorite Badge */}
+      {isVisible && isFavorite(item.id) && (
+        <div className="absolute top-2 left-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#f59e0b', opacity: 0.8 }}>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </div>
+      )}
+
+      {/* Click Hint */}
+      {isVisible && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 opacity-0 group-hover:opacity-100 transition">
+          <p className="text-white text-xs font-medium">Double-click to view • Click to select</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MediaGallery() {
   const { activeSilo } = useSilos();
   const [groups, setGroups] = useState<DateGroup[]>([]);
@@ -791,8 +914,14 @@ export default function MediaGallery() {
                       <button
                         onClick={() => {
                           const newExpanded = new Set(expandedYears);
+                          const yearIndex = filteredYearGroups.findIndex(yg => yg.year === yearGroup.year);
+                          
                           if (newExpanded.has(yearGroup.year)) {
+                            // Collapsing this year - auto-expand previous year if it exists
                             newExpanded.delete(yearGroup.year);
+                            if (yearIndex > 0 && filteredYearGroups[yearIndex - 1]) {
+                              newExpanded.add(filteredYearGroups[yearIndex - 1].year);
+                            }
                           } else {
                             newExpanded.add(yearGroup.year);
                           }
@@ -821,10 +950,12 @@ export default function MediaGallery() {
                           {yearGroup.months.map((monthGroup) => (
                             <div key={`${monthGroup.year}-${monthGroup.month}`}>
                               {/* Month Header */}
-                              <h3 className={`text-sm font-semibold mb-4 px-2 pb-2 border-l-4 border-orange-500 ${
-                                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                              <h3 className={`text-sm font-bold mb-4 px-3 py-2 pl-3 rounded-md border-l-4 border-orange-500 ${
+                                theme === 'dark' 
+                                  ? 'bg-gray-800 text-orange-300' 
+                                  : 'bg-orange-50 text-orange-900'
                               }`}>
-                                {monthGroup.monthName} ({monthGroup.items.length} items)
+                                {monthGroup.monthName} <span className={`font-normal text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-orange-700'}`}>({monthGroup.items.length} items)</span>
                               </h3>
                               
                               {/* Month Grid */}
@@ -893,82 +1024,23 @@ export default function MediaGallery() {
                                   return (
                                   <div
                                     key={item.id}
-                                    data-media-item={item.id}
-                                    data-item-id={item.id}
-                                    data-selectable="true"
-                                    className={`group relative aspect-square rounded-lg overflow-hidden cursor-pointer transition ${
-                                      isSelected 
-                                        ? theme === 'dark'
-                                          ? 'ring-2 ring-orange-500 bg-orange-900 bg-opacity-20'
-                                          : 'ring-2 ring-orange-500 bg-orange-50'
-                                        : theme === 'dark'
-                                        ? 'hover:ring-2 hover:ring-orange-500 bg-gray-800'
-                                        : 'hover:ring-2 hover:ring-orange-400 bg-gray-100'
-                                    }`}
-                                    onClick={(e) => {
-                                      if (!e.defaultPrevented) {
-                                        handleThumbnailClick(item.id, e);
-                                      }
-                                    }}
                                     onDoubleClick={(e) => {
                                       e.stopPropagation();
                                       trackFileViewed(item.id, item.path);
                                       setSelectedMediaId(item.id);
                                     }}
-                                    onDragStart={(e) => handleMediaDragStart(e, item)}
-                                    draggable={isSelected || selectedMediaIds.size > 0}
                                   >
-                                  {/* Loading Placeholder */}
-                                    <div className={`absolute inset-0 animate-pulse ${
-                                      theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
-                                    }`} />
-
-                                    <div className="w-full h-full absolute inset-0">
-                                      <img
-                                        src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
-                                        alt="Thumbnail"
-                                        className="w-full h-full object-cover group-hover:scale-105 transition"
-                                        loading="lazy"
-                                        decoding="async"
-                                        onLoad={(e) => {
-                                          e.currentTarget.style.zIndex = '10';
-                                          const placeholder = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
-                                          if (placeholder) {
-                                            placeholder.style.display = 'none';
-                                          }
-                                          trackFileViewed(item.id, item.path).catch(err => 
-                                            console.error('[IMAGE_CACHE] Failed to track view:', err)
-                                          );
-                                        }}
-                                        onError={(e) => {
-                                          e.currentTarget.src = getFileIcon(item.type, 200);
-                                        }}
-                                      />
-                                    </div>
-
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition"></div>
-
-                                    {/* Video Badge */}
-                                    {isVideo(item.type) && (
-                                      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded text-xs font-semibold">
-                                        🎬
-                                      </div>
-                                    )}
-
-                                    {/* Favorite Badge */}
-                                    {isFavorite(item.id) && (
-                                      <div className="absolute top-2 left-2">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#f59e0b', opacity: 0.8 }}>
-                                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                                        </svg>
-                                      </div>
-                                    )}
-
-                                    {/* Click Hint */}
-                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 opacity-0 group-hover:opacity-100 transition">
-                                      <p className="text-white text-xs font-medium">Double-click to view • Click to select</p>
-                                    </div>
+                                    <LazyMediaItem
+                                      item={item}
+                                      isSelected={isSelected}
+                                      handleThumbnailClick={handleThumbnailClick}
+                                      handleMediaDragStart={handleMediaDragStart}
+                                      getFileIcon={getFileIcon}
+                                      isVideo={isVideo}
+                                      isFavorite={isFavorite}
+                                      theme={theme}
+                                      activeSilo={activeSilo}
+                                    />
                                   </div>
                                   );
                                 })}
