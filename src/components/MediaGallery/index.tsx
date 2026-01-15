@@ -25,9 +25,22 @@ interface DateGroup {
   items: MediaItem[];
 }
 
+interface YearGroup {
+  year: number;
+  months: MonthGroup[];
+}
+
+interface MonthGroup {
+  year: number;
+  month: number;
+  monthName: string;
+  items: MediaItem[];
+}
+
 type ViewMode = 'grid' | 'list';
 type SortField = 'date' | 'name' | 'size' | 'type';
 type SortOrder = 'asc' | 'desc';
+type GallerySort = 'date-newest' | 'date-oldest' | 'size-largest' | 'size-smallest';
 
 export default function MediaGallery() {
   const { activeSilo } = useSilos();
@@ -44,9 +57,91 @@ export default function MediaGallery() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([new Date().getFullYear()]));
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
-  const [gallerySort, setGallerySort] = useState<'date-newest' | 'date-oldest' | 'size-largest' | 'size-smallest'>('date-newest');
+  const [gallerySort, setGallerySort] = useState<GallerySort>('date-newest');
   
   const mediaGridRef = useRef<HTMLDivElement>(null);
+
+  // Helper function to sort items by gallery sort preference
+  const sortItemsByGallerySort = (items: MediaItem[]): MediaItem[] => {
+    const sorted = [...items];
+    switch (gallerySort) {
+      case 'date-newest':
+        sorted.sort((a, b) => {
+          if (!a.date_taken && !b.date_taken) return 0;
+          if (!a.date_taken) return 1;
+          if (!b.date_taken) return -1;
+          return b.date_taken - a.date_taken;
+        });
+        break;
+      case 'date-oldest':
+        sorted.sort((a, b) => {
+          if (!a.date_taken && !b.date_taken) return 0;
+          if (!a.date_taken) return 1;
+          if (!b.date_taken) return -1;
+          return a.date_taken - b.date_taken;
+        });
+        break;
+      case 'size-largest':
+        sorted.sort((a, b) => (b.size || 0) - (a.size || 0));
+        break;
+      case 'size-smallest':
+        sorted.sort((a, b) => (a.size || 0) - (b.size || 0));
+        break;
+    }
+    return sorted;
+  };
+
+  // Helper function to group items by year and month
+  const groupByYearMonth = (items: MediaItem[]): YearGroup[] => {
+    const yearMap = new Map<number, Map<number, MediaItem[]>>();
+    
+    // First sort items
+    const sorted = sortItemsByGallerySort(items);
+    
+    // Group into years and months
+    sorted.forEach((item) => {
+      let year = new Date().getFullYear();
+      let month = 0;
+      
+      if (item.date_taken) {
+        const date = new Date(item.date_taken * 1000);
+        year = date.getFullYear();
+        month = date.getMonth();
+      }
+      
+      if (!yearMap.has(year)) {
+        yearMap.set(year, new Map());
+      }
+      
+      const monthMap = yearMap.get(year)!;
+      if (!monthMap.has(month)) {
+        monthMap.set(month, []);
+      }
+      
+      monthMap.get(month)!.push(item);
+    });
+    
+    // Convert to YearGroup array, sorted by year descending
+    const yearGroups: YearGroup[] = Array.from(yearMap.entries())
+      .sort((a, b) => b[0] - a[0])
+      .map(([year, monthMap]) => ({
+        year,
+        months: Array.from(monthMap.entries())
+          .sort((a, b) => b[0] - a[0]) // months descending
+          .map(([monthIdx, monthItems]) => {
+            const date = new Date(year, monthIdx, 1);
+            const monthName = date.toLocaleDateString('en-US', { month: 'long' });
+            return {
+              year,
+              month: monthIdx,
+              monthName,
+              items: monthItems,
+            };
+          }),
+      }));
+    
+    return yearGroups;
+  };
 
   const {
     selectedIds: selectedMediaIds,
@@ -543,7 +638,54 @@ export default function MediaGallery() {
               </button>
             </div>
 
-            {/* Sort Controls - Only show in list view */}
+            {/* Gallery Sort - Show in grid view */}
+            {viewMode === 'grid' && (
+              <div className="flex gap-2">
+                <select
+                  value={gallerySort}
+                  onChange={(e) => setGallerySort(e.target.value as GallerySort)}
+                  className={`px-3 py-1 rounded text-sm border transition ${
+                    theme === 'dark'
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
+                  title="Sort gallery items"
+                >
+                  <option value="date-newest">newest first</option>
+                  <option value="date-oldest">oldest first</option>
+                  <option value="size-largest">largest first</option>
+                  <option value="size-smallest">smallest first</option>
+                </select>
+                
+                {/* Year Filter */}
+                {(() => {
+                  const allItems: MediaItem[] = [];
+                  displayGroups.forEach(g => allItems.push(...g.items));
+                  const yearGroups = groupByYearMonth(allItems);
+                  const years = yearGroups.map(yg => yg.year).sort((a, b) => b - a);
+                  
+                  return (
+                    <select
+                      value={selectedYear || ''}
+                      onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value) : null)}
+                      className={`px-3 py-1 rounded text-sm border transition ${
+                        theme === 'dark'
+                          ? 'bg-gray-700 border-gray-600 text-white'
+                          : 'bg-white border-gray-300 text-gray-900'
+                      }`}
+                      title="Filter by year"
+                    >
+                      <option value="">all years</option>
+                      {years.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* List Sort Controls - Only show in list view */}
             {viewMode === 'list' && (
               <div className="flex gap-2">
                 <select
@@ -628,179 +770,222 @@ export default function MediaGallery() {
           <>
             {viewMode === 'grid' ? (
               <div 
-                className="space-y-8"
+                className="space-y-12"
               >
-                {displayGroups.map((group, groupIdx) => (
-                  <div key={groupIdx}>
-                    {group.date_taken && activeTab !== 'favorites' && activeTab !== 'recentlyViewed' && activeTab !== 'recentlyAdded' && (
-                      <h3 className={`text-sm font-semibold mb-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {new Date(group.date_taken * 1000).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </h3>
-                    )}
-
-                    {/* Grid Layout */}
-                    <div
-                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 relative"
-                      data-drag-container="media-gallery"
-                      onDragOver={(e) => {
-                        const data = e.dataTransfer?.getData('text/plain');
-                        if (data && data.startsWith('folder_')) {
-                          e.preventDefault();
-                          e.dataTransfer!.dropEffect = 'move';
-                        }
-                      }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        
-                        try {
-                          const mediaData = e.dataTransfer?.getData('application/json');
-                          if (mediaData) {
-                            const data = JSON.parse(mediaData);
-                            if (data.type === 'media' && data.mediaIds) {
-                              console.log('[MediaGallery] Media dropped on grid - creating new folder with selection');
-                              setIsCreatingFolder(true);
-                            }
+                {(() => {
+                  // Get all items for display
+                  const allItems: MediaItem[] = [];
+                  displayGroups.forEach(g => allItems.push(...g.items));
+                  
+                  // Group by year and month
+                  const yearMonthGroups = groupByYearMonth(allItems);
+                  
+                  // Filter by selected year if one is chosen
+                  const filteredYearGroups = selectedYear 
+                    ? yearMonthGroups.filter(yg => yg.year === selectedYear)
+                    : yearMonthGroups;
+                  
+                  return filteredYearGroups.map((yearGroup) => (
+                    <div key={yearGroup.year}>
+                      {/* Year Header with Expand/Collapse */}
+                      <button
+                        onClick={() => {
+                          const newExpanded = new Set(expandedYears);
+                          if (newExpanded.has(yearGroup.year)) {
+                            newExpanded.delete(yearGroup.year);
+                          } else {
+                            newExpanded.add(yearGroup.year);
                           }
-                        } catch (err) {
-                          console.error('[MediaGallery] Error parsing media drop data:', err);
-                        }
+                          setExpandedYears(newExpanded);
+                        }}
+                        className={`flex items-center gap-2 mb-6 p-3 rounded-lg transition ${
+                          theme === 'dark'
+                            ? 'bg-gray-800 hover:bg-gray-700 text-white'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                        }`}
+                      >
+                        <span className="text-lg">
+                          {expandedYears.has(yearGroup.year) ? '▼' : '▶'}
+                        </span>
+                        <h2 className="text-xl font-bold">
+                          {yearGroup.year}
+                        </h2>
+                        <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                          ({yearGroup.months.reduce((sum, m) => sum + m.items.length, 0)} items)
+                        </span>
+                      </button>
+                      
+                      {/* Year Content */}
+                      {expandedYears.has(yearGroup.year) && (
+                        <div className="space-y-8 mb-8">
+                          {yearGroup.months.map((monthGroup) => (
+                            <div key={`${monthGroup.year}-${monthGroup.month}`}>
+                              {/* Month Header */}
+                              <h3 className={`text-sm font-semibold mb-4 px-2 pb-2 border-l-4 border-orange-500 ${
+                                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                              }`}>
+                                {monthGroup.monthName} ({monthGroup.items.length} items)
+                              </h3>
+                              
+                              {/* Month Grid */}
+                              <div
+                                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 relative"
+                                data-drag-container="media-gallery"
+                                onDragOver={(e) => {
+                                  const data = e.dataTransfer?.getData('text/plain');
+                                  if (data && data.startsWith('folder_')) {
+                                    e.preventDefault();
+                                    e.dataTransfer!.dropEffect = 'move';
+                                  }
+                                }}
+                                onDrop={(e) => {
+                                  e.preventDefault();
+                                  
+                                  try {
+                                    const mediaData = e.dataTransfer?.getData('application/json');
+                                    if (mediaData) {
+                                      const data = JSON.parse(mediaData);
+                                      if (data.type === 'media' && data.mediaIds) {
+                                        console.log('[MediaGallery] Media dropped on grid - creating new folder with selection');
+                                        setIsCreatingFolder(true);
+                                      }
+                                    }
+                                  } catch (err) {
+                                    console.error('[MediaGallery] Error parsing media drop data:', err);
+                                  }
 
-                        const folderIdStr = e.dataTransfer?.getData('text/plain');
-                        if (folderIdStr && folderIdStr.startsWith('folder_')) {
-                          e.preventDefault();
-                          const folderId = parseInt(folderIdStr.replace('folder_', ''));
-                          console.log('[MediaGallery] Adding selected media to folder:', folderId, 'Selected:', Array.from(selectedMediaIds));
-                          
-                          if (selectedMediaIds.size > 0) {
-                            (async () => {
-                              try {
-                                const mediaIdsArray = Array.from(selectedMediaIds);
-                                const siloParam = activeSilo?.name ? `?silo_name=${encodeURIComponent(activeSilo.name)}` : '';
-                                const response = await fetch(`/api/folders/${folderId}/add-media${siloParam}`, {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ mediaIds: mediaIdsArray }),
-                                });
-                                
-                                if (!response.ok) {
-                                  const errorData = await response.json().catch(() => ({}));
-                                  throw new Error(errorData.detail || `Failed to add media to folder: ${response.statusText}`);
-                                }
-                                
-                                console.log('[MediaGallery] Successfully added', mediaIdsArray.length, 'items to folder', folderId);
-                                clearSelection();
-                                await load();
-                              } catch (err) {
-                                console.error('[MediaGallery] Failed to add media to folder:', err);
-                                setError(`Failed to add media to folder: ${err instanceof Error ? err.message : 'Unknown error'}`);
-                              }
-                            })();
-                          }
-                        }
-                      }}
-                    >
-                      {group.items.map((item) => {
-                        const isSelected = selectedMediaIds.has(item.id);
-                        return (
-                        <div
-                          key={item.id}
-                          data-media-item={item.id}
-                          data-item-id={item.id}
-                          data-selectable="true"
-                          className={`group relative aspect-square rounded-lg overflow-hidden cursor-pointer transition ${
-                            isSelected 
-                              ? theme === 'dark'
-                                ? 'ring-2 ring-orange-500 bg-orange-900 bg-opacity-20'
-                                : 'ring-2 ring-orange-500 bg-orange-50'
-                              : theme === 'dark'
-                              ? 'hover:ring-2 hover:ring-orange-500 bg-gray-800'
-                              : 'hover:ring-2 hover:ring-orange-400 bg-gray-100'
-                          }`}
-                          onClick={(e) => {
-                            if (!e.defaultPrevented) {
-                              handleThumbnailClick(item.id, e);
-                            }
-                          }}
-                          onDoubleClick={(e) => {
-                            e.stopPropagation();
-                            trackFileViewed(item.id, item.path);
-                            setSelectedMediaId(item.id);
-                          }}
-                          onDragStart={(e) => handleMediaDragStart(e, item)}
-                          draggable={isSelected || selectedMediaIds.size > 0}
-                        >
-                        {/* Loading Placeholder - minimal, no emoji */}
-                          <div className={`absolute inset-0 animate-pulse ${
-                            theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
-                          }`} />
+                                  const folderIdStr = e.dataTransfer?.getData('text/plain');
+                                  if (folderIdStr && folderIdStr.startsWith('folder_')) {
+                                    e.preventDefault();
+                                    const folderId = parseInt(folderIdStr.replace('folder_', ''));
+                                    console.log('[MediaGallery] Adding selected media to folder:', folderId, 'Selected:', Array.from(selectedMediaIds));
+                                    
+                                    if (selectedMediaIds.size > 0) {
+                                      (async () => {
+                                        try {
+                                          const mediaIdsArray = Array.from(selectedMediaIds);
+                                          const siloParam = activeSilo?.name ? `?silo_name=${encodeURIComponent(activeSilo.name)}` : '';
+                                          const response = await fetch(`/api/folders/${folderId}/add-media${siloParam}`, {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ mediaIds: mediaIdsArray }),
+                                          });
+                                          
+                                          if (!response.ok) {
+                                            const errorData = await response.json().catch(() => ({}));
+                                            throw new Error(errorData.detail || `Failed to add media to folder: ${response.statusText}`);
+                                          }
+                                          
+                                          console.log('[MediaGallery] Successfully added', mediaIdsArray.length, 'items to folder', folderId);
+                                          clearSelection();
+                                          await load();
+                                        } catch (err) {
+                                          console.error('[MediaGallery] Failed to add media to folder:', err);
+                                          setError(`Failed to add media to folder: ${err instanceof Error ? err.message : 'Unknown error'}`);
+                                        }
+                                      })();
+                                    }
+                                  }
+                                }}
+                              >
+                                {monthGroup.items.map((item) => {
+                                  const isSelected = selectedMediaIds.has(item.id);
+                                  return (
+                                  <div
+                                    key={item.id}
+                                    data-media-item={item.id}
+                                    data-item-id={item.id}
+                                    data-selectable="true"
+                                    className={`group relative aspect-square rounded-lg overflow-hidden cursor-pointer transition ${
+                                      isSelected 
+                                        ? theme === 'dark'
+                                          ? 'ring-2 ring-orange-500 bg-orange-900 bg-opacity-20'
+                                          : 'ring-2 ring-orange-500 bg-orange-50'
+                                        : theme === 'dark'
+                                        ? 'hover:ring-2 hover:ring-orange-500 bg-gray-800'
+                                        : 'hover:ring-2 hover:ring-orange-400 bg-gray-100'
+                                    }`}
+                                    onClick={(e) => {
+                                      if (!e.defaultPrevented) {
+                                        handleThumbnailClick(item.id, e);
+                                      }
+                                    }}
+                                    onDoubleClick={(e) => {
+                                      e.stopPropagation();
+                                      trackFileViewed(item.id, item.path);
+                                      setSelectedMediaId(item.id);
+                                    }}
+                                    onDragStart={(e) => handleMediaDragStart(e, item)}
+                                    draggable={isSelected || selectedMediaIds.size > 0}
+                                  >
+                                  {/* Loading Placeholder */}
+                                    <div className={`absolute inset-0 animate-pulse ${
+                                      theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+                                    }`} />
 
-                          <div
-                            className="w-full h-full absolute inset-0"
-                          >
-                            {/* Thumbnail - rotation applied by backend serve_thumbnail, not CSS */}
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
-                              alt="Thumbnail"
-                              className="w-full h-full object-cover group-hover:scale-105 transition"
-                              loading="lazy"
-                              decoding="async"
-                              onLoad={(e) => {
-                                e.currentTarget.style.zIndex = '10';
-                                const placeholder = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
-                                if (placeholder) {
-                                  placeholder.style.display = 'none';
-                                }
-                                
-                                trackFileViewed(item.id, item.path).catch(err => 
-                                  console.error('[IMAGE_CACHE] Failed to track view:', err)
-                                );
-                              }}
-                              onError={(e) => {
-                                e.currentTarget.src = getFileIcon(item.type, 200);
-                              }}
-                            />
-                          </div>
+                                    <div className="w-full h-full absolute inset-0">
+                                      <img
+                                        src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+                                        alt="Thumbnail"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onLoad={(e) => {
+                                          e.currentTarget.style.zIndex = '10';
+                                          const placeholder = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
+                                          if (placeholder) {
+                                            placeholder.style.display = 'none';
+                                          }
+                                          trackFileViewed(item.id, item.path).catch(err => 
+                                            console.error('[IMAGE_CACHE] Failed to track view:', err)
+                                          );
+                                        }}
+                                        onError={(e) => {
+                                          e.currentTarget.src = getFileIcon(item.type, 200);
+                                        }}
+                                      />
+                                    </div>
 
-                          {/* Overlay */}
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition"></div>
+                                    {/* Overlay */}
+                                    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition"></div>
 
-                          {/* Video Badge */}
-                          {isVideo(item.type) && (
-                            <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded text-xs font-semibold">
-                              🎬
+                                    {/* Video Badge */}
+                                    {isVideo(item.type) && (
+                                      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 rounded text-xs font-semibold">
+                                        🎬
+                                      </div>
+                                    )}
+
+                                    {/* Favorite Badge */}
+                                    {isFavorite(item.id) && (
+                                      <div className="absolute top-2 left-2">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#f59e0b', opacity: 0.8 }}>
+                                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                        </svg>
+                                      </div>
+                                    )}
+
+                                    {/* Click Hint */}
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 opacity-0 group-hover:opacity-100 transition">
+                                      <p className="text-white text-xs font-medium">Double-click to view • Click to select</p>
+                                    </div>
+                                  </div>
+                                  );
+                                })}
+                                {/* Selection Rectangle */}
+                                <SelectionRectangle
+                                  isActive={isSelecting}
+                                  bounds={selectionRect}
+                                  itemCount={selectedMediaIds.size}
+                                />
+                              </div>
                             </div>
-                          )}
-
-                          {/* Favorite Badge */}
-                          {isFavorite(item.id) && (
-                            <div className="absolute top-2 left-2">
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#f59e0b', opacity: 0.8 }}>
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                              </svg>
-                            </div>
-                          )}
-
-                          {/* Click Hint */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 opacity-0 group-hover:opacity-100 transition">
-                            <p className="text-white text-xs font-medium">Double-click to view • Click to select</p>
-                          </div>
+                          ))}
                         </div>
-                        );
-                      })}
-                      {/* Selection Rectangle */}
-                      <SelectionRectangle
-                        isActive={isSelecting}
-                        bounds={selectionRect}
-                        itemCount={selectedMediaIds.size}
-                      />
+                      )}
                     </div>
-                  </div>
-                ))}
+                  ));
+                })()}
               </div>
             ) : (
               <div className="overflow-x-auto">
