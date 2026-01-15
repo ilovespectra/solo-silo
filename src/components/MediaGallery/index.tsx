@@ -597,7 +597,12 @@ export default function MediaGallery() {
     }
     const allItems: MediaItem[] = [];
     groups.forEach(g => allItems.push(...g.items));
-    return groupByDate(allItems);
+    // Apply gallery sort to items within each date group
+    const sortedGroups = groupByDate(allItems);
+    return sortedGroups.map(group => ({
+      ...group,
+      items: sortItemsByGallerySort(group.items),
+    }));
   })();
 
   const bgClass = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
