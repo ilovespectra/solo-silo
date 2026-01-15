@@ -116,23 +116,31 @@ function LazyMediaItem({
       {/* Lazy Loaded Content */}
       {isVisible && (
         <div className="w-full h-full absolute inset-0">
-          <img
-            src={`/api/media/thumbnail/${item.id}?size=200&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
-            alt="Thumbnail"
-            className="w-full h-full object-cover group-hover:scale-105 transition"
-            loading="lazy"
-            decoding="async"
-            onLoad={(e) => {
-              e.currentTarget.style.zIndex = '10';
-              const placeholder = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
-              if (placeholder) {
-                placeholder.style.display = 'none';
-              }
+          <div
+            style={{
+              transform: `rotate(${item.rotation || 0}deg)`,
+              transition: 'transform 0.2s ease',
             }}
-            onError={(e) => {
-              e.currentTarget.src = getFileIcon(item.type, 200);
-            }}
-          />
+            className="w-full h-full flex items-center justify-center"
+          >
+            <img
+              src={`/api/media/thumbnail/${item.id}?size=200&square=true${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+              alt="Thumbnail"
+              className="w-full h-full object-cover group-hover:scale-105 transition"
+              loading="lazy"
+              decoding="async"
+              onLoad={(e) => {
+                e.currentTarget.style.zIndex = '10';
+                const placeholder = e.currentTarget.parentElement?.parentElement?.previousElementSibling as HTMLElement;
+                if (placeholder) {
+                  placeholder.style.display = 'none';
+                }
+              }}
+              onError={(e) => {
+                e.currentTarget.src = getFileIcon(item.type, 200);
+              }}
+            />
+          </div>
         </div>
       )}
 
@@ -1163,17 +1171,25 @@ export default function MediaGallery() {
                         <td className="px-4 py-3 flex items-center gap-3 min-w-0">
                           {/* Thumbnail */}
                           <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-300">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={`/api/media/thumbnail/${item.id}?size=60&square=true&rotation=${item.rotation || 0}${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
-                              alt="Thumbnail"
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                              decoding="async"
+                            <div
+                              style={{
+                                transform: `rotate(${item.rotation || 0}deg)`,
+                                transition: 'transform 0.2s ease',
+                              }}
+                              className="w-full h-full flex items-center justify-center"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={`/api/media/thumbnail/${item.id}?size=60&square=true${activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : ''}`}
+                                alt="Thumbnail"
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                decoding="async"
                               onError={(e) => {
                                 e.currentTarget.src = getFileIcon(item.type, 40);
                               }}
                             />
+                            </div>
                           </div>
                           {/* Filename - truncate long names */}
                           <span className="truncate">{item.path.split('/').pop()}</span>

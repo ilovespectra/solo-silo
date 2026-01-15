@@ -242,49 +242,52 @@ export default function BasePhotoModal({
                 )}
               </div>
             ) : (
-              <div
-                style={{
-                  transform: `rotate(${rotation}deg)`,
-                  transition: 'transform 0.2s ease',
-                }}
-                className="flex items-center justify-center w-full h-full"
-              >
+              <div className="flex items-center justify-center w-full h-full relative">
                 {imageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-primary">
+                  <div className="absolute inset-0 flex items-center justify-center bg-primary z-10">
                     <div className="text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-2"></div>
                       <p className="text-gray-400 text-sm">Loading image...</p>
                     </div>
                   </div>
                 )}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={displayUrl || undefined}
-                  alt="Media"
-                  className="max-w-full max-h-full object-contain"
-                  onLoad={(e) => {
-                    setImageLoading(false);
-                    // If this is the thumbnail, start loading the full image
-                    if (displayUrl?.includes('thumbnail') && fullImageUrl && !fullImageLoaded) {
-                      const fullImg = new Image();
-                      fullImg.src = fullImageUrl;
-                      fullImg.onload = () => {
-                        setFullImageLoaded(true);
-                        e.currentTarget.src = fullImageUrl;
-                      };
-                      fullImg.onerror = () => {
-                        // Full image failed, stick with thumbnail
-                        console.log('[PhotoModal] Full image failed to load, using thumbnail');
-                      };
-                    }
+                {/* Rotated image container - only the image is rotated, not the text */}
+                <div
+                  style={{
+                    transform: `rotate(${rotation}deg)`,
+                    transition: 'transform 0.2s ease',
                   }}
-                  onError={(e) => {
-                    setImageLoading(false);
-                    if (media?.thumbnail && e.currentTarget.src !== media.thumbnail) {
-                      e.currentTarget.src = media.thumbnail;
-                    }
-                  }}
-                />
+                  className="flex items-center justify-center w-full h-full"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={displayUrl || undefined}
+                    alt="Media"
+                    className="max-w-full max-h-full object-contain"
+                    onLoad={(e) => {
+                      setImageLoading(false);
+                      // If this is the thumbnail, start loading the full image
+                      if (displayUrl?.includes('thumbnail') && fullImageUrl && !fullImageLoaded) {
+                        const fullImg = new Image();
+                        fullImg.src = fullImageUrl;
+                        fullImg.onload = () => {
+                          setFullImageLoaded(true);
+                          e.currentTarget.src = fullImageUrl;
+                        };
+                        fullImg.onerror = () => {
+                          // Full image failed, stick with thumbnail
+                          console.log('[PhotoModal] Full image failed to load, using thumbnail');
+                        };
+                      }
+                    }}
+                    onError={(e) => {
+                      setImageLoading(false);
+                      if (media?.thumbnail && e.currentTarget.src !== media.thumbnail) {
+                        e.currentTarget.src = media.thumbnail;
+                      }
+                    }}
+                  />
+                </div>
               </div>
             )}
             {/* Favorite button */}
