@@ -438,7 +438,10 @@ def detect_faces_worker():
                         "faces_found": total_faces_detected
                     }), flush=True)
                     
-                    # Reset counter and continue processing (don't exit)
+                    # Roll processed/faces into "already" counters to maintain monotonic progress
+                    already_processed = cumulative_processed
+                    already_found_faces = cumulative_faces
+                    # Reset batch counters for next iteration
                     processed_count = 0
                     total_faces_detected = 0
                     gc.collect()

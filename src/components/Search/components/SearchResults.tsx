@@ -2,12 +2,10 @@
  * SearchResults Component - Main grid layout with results
  */
 
-import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { SearchResult } from '../types';
 import { SearchResultItem } from './SearchResultItem';
-import { useDragSelection } from '@/hooks/useDragSelection';
-import { SelectionRectangle } from '@/components/SelectionRectangle/SelectionRectangle';
 import { AddToFolderContextMenu } from './';
 
 interface SearchResultsProps {
@@ -39,8 +37,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   const { theme } = useAppStore();
   const [selectedResultIds, setSelectedResultIds] = useState<Set<number>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; resultId: number } | null>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
+  const [sortBy, setSortBy] = useState<'relevance' | 'date-newest' | 'date-oldest' | 'size-largest' | 'size-smallest'>('relevance');
 
   const emptyStateClass = theme === 'dark' ? 'text-gray-400' : 'text-gray-400';
 
@@ -53,22 +50,41 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     [results]
   );
 
-  const removedCount = useMemo(() => results.filter((r) => r.removed).length, [results]);
-
-  const { isSelecting, selectionRect, selectedItems, handleMouseDown } = useDragSelection(
-    gridRef as React.RefObject<HTMLElement>,
-    (items) => {
-      const itemIds = new Set(
-        items
-          .map(id => {
-            const resultId = parseInt(id);
-            return !isNaN(resultId) ? resultId : null;
-          })
-          .filter((id): id is number => id !== null)
-      );
-      setSelectedResultIds(itemIds);
+  const sortedResults = useMemo(() => {
+    const sorted = [...displayResults];
+    
+    switch (sortBy) {
+      case 'date-newest':
+        return sorted.sort((a, b) => {
+          // Unknown dates (0 or null) go to the end
+          if (!a.date_taken && !b.date_taken) return 0;
+          if (!a.date_taken) return 1;
+          if (!b.date_taken) return -1;
+          return (b.date_taken || 0) - (a.date_taken || 0);
+        });
+      
+      case 'date-oldest':
+        return sorted.sort((a, b) => {
+          // Unknown dates (0 or null) go to the end
+          if (!a.date_taken && !b.date_taken) return 0;
+          if (!a.date_taken) return 1;
+          if (!b.date_taken) return -1;
+          return (a.date_taken || 0) - (b.date_taken || 0);
+        });
+      
+      case 'size-largest':
+        return sorted.sort((a, b) => (b.size || 0) - (a.size || 0));
+      
+      case 'size-smallest':
+        return sorted.sort((a, b) => (a.size || 0) - (b.size || 0));
+      
+      case 'relevance':
+      default:
+        return sorted;
     }
-  );
+  }, [displayResults, sortBy]);
+
+  const removedCount = useMemo(() => results.filter((r) => r.removed).length, [results]);
 
   const handleContextMenu = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, resultId: number) => {
@@ -92,26 +108,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       return () => document.removeEventListener('click', handleClickOutside);
     }
   }, [contextMenu]);
-
-  useEffect(() => {
-    const handleDocumentMouseMove = () => {
-      if (isSelecting) {
-        isDraggingRef.current = true;
-      }
-    };
-
-    const handleDocumentMouseUp = () => {
-      isDraggingRef.current = false;
-    };
-
-    document.addEventListener('mousemove', handleDocumentMouseMove);
-    document.addEventListener('mouseup', handleDocumentMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleDocumentMouseMove);
-      document.removeEventListener('mouseup', handleDocumentMouseUp);
-    };
-  }, [isSelecting]);
 
   if (!query.trim()) {
     return (
@@ -167,62 +163,39 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
 
   return (
     <div className="w-full">
+      {/* Sort Controls */}
+      <div className="flex items-center justify-between mb-4 px-2">
+        <div className="text-sm text-gray-500">
+          {displayResults.length} result{displayResults.length !== 1 ? 's' : ''}
+          {removedCount > 0 && ` (${removedCount} removed)`}
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <label className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+            Sort by:
+          </label>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className={`text-sm px-3 py-1 rounded border ${
+              theme === 'dark'
+                ? 'bg-gray-800 border-gray-700 text-gray-200'
+                : 'bg-white border-gray-300 text-gray-900'
+            } cursor-pointer transition`}
+          >
+            <option value="relevance">Relevance</option>
+            <option value="date-newest">Date (Newest)</option>
+            <option value="date-oldest">Date (Oldest)</option>
+            <option value="size-largest">File Size (Largest)</option>
+            <option value="size-smallest">File Size (Smallest)</option>
+          </select>
+        </div>
+      </div>
+
       <div
-        ref={gridRef}
-        className={`grid gap-4 py-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative ${
-          isSelecting ? 'select-none' : ''
-        }`}
-        onMouseDown={handleMouseDown}
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-          const target = e.target as HTMLElement;
-          const resultDiv = target.closest('[data-item-id]');
-          
-          if (isDraggingRef.current) {
-            return;
-          }
-          
-          if (resultDiv && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            e.stopPropagation();
-            const resultId = parseInt(resultDiv.getAttribute('data-item-id') || '0');
-            
-            const newSelection = new Set(selectedResultIds);
-            if (newSelection.has(resultId)) {
-              newSelection.delete(resultId);
-            } else {
-              newSelection.add(resultId);
-            }
-            setSelectedResultIds(newSelection);
-          } else if (resultDiv && e.shiftKey) {
-            e.preventDefault();
-            e.stopPropagation();
-            const resultId = parseInt(resultDiv.getAttribute('data-item-id') || '0');
-            
-            const selectedArray = Array.from(selectedResultIds);
-            const lastSelected = selectedArray[selectedArray.length - 1];
-            if (lastSelected !== undefined) {
-              const firstIndex = displayResults.findIndex(r => r.id === lastSelected);
-              const secondIndex = displayResults.findIndex(r => r.id === resultId);
-              const start = Math.min(firstIndex, secondIndex);
-              const end = Math.max(firstIndex, secondIndex);
-              const newSelection = new Set(selectedResultIds);
-              for (let i = start; i <= end; i++) {
-                newSelection.add(displayResults[i].id);
-              }
-              setSelectedResultIds(newSelection);
-            } else {
-              setSelectedResultIds(new Set([resultId]));
-            }
-          } else if (resultDiv && !isDraggingRef.current) {
-            const resultId = parseInt(resultDiv.getAttribute('data-item-id') || '0');
-            setSelectedResultIds(new Set([resultId]));
-          } else if (e.target === e.currentTarget) {
-            setSelectedResultIds(new Set());
-          }
-        }}
-        style={{ position: 'relative' }}
+        className={`grid gap-4 py-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative`}
       >
-        {displayResults.map((result) => {
+        {sortedResults.map((result) => {
           const isSelected = selectedResultIds.has(result.id);
           return (
             <div
@@ -249,20 +222,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             </div>
           );
         })}
-
-        {/* Selection Rectangle - inside grid for proper positioning */}
-        {isSelecting && selectionRect && (
-          <SelectionRectangle
-            isActive={true}
-            bounds={{
-              left: Math.min(selectionRect.start.x, selectionRect.current.x),
-              top: Math.min(selectionRect.start.y, selectionRect.current.y),
-              width: Math.abs(selectionRect.current.x - selectionRect.start.x),
-              height: Math.abs(selectionRect.current.y - selectionRect.start.y),
-            }}
-            itemCount={selectedItems.length}
-          />
-        )}
       </div>
 
       {/* Context Menu */}

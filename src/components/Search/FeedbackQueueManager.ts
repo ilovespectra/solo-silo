@@ -177,16 +177,27 @@ export class FeedbackQueueManager {
   private async sendToBackend(item: FeedbackItem): Promise<void> {
     const action = item.action === 'confirm' ? 'approve' : 'reject';
     const BACKEND_URL = '';
-    const endpoint = `${BACKEND_URL}/api/search/${encodeURIComponent(item.query)}/${action}?file_id=${item.imageId}`;
+    const encodedQuery = encodeURIComponent(item.query);
+    const endpoint = `${BACKEND_URL}/api/search/${encodedQuery}/${action}?file_id=${item.imageId}`;
 
-    console.log(`[FEEDBACK_QUEUE] Sending to backend: ${endpoint}`);
+    console.log(`[FEEDBACK_QUEUE] Sending ${action} feedback for query="${item.query}" to: ${endpoint}`);
 
-    const response = await fetch(endpoint, {
-      method: 'POST',
-    });
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+      });
 
-    if (!response.ok) {
-      throw new Error(`Backend error: ${response.statusText}`);
+      if (!response.ok) {
+        const body = await response.text();
+        console.error(`[FEEDBACK_QUEUE] Backend returned ${response.status}: ${body}`);
+        throw new Error(`Backend error: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log(`[FEEDBACK_QUEUE] Success: ${result}`);
+    } catch (error) {
+      console.error(`[FEEDBACK_QUEUE] Failed to send feedback:`, error);
+      throw error;
     }
   }
 

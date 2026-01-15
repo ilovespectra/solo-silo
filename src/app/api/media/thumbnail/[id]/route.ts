@@ -73,11 +73,12 @@ export async function GET(
     
     const imageBuffer = await backendResponse.arrayBuffer();
     const contentType = backendResponse.headers.get('content-type') || 'image/jpeg';
+    const backendCacheControl = backendResponse.headers.get('cache-control') || 'public, max-age=604800';
     
     return new NextResponse(imageBuffer, {
       headers: {
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Cache-Control': backendCacheControl,  // Use backend's cache control
       },
     });
   } catch (error) {

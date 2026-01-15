@@ -40,9 +40,13 @@ export default function SearchPhotoModal({
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateInfo, setDuplicateInfo] = useState<{name: string; clusterId: string; photoCount: number} | null>(null);
 
+  // Only update keywords when media changes (i.e., when modal opens with a new image)
+  // Not on every render of initialKeywords to avoid infinite update loops
   useEffect(() => {
-    setKeywords(initialKeywords);
-  }, [initialKeywords]);
+    if (isOpen && media?.id) {
+      setKeywords(initialKeywords);
+    }
+  }, [isOpen, media?.id]);
 
   useEffect(() => {
     if (isOpen && !isLoadingClusters && allClusters.length === 0) {

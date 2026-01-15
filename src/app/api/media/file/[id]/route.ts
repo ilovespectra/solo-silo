@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchBackend } from '@/lib/backendClient';
 
 export async function GET(
   req: NextRequest,
@@ -11,7 +10,7 @@ export async function GET(
   try {
     const endpoint = `/api/media/file/${id}?silo_name=${encodeURIComponent(silo_name)}`;
     
-    const response = await fetchBackend(endpoint, {
+    const response = await fetch(`http://localhost:8000${endpoint}`, {
       method: 'GET'
     });
 

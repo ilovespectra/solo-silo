@@ -54,6 +54,7 @@ export default function BasePhotoModal({
   const [rotation, setRotation] = useState(media?.rotation || 0);
   const [textContent, setTextContent] = useState<string>('');
   const [loadingText, setLoadingText] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const fileExtension = getFileExtension(media);
@@ -73,6 +74,11 @@ export default function BasePhotoModal({
         .catch(err => console.error('Failed to load rotation:', err));
     }
   }, [media?.id, media?.rotation]);
+
+  useEffect(() => {
+    // Reset image loading state when media changes
+    setImageLoading(true);
+  }, [media?.id]);
 
   useEffect(() => {
     if (isText && media?.id) {
@@ -234,12 +240,22 @@ export default function BasePhotoModal({
                 }}
                 className="flex items-center justify-center w-full h-full"
               >
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-primary">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-2"></div>
+                      <p className="text-gray-400 text-sm">Loading image...</p>
+                    </div>
+                  </div>
+                )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={displayUrl || undefined}
                   alt="Media"
                   className="max-w-full max-h-full object-contain"
+                  onLoad={() => setImageLoading(false)}
                   onError={(e) => {
+                    setImageLoading(false);
                     if (media?.thumbnail) {
                       e.currentTarget.src = media.thumbnail;
                     }

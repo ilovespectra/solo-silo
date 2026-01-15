@@ -43,7 +43,7 @@ export const Search: React.FC<SearchComponentProps> = ({
 
   const { history, addToHistory, clearHistory } = useSearchHistory();
   
-  const { theme } = useAppStore();
+  const { theme, isIndexing, indexingProgress } = useAppStore();
 
   const [selectedMediaId, setSelectedMediaId] = useState<number | null>(null);
   
@@ -170,6 +170,28 @@ export const Search: React.FC<SearchComponentProps> = ({
           onSync={manualSync}
           disabled={loading}
         />
+
+        {/* Indexing Warning - Show when face detection is active */}
+        {isIndexing && (
+          <div className={`mt-4 p-4 rounded-lg border-l-4 ${
+            theme === 'dark'
+              ? 'bg-blue-950 border-blue-500 text-blue-100'
+              : 'bg-blue-50 border-blue-500 text-blue-900'
+          }`}>
+            <div className="flex items-start gap-3">
+              <span className="text-xl">⚙️</span>
+              <div className="flex-1">
+                <p className="font-semibold mb-1">Face detection in progress</p>
+                <p className="text-sm opacity-90">
+                  Search results may be incomplete or slow while the system is analyzing images. 
+                  {indexingProgress?.percentage && indexingProgress.percentage < 100 && (
+                    <> Progress: {Math.round(indexingProgress.percentage)}%</>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* File Type Filter Grid */}
         <div className="mt-4">

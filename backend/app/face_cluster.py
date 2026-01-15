@@ -723,7 +723,16 @@ def merge_cluster_caches(existing_clusters, new_clusters):
     print(f"[CLUSTERING] Found {len(existing_faces)} existing faces in {len(existing_by_id)} clusters")
     
     # Create new cluster ID counter (start after highest existing ID)
-    max_existing_id = max([int(c["id"].split("_")[0]) for c in existing_clusters if "_" in c["id"]], default=0)
+    max_existing_id = 0
+    for c in existing_clusters:
+        if "_" in c["id"]:
+            try:
+                # Extract numeric part from "person_N" format
+                numeric_part = int(c["id"].split("_")[-1])
+                max_existing_id = max(max_existing_id, numeric_part)
+            except (ValueError, IndexError):
+                # Skip clusters with non-standard IDs
+                pass
     next_new_id = max_existing_id + 1
     
     merged_clusters = []

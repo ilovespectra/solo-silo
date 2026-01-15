@@ -6,6 +6,7 @@ import time
 import gc
 import glob
 import subprocess
+import io
 import numpy as np
 from typing import List, Optional, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
@@ -1368,15 +1369,33 @@ async def get_indexing_status(silo_name: str = None):
             progress_file = os.path.join(cache_dir, "detection-progress.json")
             
             # Get count of already-attempted files from database
+            already_attempted = 0
+            total_files = 0
+            remaining_to_attempt = 0
             try:
-                with get_db() as conn:
-                    cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE face_detection_attempted = 1")
-                    already_attempted = cur.fetchone()[0] or 0
-                    cur = conn.execute("SELECT COUNT(*) FROM media_files")
-                    total_files = cur.fetchone()[0] or 0
-            except:
+                # Use a very short timeout to avoid blocking search during face detection
+                import sqlite3
+                conn = sqlite3.connect(
+                    os.environ.get("PAI_DB", os.path.join(os.path.dirname(__file__), "..", "cache", "personalai.db")),
+                    timeout=0.5  # 500ms timeout to prevent blocking
+                )
+                cur = conn.execute("SELECT COUNT(*) FROM media_files WHERE face_detection_attempted = 1")
+                already_attempted = cur.fetchone()[0] or 0
+                cur = conn.execute("SELECT COUNT(*) FROM media_files")
+                total_files = cur.fetchone()[0] or 0
+                # Calculate files that still need face detection
+                remaining_to_attempt = total_files - already_attempted
+                conn.close()
+            except sqlite3.OperationalError:
+                # Database is locked - just return what we know from the progress file
                 already_attempted = 0
                 total_files = 0
+                remaining_to_attempt = 0
+            except Exception as e:
+                print(f"[API] Error querying database: {e}", flush=True)
+                already_attempted = 0
+                total_files = 0
+                remaining_to_attempt = 0
             
             if os.path.exists(progress_file):
                 try:
@@ -1389,18 +1408,20 @@ async def get_indexing_status(silo_name: str = None):
             
             # If we have progress data, use it; otherwise set sensible defaults
             if progress_data.get("total", 0) > 0:
-                # Calculate cumulative progress
-                current_processed = progress_data.get("processed", 0)
-                remaining_total = progress_data.get("total", 0)
-                cumulative_processed = already_attempted + current_processed
-                cumulative_total = already_attempted + remaining_total
+                # The progress file contains:
+                # - "processed": cumulative files processed (including already_attempted from before)
+                # - "total": total_eligible_files (all still image files in database)
+                # So we can use them directly without adding already_attempted
+                cumulative_processed = progress_data.get("processed", 0)
+                cumulative_total = progress_data.get("total", 0)
                 
                 indexing_state["processed"] = cumulative_processed
                 indexing_state["total"] = cumulative_total
                 indexing_state["faces_found"] = progress_data.get("faces_found", 0)
                 indexing_state["current_file"] = progress_data.get("current_file", "")
+                # Calculate percentage based on actual progress
                 pct = int((cumulative_processed / cumulative_total) * 100) if cumulative_total > 0 else 0
-                indexing_state["percentage"] = min(pct, 99)  # Cap at 99 until truly done
+                indexing_state["percentage"] = min(pct, 100)
                 indexing_state["status"] = "processing"
                 indexing_state["phase"] = "detecting"
                 indexing_state["is_indexing"] = True
@@ -1700,7 +1721,7 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
         
         # Check if it's an image file
-        image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tiff'}
+        image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tiff', '.heic', '.heif'}
         if not any(file_path.lower().endswith(ext) for ext in image_extensions):
             return FileResponse(file_path, headers={
                 "Cache-Control": "public, max-age=604800, immutable",  # Cache for 7 days
@@ -1753,10 +1774,52 @@ async def serve_thumbnail(media_id: int, size: int = 300, square: bool = False, 
                 }
             )
         except Exception as e:
-            print(f"[THUMBNAIL] Error generating thumbnail: {str(e)}")
-            return FileResponse(file_path, headers={
-                "Cache-Control": "public, max-age=604800, immutable"
-            })
+            import traceback
+            print(f"[THUMBNAIL] Error generating thumbnail for media {media_id}: {str(e)}")
+            traceback.print_exc()
+            
+            # For HEIC files or other unsupported formats, try system conversion tools
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext in {'.heic', '.heif'}:
+                print(f"[THUMBNAIL] HEIC file detected, attempting system conversion: {file_path}")
+                try:
+                    # Try ImageMagick convert
+                    import subprocess
+                    temp_jpeg = f"/tmp/thumb_{media_id}_{int(time.time())}.jpg"
+                    result = subprocess.run(
+                        ['convert', file_path, '-quality', '80', temp_jpeg],
+                        timeout=10,
+                        capture_output=True
+                    )
+                    if result.returncode == 0 and os.path.exists(temp_jpeg):
+                        print(f"[THUMBNAIL] ImageMagick conversion successful")
+                        with open(temp_jpeg, 'rb') as f:
+                            jpeg_data = f.read()
+                        os.remove(temp_jpeg)
+                        return Response(
+                            content=jpeg_data,
+                            media_type="image/jpeg",
+                            headers={
+                                "Cache-Control": "public, max-age=604800, immutable",
+                                "Content-Type": "image/jpeg"
+                            }
+                        )
+                except Exception as convert_err:
+                    print(f"[THUMBNAIL] ImageMagick conversion failed: {str(convert_err)}")
+            
+            # Return a fallback grey placeholder image instead of the raw file
+            placeholder_img = Image.new('RGB', (300, 300), color=(200, 200, 200))
+            img_bytes = io.BytesIO()
+            placeholder_img.save(img_bytes, "JPEG", quality=80)
+            img_bytes.seek(0)
+            return Response(
+                content=img_bytes.getvalue(),
+                media_type="image/jpeg",
+                headers={
+                    "Cache-Control": "public, max-age=3600",
+                    "Content-Type": "image/jpeg"
+                }
+            )
 
 
 @app.get("/api/media/audio")
@@ -2275,11 +2338,14 @@ async def search_media(
         if index is None:
             print("[SEARCH] FAISS not available, using database cosine similarity")
             with get_db() as conn:
-                # Fetch all embeddings from database
+                # Fetch embeddings from database with a limit to prevent memory issues
+                # If we don't have FAISS, limit to top 5000 most recent files to compute similarity
                 cur = conn.execute(
-                    "SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation, clip_embedding FROM media_files WHERE clip_embedding IS NOT NULL"
+                    "SELECT id, path, type, date_taken, size, width, height, camera, lens, rotation, clip_embedding FROM media_files WHERE clip_embedding IS NOT NULL ORDER BY date_taken DESC LIMIT 5000"
                 )
                 rows = cur.fetchall()
+                
+                print(f"[SEARCH] Loaded {len(rows)} embeddings for cosine similarity search (limited to 5000 most recent)")
                 
                 # Compute cosine similarity manually
                 query_array = np.array(query_vec, dtype=np.float32)
@@ -2290,15 +2356,19 @@ async def search_media(
                     mid = row[0]
                     clip_embedding_blob = row[10]
                     if clip_embedding_blob:
-                        # Deserialize embedding
-                        import pickle
-                        embedding = pickle.loads(clip_embedding_blob)
-                        emb_array = np.array(embedding, dtype=np.float32)
-                        emb_norm = emb_array / (np.linalg.norm(emb_array) + 1e-12)
-                        
-                        # Cosine similarity
-                        similarity = np.dot(query_norm, emb_norm)
-                        scores.append((mid, float(similarity), row))
+                        try:
+                            # Deserialize embedding
+                            import pickle
+                            embedding = pickle.loads(clip_embedding_blob)
+                            emb_array = np.array(embedding, dtype=np.float32)
+                            emb_norm = emb_array / (np.linalg.norm(emb_array) + 1e-12)
+                            
+                            # Cosine similarity
+                            similarity = np.dot(query_norm, emb_norm)
+                            scores.append((mid, float(similarity), row))
+                        except Exception as e:
+                            print(f"[SEARCH] Error deserializing embedding for media {mid}: {e}")
+                            continue
                 
                 # Sort by similarity descending
                 scores.sort(key=lambda x: x[1], reverse=True)
@@ -2456,24 +2526,25 @@ async def search_media(
     # PHASE 3: Search by cluster names - check if query matches any named people/clusters
     people_results = []
     try:
-        from .face_cluster import load_faces_from_db, cluster_faces, apply_labels
+        from .face_cluster import load_cluster_cache
         
-        # Get clustered faces with labels applied (gives us cluster names)
-        faces = load_faces_from_db()
-        clusters = cluster_faces(faces)
-        clusters = apply_labels(clusters)
+        # Load pre-computed clusters from cache (built during face detection, not on-demand)
+        clusters = load_cluster_cache()
         
-        query_lower = q.lower().strip()
-        print(f"[SEARCH] PHASE 3 - People search for '{q}' (checking {len(clusters)} clusters)")
-        
-        # Debug: Print all cluster names for comparison
-        for i, c in enumerate(clusters[:5]):  # First 5 clusters
-            print(f"[SEARCH]   Cluster {i}: label='{c.get('label', 'UNNAMED')}' id={c.get('id', 'NO_ID')} photos={len(c.get('photos', []))}")
-        
-        # Check if query matches any cluster label (user-assigned name)
-        for cluster in clusters:
-            cluster_label = cluster.get('label', '').lower()
-            cluster_id = cluster.get('id', '')
+        if not clusters:
+            print(f"[SEARCH] PHASE 3 - People search for '{q}': No cluster cache found, skipping people search")
+        else:
+            query_lower = q.lower().strip()
+            print(f"[SEARCH] PHASE 3 - People search for '{q}' (checking {len(clusters)} clusters)")
+            
+            # Debug: Print all cluster names for comparison
+            for i, c in enumerate(clusters[:5]):  # First 5 clusters
+                print(f"[SEARCH]   Cluster {i}: label='{c.get('label', 'UNNAMED')}' id={c.get('id', 'NO_ID')} photos={len(c.get('photos', []))}")
+            
+            # Check if query matches any cluster label (user-assigned name)
+            for cluster in clusters:
+                cluster_label = cluster.get('label', '').lower()
+                cluster_id = cluster.get('id', '')
             
             # Match if query is substring of cluster label (case-insensitive)
             if cluster_label and query_lower and query_lower in cluster_label:
@@ -2734,10 +2805,14 @@ async def hide_person(person_id: str, request_body: HidePersonRequest = Body(...
 
 
 @app.post("/api/search/{search_query}/approve")
-async def approve_search_result(search_query: str, file_id: int = Query(...)):
+async def approve_search_result(search_query: str, file_id: int = Query(...), silo_name: str = Query(None)):
     """Mark a search result as approved for a SPECIFIC search query.
     This ensures the image is trained to appear first for THIS query,
     but not necessarily for unrelated queries."""
+    # Set the silo context if provided
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
     with get_db() as conn:
         conn.execute(
             """INSERT OR REPLACE INTO search_feedback (media_id, query, feedback, created_at)
@@ -2749,10 +2824,14 @@ async def approve_search_result(search_query: str, file_id: int = Query(...)):
 
 
 @app.post("/api/search/{search_query}/reject")
-async def reject_search_result(search_query: str, file_id: int = Query(...)):
+async def reject_search_result(search_query: str, file_id: int = Query(...), silo_name: str = Query(None)):
     """Mark a search result as rejected for a SPECIFIC search query.
     This ensures the image does NOT appear for THIS query,
     but may still appear for other relevant queries."""
+    # Set the silo context if provided
+    if silo_name:
+        _set_processing_silo(silo_name)
+    
     with get_db() as conn:
         conn.execute(
             """INSERT OR REPLACE INTO search_feedback (media_id, query, feedback, created_at)

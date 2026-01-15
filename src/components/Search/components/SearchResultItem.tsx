@@ -2,7 +2,7 @@
  * SearchResultItem Component - Individual search result with feedback buttons
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { SearchResult } from '../types';
 
@@ -25,7 +25,20 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
 }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [showUndoToast, setShowUndoToast] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [attemptCount, setAttemptCount] = useState(0);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { theme } = useAppStore();
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleConfirm = () => {
     onConfirm(result.id, result.path);
@@ -58,6 +71,8 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
 
   const BACKEND_URL = '';
   const imgSrc = `${BACKEND_URL}/api/media/thumbnail/${result.id}?size=300&square=true`;
+  // Add cache-buster on subsequent attempts
+  const imageSrcWithBust = attemptCount > 0 ? `${imgSrc}&t=${attemptCount}` : imgSrc;
   
   const formattedDate = result.date_taken
     ? new Date(result.date_taken * 1000).toLocaleDateString()
@@ -80,19 +95,56 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
         {/* Image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={imgSrc}
+          src={imageSrcWithBust}
           alt={`result ${result.id}`}
+          decoding="async"
           className={`w-full h-full object-cover transition-transform duration-200 ${
             isHovering ? 'scale-110' : 'scale-100'
-          }`}
+          } ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'}`}
           style={{
             transform: `scale(${isHovering ? 1.1 : 1}) rotate(${result.rotation || 0}deg)`,
           }}
-          onError={(e) => {
-            const img = e.target as HTMLImageElement;
-            img.style.display = 'none';
+          onLoad={() => {
+            setImageLoaded(true);
+            setImageError(false);
+          }}
+          onError={() => {
+            console.error(`[SearchResultItem] Image failed to load: ${result.id} | Attempt: ${attemptCount + 1} | URL: ${imageSrcWithBust}`);
+            
+            if (attemptCount < 1) {
+              // Schedule retry with incremented attempt count
+              if (retryTimeoutRef.current) {
+                clearTimeout(retryTimeoutRef.current);
+              }
+              retryTimeoutRef.current = setTimeout(() => {
+                console.log(`[SearchResultItem] Retrying image ${result.id} with attempt ${attemptCount + 1}`);
+                setAttemptCount(attemptCount + 1);
+              }, 1500);
+              setImageError(true);
+              setImageLoaded(false);
+            } else {
+              // Max retries reached
+              console.error(`[SearchResultItem] Max retries reached for ${result.id}`);
+              setImageError(true);
+              setImageLoaded(false);
+            }
           }}
         />
+
+        {/* Loading skeleton */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-pulse" />
+        )}
+
+        {/* Error state */}
+        {imageError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800/50">
+            <div className="text-xs text-gray-400 text-center px-2">
+              <div>⚠</div>
+              <div>image unavailable</div>
+            </div>
+          </div>
+        )}
 
         {/* Overlay on hover */}
         {isHovering && !result.removed && !result.confirmed && (

@@ -42,6 +42,9 @@ export default function MediaGallery() {
   const [recentlyAddedItems, setRecentlyAddedItems] = useState<MediaItem[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([new Date().getFullYear()]));
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [gallerySort, setGallerySort] = useState<'date-newest' | 'date-oldest' | 'size-largest' | 'size-smallest'>('date-newest');
   
   const mediaGridRef = useRef<HTMLDivElement>(null);
 

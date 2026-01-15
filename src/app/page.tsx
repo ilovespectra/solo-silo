@@ -172,6 +172,33 @@ export default function Home() {
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </button>
+            <a
+              href="https://solo-docs.vercel.app/docs/category/solo-silo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`p-2 rounded-lg transition ${
+                theme === 'dark'
+                  ? 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+              title="Open Documentation"
+              aria-label="Open Documentation"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="w-5 h-5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            </a>
             <SiloSelector onSiloSwitch={async () => {
               try {
                 const response = await fetch(`/api/status/has-indexed-files`, {

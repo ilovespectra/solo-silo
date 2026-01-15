@@ -52,6 +52,9 @@ export const useIndexingStatus = () => {
     }
 
     const abortController = new AbortController();
+    let retryCount = 0;
+    let currentInterval = 2000;
+    let timeoutId: NodeJS.Timeout | null = null;
 
     const checkIndexingStatus = async () => {
       try {
@@ -60,9 +63,22 @@ export const useIndexingStatus = () => {
         });
 
         if (!response.ok) {
+          if (response.status === 503) {
+            console.warn(`[useIndexingStatus] Backend temporarily unavailable (503) - backing off...`);
+            retryCount++;
+            currentInterval = Math.min(2000 * Math.pow(2, retryCount - 1), 16000);
+            scheduleNextCheck();
+            return;
+          }
+          
           console.error('[useIndexingStatus] failed to fetch status:', response.status);
+          currentInterval = 2000;
+          scheduleNextCheck();
           return;
         }
+
+        retryCount = 0;
+        currentInterval = 2000;
 
         const data: IndexingStatusResponse = await response.json();
         const { progress } = data;
@@ -77,7 +93,6 @@ export const useIndexingStatus = () => {
         const wasIndexing = lastStateRef.current?.isActive;
         const justCompleted = wasIndexing && newIsComplete && !newIsActive;
 
-        // Detect when clustering completes (phase changes from 'detecting' to something else)
         const wasDetecting = lastStateRef.current?.phase === 'detecting';
         const clusteringJustCompleted = wasDetecting && newPhase !== 'detecting' && newPhase !== '';
 
@@ -108,12 +123,10 @@ export const useIndexingStatus = () => {
 
           console.log('[useIndexingStatus] State changed - Updated store - Complete:', newIsComplete, 'Active:', newIsActive);
 
-          // Trigger refresh when indexing just completed
           if (justCompleted && !hasTriggeredRefreshRef.current) {
             console.log('[useIndexingStatus] 🔄 Indexing completed! Triggering data refresh...');
             hasTriggeredRefreshRef.current = true;
             
-            // Broadcast a custom event that components can listen to
             window.dispatchEvent(new CustomEvent('indexing-complete', {
               detail: { 
                 processed: progress.processed,
@@ -123,18 +136,15 @@ export const useIndexingStatus = () => {
               }
             }));
             
-            // Reset the flag after 5 seconds to allow for future re-indexing
             setTimeout(() => {
               hasTriggeredRefreshRef.current = false;
             }, 5000);
           }
 
-          // Trigger refresh when clustering completes
           if (clusteringJustCompleted && !hasTriggeredClusteringCompleteRef.current) {
             console.log('[useIndexingStatus] 🎭 Clustering completed! Refreshing people pane...');
             hasTriggeredClusteringCompleteRef.current = true;
             
-            // Broadcast a custom event that PeoplePane can listen to
             window.dispatchEvent(new CustomEvent('clustering-complete', {
               detail: { 
                 processed: progress.processed,
@@ -143,7 +153,6 @@ export const useIndexingStatus = () => {
               }
             }));
             
-            // Reset the flag after 5 seconds
             setTimeout(() => {
               hasTriggeredClusteringCompleteRef.current = false;
             }, 5000);
@@ -152,7 +161,6 @@ export const useIndexingStatus = () => {
           console.log('[useIndexingStatus] State unchanged - skipping store update');
         }
       } catch (error) {
-        // Ignore abort errors - they're expected when component unmounts
         if ((error as Error).name === 'AbortError') {
           return;
         }
@@ -166,16 +174,22 @@ export const useIndexingStatus = () => {
             isActive: false,
           };
         }
+        scheduleNextCheck();
       }
+    };
+
+    const scheduleNextCheck = () => {
+      if (abortController.signal.aborted) return;
+      
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkIndexingStatus, currentInterval);
     };
 
     checkIndexingStatus();
 
-    const interval = setInterval(checkIndexingStatus, 2000);
-
     return () => {
       abortController.abort();
-      clearInterval(interval);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [setIndexingComplete, setIndexingProgress, setIsIndexing, demoMode]);
 };
