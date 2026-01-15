@@ -30,6 +30,12 @@ export default function SearchPhotoModal({
   theme = 'dark',
 }: SearchPhotoModalProps) {
   const { isFavorite, addFavorite, removeFavorite } = useAppStore();
+  
+  useEffect(() => {
+    if (isOpen && media) {
+      console.log('[SearchPhotoModal] Opened with media:', media);
+    }
+  }, [isOpen, media]);
   const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [keywordInput, setKeywordInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -40,8 +46,6 @@ export default function SearchPhotoModal({
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateInfo, setDuplicateInfo] = useState<{name: string; clusterId: string; photoCount: number} | null>(null);
 
-  // Only update keywords when media changes (i.e., when modal opens with a new image)
-  // Not on every render of initialKeywords to avoid infinite update loops
   useEffect(() => {
     if (isOpen && media?.id) {
       setKeywords(initialKeywords);

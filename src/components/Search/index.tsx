@@ -357,13 +357,21 @@ export const Search: React.FC<SearchComponentProps> = ({
       {/* Full-size image modal */}
       {selectedMediaId !== null && selectedMediaId !== undefined && (() => {
         const result = results.find(r => r.id === selectedMediaId);
-        const mediaObj = result ? {
+        
+        if (!result) {
+          console.warn('[Search] Result not found for selectedMediaId:', selectedMediaId, 'Available results:', results.map(r => r.id));
+          return null;
+        }
+        
+        const mediaObj = {
           id: selectedMediaId.toString(),
           image_path: result.path || '',
           thumbnail: `/api/media/thumbnail/${selectedMediaId}?size=500`,
           name: result.path?.split('/').pop() || '',
           rotation: result.rotation || 0
-        } : null;
+        };
+        
+        console.log('[Search] Creating mediaObj:', mediaObj);
 
         return (
           <SearchPhotoModal
