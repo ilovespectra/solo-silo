@@ -643,7 +643,8 @@ export default function Settings() {
               }];
 
               try {
-                localStorage.setItem('faceDetectionLogs', JSON.stringify(updated));
+                const siloKey = activeSilo?.name ? `_${activeSilo.name}` : '';
+                localStorage.setItem(`faceDetectionLogs${siloKey}`, JSON.stringify(updated));
               } catch (e) {
                 console.error('Failed to save logs:', e);
               }
@@ -1205,7 +1206,13 @@ export default function Settings() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                {isIndexing ? '📁 indexing progress' : isFaceDetecting ? '👤 face detection progress' : clusteringLogs.length > 0 ? '⚙️ clustering progress' : '📊 processing debug log'}
+                {(() => {
+                  if (faceDetectionLogs.length > 0) return '👤 face detection progress';
+                  if (indexingLogs.length > 0) return '📁 indexing progress';
+                  if (clusteringLogs.length > 0) return '⚙️ clustering progress';
+                  if (retrainingLogs.length > 0) return '📊 retraining progress';
+                  return '📊 processing debug log';
+                })()}
               </h3>
               <button
                 onClick={() => setShowDebugLogs(false)}
@@ -1257,14 +1264,31 @@ export default function Settings() {
                 </thead>
                 <tbody className={theme === 'dark' ? 'divide-y divide-gray-700' : 'divide-y divide-gray-300'}>
                   {(() => {
-                    const allLogs = [
-                      ...indexingLogs,
-                      ...faceDetectionLogs,
-                      ...clusteringLogs,
-                      ...retrainingLogs
-                    ].sort((a, b) => a.timestamp - b.timestamp);
+                    // Determine which logs to show based on which phase has the most recent activity
+                    let activeLogs: RetrainingLog[] = [];
                     
-                    return allLogs.map((log, idx) => (
+                    const getLatestTimestamp = (logs: RetrainingLog[]) => logs.length > 0 ? logs[logs.length - 1].timestamp : 0;
+                    
+                    const indexingLatest = getLatestTimestamp(indexingLogs);
+                    const faceDetectionLatest = getLatestTimestamp(faceDetectionLogs);
+                    const clusteringLatest = getLatestTimestamp(clusteringLogs);
+                    const retrainingLatest = getLatestTimestamp(retrainingLogs);
+                    
+                    // Prioritize by most recent activity
+                    const timestamps = [
+                      { logs: indexingLogs, timestamp: indexingLatest, name: 'indexing' },
+                      { logs: faceDetectionLogs, timestamp: faceDetectionLatest, name: 'face detection' },
+                      { logs: clusteringLogs, timestamp: clusteringLatest, name: 'clustering' },
+                      { logs: retrainingLogs, timestamp: retrainingLatest, name: 'retraining' }
+                    ].filter(item => item.logs.length > 0).sort((a, b) => b.timestamp - a.timestamp);
+                    
+                    if (timestamps.length > 0) {
+                      activeLogs = timestamps[0].logs;
+                    }
+
+                    const displayLogs = activeLogs.sort((a, b) => a.timestamp - b.timestamp);
+                    
+                    return displayLogs.map((log, idx) => (
                       <tr
                         key={idx}
                         className={theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}
