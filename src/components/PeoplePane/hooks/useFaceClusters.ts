@@ -67,11 +67,11 @@ export const useFaceClusters = () => {
     }
   }, [activeSilo?.name]);
 
-  const getClusterPhotos = useCallback(async (clusterId: string): Promise<ClusterPhoto[]> => {
+  const getClusterPhotos = useCallback(async (clusterId: string, offset: number = 0, limit: number = 50): Promise<{photos: ClusterPhoto[], total: number}> => {
     try {
       const siloParam = activeSilo?.name ? `&silo_name=${encodeURIComponent(activeSilo.name)}` : '';
-      const response = await fetch(`/api/faces/${clusterId}?_t=${Date.now()}${siloParam}`, {
-        signal: AbortSignal.timeout(10000),
+      const response = await fetch(`/api/faces/${clusterId}?offset=${offset}&limit=${limit}&_t=${Date.now()}${siloParam}`, {
+        signal: AbortSignal.timeout(15000),
         cache: 'no-store',
       });
       if (!response.ok) {
@@ -80,11 +80,16 @@ export const useFaceClusters = () => {
         throw new Error(`failed to fetch cluster photos: ${response.status}`);
       }
       const data = await response.json();
-      console.log(`[getClusterPhotos] Loaded ${data.length} photos for cluster ${clusterId}`);
-      return data;
+      
+      // Handle both new format (object with photos/total) and old format (array)
+      let photos = Array.isArray(data) ? data : data.photos || [];
+      let total = typeof data.total === 'number' ? data.total : photos.length;
+      
+      console.log(`[getClusterPhotos] Loaded ${photos.length} photos for cluster ${clusterId} (offset=${offset}, limit=${limit}, total=${total})`);
+      return { photos, total };
     } catch (err) {
       console.error(`failed to fetch photos for cluster ${clusterId}:`, err);
-      return [];
+      return { photos: [], total: 0 };
     }
   }, [activeSilo?.name]);
 

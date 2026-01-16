@@ -32,6 +32,17 @@ wheels/
 .installed.cfg
 *.egg
 
+# Troubleshooting scripts (local development only)
+check_confidence.py
+check_embeddings.py
+check_faces_column.py
+check_no_faces.py
+check_state.py
+check_thumbnails.py
+cluster_with_face_filter.py
+monitor_face_detection.py
+reset_faces_for_reprocessing.py
+
 # testing
 /coverage
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { fetchMediaByDate } from '@/lib/backend';
+import { fetchMediaByDate, getMediaStats } from '@/lib/backend';
 import { useAppStore } from '@/store/appStore';
 import { useSilos } from '@/hooks/useSilos';
 import BasePhotoModal from '@/components/PhotoModal/BasePhotoModal';
@@ -189,6 +189,9 @@ export default function MediaGallery() {
   const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([new Date().getFullYear()]));
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [gallerySort, setGallerySort] = useState<GallerySort>('date-newest');
+  const [availableFileTypes, setAvailableFileTypes] = useState<string[]>([]);
+  const [selectedFileTypes, setSelectedFileTypes] = useState<Set<string>>(new Set());
+  const [showFileTypeFilter, setShowFileTypeFilter] = useState(false);
   
   const mediaGridRef = useRef<HTMLDivElement>(null);
 
@@ -517,7 +520,24 @@ export default function MediaGallery() {
     }
   }, [groups]);
 
+  // Load available file types
+  useEffect(() => {
+    const loadFileTypes = async () => {
+      try {
+        const stats = await getMediaStats(activeSilo?.name);
+        if (stats && stats.by_type) {
+          const types = Object.keys(stats.by_type).sort();
+          setAvailableFileTypes(types);
+          // Initialize selected types with all types
+          setSelectedFileTypes(new Set(types));
+        }
+      } catch (err) {
+        console.error('[MediaGallery] Failed to load file types:', err);
+      }
+    };
 
+    loadFileTypes();
+  }, [activeSilo?.name]);
 
   const getDisplayGroups = () => {
     const filteredGroups = groups.map(g => ({
@@ -528,7 +548,12 @@ export default function MediaGallery() {
             return currentFolder && currentFolder.mediaIds.includes(item.id);
           })
         : g.items
-    })).filter(g => g.items.length > 0);
+    }))
+    .map(g => ({
+      ...g,
+      items: g.items.filter(item => selectedFileTypes.has(item.type))
+    }))
+    .filter(g => g.items.length > 0);
 
     if (activeTab === 'favorites') {
       const favoriteItems: MediaItem[] = [];
@@ -827,6 +852,73 @@ export default function MediaGallery() {
                     </select>
                   );
                 })()}
+
+                {/* File Type Filter */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowFileTypeFilter(!showFileTypeFilter)}
+                    className={`px-3 py-1 rounded text-sm border transition flex items-center gap-1 ${
+                      theme === 'dark'
+                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                        : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50'
+                    }`}
+                    title="filter by file type"
+                  >
+                    file types
+                  </button>
+                  {showFileTypeFilter && (
+                    <div className={`absolute top-full mt-1 left-0 rounded border shadow-lg z-50 min-w-max ${
+                      theme === 'dark'
+                        ? 'bg-gray-700 border-gray-600'
+                        : 'bg-white border-gray-300'
+                    }`}>
+                      <div className="p-2 space-y-2 max-h-64 overflow-y-auto">
+                        <button
+                          onClick={() => {
+                            setSelectedFileTypes(new Set(availableFileTypes));
+                          }}
+                          className={`w-full text-left px-2 py-1 rounded text-sm hover:bg-gray-600 ${
+                            theme === 'dark' ? 'text-gray-100' : 'text-gray-900 hover:bg-gray-100'
+                          }`}
+                        >
+                          select all
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedFileTypes(new Set());
+                          }}
+                          className={`w-full text-left px-2 py-1 rounded text-sm hover:bg-gray-600 ${
+                            theme === 'dark' ? 'text-gray-100' : 'text-gray-900 hover:bg-gray-100'
+                          }`}
+                        >
+                          clear all
+                        </button>
+                        <div className="border-t border-gray-600 my-2"></div>
+                        {availableFileTypes.map(type => (
+                          <label key={type} className={`flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-600 cursor-pointer ${
+                            theme === 'dark' ? 'text-gray-100' : 'text-gray-900 hover:bg-gray-100'
+                          }`}>
+                            <input
+                              type="checkbox"
+                              checked={selectedFileTypes.has(type)}
+                              onChange={(e) => {
+                                const newSelected = new Set(selectedFileTypes);
+                                if (e.target.checked) {
+                                  newSelected.add(type);
+                                } else {
+                                  newSelected.delete(type);
+                                }
+                                setSelectedFileTypes(newSelected);
+                              }}
+                              className="cursor-pointer"
+                            />
+                            <span className="text-sm">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

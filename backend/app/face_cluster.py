@@ -218,9 +218,14 @@ def detect_faces(paths: List[str], batch_size: int = 1, timeout_seconds: int = 1
 
 
 def load_faces_from_db() -> List[FaceInstance]:
-    """Load stored face embeddings from SQLite, deduplicated by image."""
+    """Load stored face embeddings from SQLite, deduplicated by image.
+    
+    Excludes images that are mostly text (detected via OCR in indexer).
+    This prevents text screenshots and documents from being clustered as face clusters.
+    """
     instances: List[FaceInstance] = []
     total_embeddings = 0
+    skipped_text_heavy = 0
     skipped_invalid = 0
     skipped_conversion = 0
     skipped_error = 0
@@ -228,7 +233,7 @@ def load_faces_from_db() -> List[FaceInstance]:
     with get_db() as conn:
         cur = conn.execute(
             """
-            SELECT media_files.id, media_files.path, face_embeddings.embedding, face_embeddings.bbox, face_embeddings.confidence
+            SELECT media_files.id, media_files.path, face_embeddings.embedding, face_embeddings.bbox, face_embeddings.confidence, media_files.text_content
             FROM face_embeddings
             JOIN media_files ON media_files.id = face_embeddings.media_id
             WHERE face_embeddings.embedding IS NOT NULL
@@ -237,7 +242,12 @@ def load_faces_from_db() -> List[FaceInstance]:
         rows = cur.fetchall()
         total_embeddings = len(rows)
         
-        for media_id, path, emb_blob, bbox_json, conf in rows:
+        for media_id, path, emb_blob, bbox_json, conf, text_content in rows:
+            # Skip images with significant text content (likely screenshots, documents, etc)
+            if text_content and len(text_content.strip()) > 100:
+                skipped_text_heavy += 1
+                continue
+            
             try:
                 emb = np.frombuffer(emb_blob, dtype=np.float32).tolist() if emb_blob else []
                 bbox = json.loads(bbox_json) if bbox_json else []
@@ -272,7 +282,9 @@ def load_faces_from_db() -> List[FaceInstance]:
     # We'll do this more efficiently by just keeping all faces - clustering will handle near-duplicates
     # through the distance threshold. The key insight: we don't need perfect dedup, clustering threshold handles it.
     
-    print(f"[FACE_LOAD] Total embeddings from DB: {total_embeddings}, Loaded: {len(instances)}, Skipped (invalid): {skipped_invalid}, (conversion): {skipped_conversion}, (error): {skipped_error}")
+    print(f"[FACE_LOAD] Total embeddings from DB: {total_embeddings}")
+    print(f"[FACE_LOAD] Loaded: {len(instances)}")
+    print(f"[FACE_LOAD] Skipped (text-heavy): {skipped_text_heavy}, (invalid): {skipped_invalid}, (conversion): {skipped_conversion}, (error): {skipped_error}")
     
     if not instances:
         print("[INFO] No valid face embeddings found in database")

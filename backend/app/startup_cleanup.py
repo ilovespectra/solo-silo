@@ -70,6 +70,48 @@ def cleanup_python_cache():
         print(f"[STARTUP] Removed {removed_count} __pycache__ directories")
 
 
+def regenerate_cluster_cache_if_missing():
+    """Regenerate cluster cache if missing or corrupted."""
+    try:
+        from .face_cluster import load_cluster_cache, load_faces_from_db, cluster_faces, save_cluster_cache
+        from .db import get_db
+        
+        # Try to load existing cache
+        existing_clusters = load_cluster_cache()
+        
+        if existing_clusters:
+            # Check for duplicates
+            cluster_ids = [c.get('id') for c in existing_clusters]
+            if len(cluster_ids) != len(set(cluster_ids)):
+                print(f"[STARTUP] WARNING: Found {len(set(cluster_ids))} unique cluster IDs out of {len(cluster_ids)} total")
+                print(f"[STARTUP] Cache is corrupted with duplicate IDs - regenerating...")
+                existing_clusters = None
+        
+        if not existing_clusters:
+            print(f"[STARTUP] No cluster cache found - generating fresh clusters from database...")
+            
+            # Load all faces from database
+            faces = load_faces_from_db()
+            print(f"[STARTUP] Loaded {len(faces)} faces from database")
+            
+            if faces:
+                # Cluster them
+                clusters = cluster_faces(faces)
+                print(f"[STARTUP] Generated {len(clusters)} clusters")
+                
+                # Save to cache
+                save_cluster_cache(clusters)
+                print(f"[STARTUP] Saved clusters to cache")
+            else:
+                print(f"[STARTUP] No faces in database - skipping cluster generation")
+        else:
+            print(f"[STARTUP] Cluster cache exists with {len(existing_clusters)} clusters (no duplicates detected)")
+    except Exception as e:
+        print(f"[STARTUP] WARNING: Failed to regenerate cluster cache: {e}")
+        import traceback
+        traceback.print_exc()
+
+
 def startup_cleanup():
     """Run all cleanup operations on app startup."""
     print("\n" + "="*60)
@@ -79,6 +121,7 @@ def startup_cleanup():
     cleanup_old_logs()
     cleanup_thumbnail_cache()
     cleanup_python_cache()
+    regenerate_cluster_cache_if_missing()
     
     print("[STARTUP] Cleanup complete! Fresh session starting.")
     print("="*60 + "\n")

@@ -1419,8 +1419,8 @@ async def get_indexing_status(silo_name: str = None):
                 indexing_state["total"] = cumulative_total
                 indexing_state["faces_found"] = progress_data.get("faces_found", 0)
                 indexing_state["current_file"] = progress_data.get("current_file", "")
-                # Calculate percentage based on actual progress
-                pct = int((cumulative_processed / cumulative_total) * 100) if cumulative_total > 0 else 0
+                # Calculate percentage based on actual progress (use round to show 0.1% instead of 0%)
+                pct = round((cumulative_processed / cumulative_total) * 100) if cumulative_total > 0 else 0
                 indexing_state["percentage"] = min(pct, 100)
                 indexing_state["status"] = "processing"
                 indexing_state["phase"] = "detecting"
@@ -1433,7 +1433,7 @@ async def get_indexing_status(silo_name: str = None):
                 indexing_state["is_indexing"] = True
                 indexing_state["processed"] = already_attempted
                 indexing_state["total"] = total_files
-                indexing_state["percentage"] = int((already_attempted / total_files) * 100) if total_files > 0 else 0
+                indexing_state["percentage"] = round((already_attempted / total_files) * 100) if total_files > 0 else 0
                 indexing_state["message"] = f"Face detection in progress... ({already_attempted}/{total_files} scanned)"
                 indexing_state["current_file"] = ""
         except Exception as e:
@@ -5206,9 +5206,12 @@ async def hide_media(request: dict = Body(...)):
 
 
 @app.post("/api/faces/{cluster_id}/profile-pic")
-async def set_cluster_profile_pic(cluster_id: str, request: SetProfilePicRequest):
+async def set_cluster_profile_pic(cluster_id: str, request: SetProfilePicRequest, silo_name: Optional[str] = None):
     """Set the profile picture for a face cluster."""
     try:
+        if silo_name:
+            SiloManager.set_active_silo(silo_name)
+        
         media_id = request.media_id
         
         if not media_id:

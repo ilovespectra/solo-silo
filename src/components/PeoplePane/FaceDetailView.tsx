@@ -22,7 +22,9 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setSaving] = useState(false);
   const [photos, setPhotos] = useState<ClusterPhoto[]>([]);
+  const [totalPhotos, setTotalPhotos] = useState(0);
   const [photosLoading, setPhotosLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<ClusterPhoto | null>(null);
   const [allClusters, setAllClusters] = useState<FaceCluster[]>([]);
   const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
@@ -55,11 +57,20 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
   const reloadPhotos = async () => {
     try {
       setPhotosLoading(true);
-      const data = await getClusterPhotos(cluster.id);
+      // Load first page of photos (initial 50)
+      const result = await getClusterPhotos(cluster.id, 0, 50);
       
-      const uniquePhotos = Array.from(new Map(data.map(photo => [photo.id, photo])).values());
+      console.log(`[FaceDetailView] reloadPhotos result:`, { 
+        photosCount: result.photos.length, 
+        totalPhotos: result.total,
+        cluster: cluster.id 
+      });
+      
+      const uniquePhotos = Array.from(new Map(result.photos.map(photo => [photo.id, photo])).values());
       setPhotos(uniquePhotos);
+      setTotalPhotos(result.total);
       
+      // Load rotations only for the initial batch
       const rotations: Record<string, number> = {};
       for (const photo of uniquePhotos) {
         try {
@@ -76,8 +87,43 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
     } catch (err) {
       console.error('Failed to reload photos:', err);
       setPhotos([]);
+      setTotalPhotos(0);
     } finally {
       setPhotosLoading(false);
+    }
+  };
+
+  // Load more photos when user clicks button
+  const loadMorePhotos = async () => {
+    try {
+      setLoadingMore(true);
+      const nextOffset = photos.length;
+      const result = await getClusterPhotos(cluster.id, nextOffset, 50);
+      
+      if (result.photos.length === 0) {
+        return; // No more photos to load
+      }
+      
+      const newPhotos = Array.from(new Map([...photos, ...result.photos].map(photo => [photo.id, photo])).values());
+      setPhotos(newPhotos);
+      setTotalPhotos(result.total);
+      
+      // Load rotations for new photos
+      for (const photo of result.photos) {
+        try {
+          const res = await fetch(`/api/media/${photo.id}/metadata`);
+          if (res.ok) {
+            const metadata = await res.json();
+            setPhotoRotations(prev => ({ ...prev, [photo.id]: metadata.rotation || 0 }));
+          }
+        } catch (err) {
+          console.error(`Failed to load rotation for photo ${photo.id}:`, err);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load more photos:', err);
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -142,6 +188,7 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
       console.log(`Successfully removed photo ${photoId}`);
       const newPhotos = photos.filter(p => p.id !== photoId);
       setPhotos(newPhotos);
+      setTotalPhotos(totalPhotos - 1); // Update total count
       setPhotoRotations(prev => {
         const updated = { ...prev };
         delete updated[photoId];
@@ -161,7 +208,8 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
 
   const handleSetProfilePic = async (photoId: string) => {
     try {
-      const response = await fetch(`/api/faces/${cluster.id}/profile-pic`, {
+      const siloParam = activeSiloName ? `?silo_name=${encodeURIComponent(activeSiloName)}` : '';
+      const response = await fetch(`/api/faces/${cluster.id}/profile-pic${siloParam}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ media_id: photoId }),
@@ -533,80 +581,109 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                   no photos in this cluster
                 </p>
               ) : (
-                <div className="grid grid-cols-3 gap-4">
-                  {photos.map((photo, index) => (
-                    <div 
-                      key={`${cluster.id}-${photo.id}-${index}`} 
-                      className="relative group cursor-pointer"
-                      onMouseEnter={() => setHoveredPhotoId(photo.id)}
-                      onMouseLeave={() => setHoveredPhotoId(null)}
-                    >
-                      {/* Square container with aspect ratio */}
-                      <div className={`relative w-full aspect-square rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'}`}>
-                        <div style={{ transform: `rotate(${photoRotations[photo.id] || 0}deg)` }} className="absolute inset-0 transition-transform">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={photo.thumbnail}
-                            alt="Face photo"
-                            className="w-full h-full object-cover hover:opacity-80 transition"
-                            onClick={() => setSelectedPhoto(photo)}
-                          />
+                <>
+                  <div className="grid grid-cols-3 gap-4">
+                    {photos.map((photo, index) => (
+                      <div 
+                        key={`${cluster.id}-${photo.id}-${index}`} 
+                        className="relative group cursor-pointer"
+                        onMouseEnter={() => setHoveredPhotoId(photo.id)}
+                        onMouseLeave={() => setHoveredPhotoId(null)}
+                      >
+                        {/* Square container with aspect ratio */}
+                        <div className={`relative w-full aspect-square rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'}`}>
+                          <div style={{ transform: `rotate(${photoRotations[photo.id] || 0}deg)` }} className="absolute inset-0 transition-transform">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={photo.thumbnail}
+                              alt="Face photo"
+                              className="w-full h-full object-cover hover:opacity-80 transition"
+                              onClick={() => setSelectedPhoto(photo)}
+                            />
+                          </div>
                         </div>
+                        
+                        {/* Rotate Controls (on hover) */}
+                        {hoveredPhotoId === photo.id && (
+                          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRotatePhoto(photo.id, 'ccw');
+                              }}
+                              className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition text-xs shadow-lg"
+                              title="rotate left"
+                            >
+                              ↶
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRotatePhoto(photo.id, 'cw');
+                              }}
+                              className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition text-xs shadow-lg"
+                              title="rotate right"
+                            >
+                              ↷
+                            </button>
+                          </div>
+                        )}
+                        
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemovePhoto(photo.id);
+                            setSelectedPhoto(null);
+                          }}
+                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                          title="Remove from person"
+                        >
+                          ✕
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSetProfilePic(photo.id);
+                          }}
+                          className="absolute top-1 left-1 text-xs px-2 py-1 bg-yellow-500 text-white rounded opacity-0 group-hover:opacity-100 transition"
+                          title="Set as profile picture"
+                        >
+                          set pfp
+                        </button>
+                        <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {Math.round(photo.similarity_score * 100)}%
+                        </p>
                       </div>
-                      
-                      {/* Rotate Controls (on hover) */}
-                      {hoveredPhotoId === photo.id && (
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRotatePhoto(photo.id, 'ccw');
-                            }}
-                            className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition text-xs shadow-lg"
-                            title="rotate left"
-                          >
-                            ↶
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRotatePhoto(photo.id, 'cw');
-                            }}
-                            className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition text-xs shadow-lg"
-                            title="rotate right"
-                          >
-                            ↷
-                          </button>
-                        </div>
-                      )}
-                      
+                    ))}
+                  </div>
+                  
+                  {/* Load More Section */}
+                  <div className={`mt-8 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className="text-sm mb-4">
+                      showing {photos.length} of {totalPhotos} photos
+                    </p>
+                    {photos.length < totalPhotos && (
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemovePhoto(photo.id);
-                          setSelectedPhoto(null);
-                        }}
-                        className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
-                        title="Remove from person"
+                        onClick={loadMorePhotos}
+                        disabled={loadingMore}
+                        className={`px-6 py-2 rounded-lg font-medium transition ${
+                          loadingMore
+                            ? theme === 'dark'
+                              ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            : theme === 'dark'
+                              ? 'bg-orange-700 text-white hover:bg-orange-600'
+                              : 'bg-orange-600 text-white hover:bg-orange-500'
+                        }`}
                       >
-                        ✕
+                        {loadingMore ? 'loading more...' : 'load more photos'}
                       </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSetProfilePic(photo.id);
-                        }}
-                        className="absolute top-1 left-1 text-xs px-2 py-1 bg-yellow-500 text-white rounded opacity-0 group-hover:opacity-100 transition"
-                        title="Set as profile picture"
-                      >
-                        set pfp
-                      </button>
-                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {Math.round(photo.similarity_score * 100)}%
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                    )}
+                    {photos.length === totalPhotos && totalPhotos > 0 && (
+                      <p className="text-sm text-green-600 font-medium">✓ all photos loaded</p>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           )}
@@ -678,8 +755,9 @@ export default function FaceDetailView({ cluster, onClose, theme, onUpdated }: F
                           
                           // Reload photos in background after indexing delay (3-5 seconds)
                           setTimeout(async () => {
-                            const data = await getClusterPhotos(cluster.id);
-                            setPhotos(data);
+                            const result = await getClusterPhotos(cluster.id, 0, 50);
+                            setPhotos(result.photos);
+                            setTotalPhotos(result.total);
                           }, 5000);
                         } else {
                           console.warn('[FaceDetailView] Upload response missing media_id:', uploadedFile);

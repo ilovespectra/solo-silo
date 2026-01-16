@@ -20,9 +20,21 @@ from datetime import datetime
 # Force unbuffered output for real-time logging
 os.environ['PYTHONUNBUFFERED'] = '1'
 
+# CRITICAL: Set TMPDIR to a directory that always exists and is writable
+# This prevents TensorFlow/absl from failing when /tmp, /var/tmp are full or unavailable
+# Use the backend cache directory as fallback for temp files
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+backend_cache = os.path.join(root_dir, "backend", "cache")
+os.makedirs(backend_cache, exist_ok=True)
+# Set TMPDIR BEFORE any imports that might use it
+if "TMPDIR" not in os.environ:
+    os.environ["TMPDIR"] = backend_cache
+# Also set Python's temp directory for extra safety
+import tempfile
+tempfile.tempdir = backend_cache
+
 # Set database path to backend cache directory before importing
 # BUT: if PAI_DB is already set by parent process (for silo support), respect it!
-root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if "PAI_DB" not in os.environ:
     os.environ["PAI_DB"] = os.path.join(root_dir, "backend", "cache", "personalai.db")
 if "PAI_CLUSTER_CACHE" not in os.environ:

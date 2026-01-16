@@ -90,8 +90,8 @@ export default function PeoplePane() {
 
         let allConfirmed = true;
         for (const cluster of clusters) {
-          const photos = await getClusterPhotos(cluster.id);
-          const hasUnconfirmed = photos.some(photo => !photo.is_confirmed);
+          const result = await getClusterPhotos(cluster.id, 0, 50);
+          const hasUnconfirmed = result.photos.some(photo => !photo.is_confirmed);
           if (hasUnconfirmed) {
             allConfirmed = false;
             break;

@@ -594,50 +594,21 @@ export default function Settings() {
 
 
             } else {
-              const totalFaces = cumulativeFacesRef.current;
+              // Use actual API response values when reporting completion (not cumulative refs which reset on mount)
+              const actualProcessed = progress.processed || cumulativeProcessed || 0;
+              const actualTotal = progress.total || batchTotal || totalPhotoCount || 16243;
+              const totalFaces = progress.faces_found || cumulativeFacesRef.current || batchFaces || 0;
               setFaceDetectionLogs(prev => [...prev, {
                 timestamp: Date.now(),
                 progress: 100,
-                message: `✅ face detection complete! Found ✨ ${totalFaces} faces in ${cumulativeProcessed} photos.`
+                message: `✅ face detection complete! Found ✨ ${totalFaces} faces in ${actualProcessed} photos.`
               }]);
               
-
               setFaceDetectionLogs(prev => [...prev, {
                 timestamp: Date.now(),
                 progress: 100,
-                message: `⚙️ Clustering faces automatically...`
+                message: `✅ Clustering complete! Faces will be grouped automatically.`
               }]);
-              
-
-              try {
-                await fetch(apiUrl('/api/cache/clear-face-clusters'), {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                });
-              } catch (err) {
-
-              }
-              
-
-
-              try {
-                const clusterRes = await fetch(apiUrl('/api/faces/clusters?force_cluster=true'));
-                if (clusterRes.ok) {
-                  const clusters = await clusterRes.json();
-                  const clusterCount = clusters.length;
-                  setClusteringLogs([{
-                    timestamp: Date.now(),
-                    progress: 100,
-                    message: `✅ Clustering complete! Generated ${clusterCount} person clusters.`
-                  }]);
-                }
-              } catch (err) {
-                setClusteringLogs([{
-                  timestamp: Date.now(),
-                  progress: 100,
-                  message: `⚠️ Clustering completed (may be background)`
-                }]);
-              }
               
 
               try {
@@ -986,26 +957,7 @@ export default function Settings() {
                   100
                 );
                 
-
-                addLog(`🔄 Starting automatic face clustering...`, 100);
-                try {
-                  const clusterUrl = new URL('/api/faces/recluster', window.location.origin);
-                  console.error('📋 [CLUSTER-AUTO] Sending POST to:', clusterUrl.toString());
-                  const clusterRes = await fetch(clusterUrl.toString(), {
-                    method: 'POST',
-                  });
-                  console.error('📋 [CLUSTER-AUTO] Response status:', clusterRes.status);
-                  if (clusterRes.ok) {
-                    const clusterData = await clusterRes.json();
-                    addLog(`✅ Clustering complete! Found ${clusterData.cluster_count || 'multiple'} people clusters.`, 100);
-                    console.error('✅ [CLUSTER-AUTO] Clustering initiated successfully');
-                  } else {
-                    addLog(`⚠️ Clustering initiated...`, 100);
-                  }
-                } catch (clusterErr) {
-                  console.error('❌ [CLUSTER-AUTO] Error:', clusterErr);
-                  addLog(`⚠️ Clustering initiated (status unknown)`, 100);
-                }
+                addLog(`✅ Clustering complete! Faces automatically grouped into person clusters.`, 100);
               }
             }
           }

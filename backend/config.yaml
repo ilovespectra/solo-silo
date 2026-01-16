@@ -1,5 +1,5 @@
 storage:
-  media_paths: []
+  media_paths: ["/Users/tanny/Pictures/testing"]
   thumbnail_path: ./cache/thumbnails
 
 processing:
